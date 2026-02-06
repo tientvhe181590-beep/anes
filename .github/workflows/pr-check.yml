@@ -39,4 +39,6 @@ jobs:
       # Backend compile check
       - name: Backend compile & test
         working-directory: server
-        run: ./mvnw verify -B -q
+        run: |
+          chmod +x ./mvnw
+          ./mvnw verify -B -q
