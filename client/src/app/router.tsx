@@ -1,4 +1,4 @@
-import { createBrowserRouter } from 'react-router-dom';
+import { createBrowserRouter, Navigate } from 'react-router-dom';
 import { lazy } from 'react';
 
 // Lazy-loaded feature routes
@@ -12,6 +12,10 @@ const LoginPage = lazy(() => import('@/features/auth/components/LoginPage'));
 export const router = createBrowserRouter([
   {
     path: '/',
+    element: <Navigate to="/landing" replace />,
+  },
+  {
+    path: '/landing',
     Component: LandingPage,
   },
   {
