@@ -9,6 +9,7 @@ const MOCK_DATA = {
   calories: {
     consumed: 1200,
     target: 2000,
+    burned: 450,
   },
   workout: {
     id: '1',
@@ -29,7 +30,7 @@ export default function DashboardScreen() {
   // Mock Logic: Future days have 0 consumed
   const isFuture = selectedIndex > 3; // Assuming 3 is "Today"
   const currentCalories = isFuture
-    ? { consumed: 0, target: MOCK_DATA.calories.target }
+    ? { consumed: 0, target: MOCK_DATA.calories.target, burned: 0 }
     : MOCK_DATA.calories;
 
   return (
@@ -50,6 +51,7 @@ export default function DashboardScreen() {
         <CalorieProgressWidget
           consumed={currentCalories.consumed}
           target={currentCalories.target}
+          burned={currentCalories.burned}
         />
 
         {/* Workout */}

@@ -5,6 +5,7 @@ import { lazy } from 'react';
 const LandingPage = lazy(() => import('@/features/auth/components/LandingPage'));
 const LoginPage = lazy(() => import('@/features/auth/components/LoginPage'));
 const DashboardScreen = lazy(() => import('@/features/dashboard/DashboardScreen'));
+const MainLayout = lazy(() => import('@/MainLayout'));
 
 /**
  * Application router configuration.
@@ -20,8 +21,30 @@ export const router = createBrowserRouter([
     Component: LoginPage,
   },
   {
-    path: '/dashboard',
-    Component: DashboardScreen,
+    path: '/',
+    element: <MainLayout />,
+    children: [
+      {
+        path: 'dashboard',
+        Component: DashboardScreen,
+      },
+      {
+        path: 'workouts',
+        element: <div>Workouts Screen (Placeholder)</div>,
+      },
+      {
+        path: 'nutrition',
+        element: <div>Nutrition Screen (Placeholder)</div>,
+      },
+      {
+        path: 'chat',
+        element: <div>Chat AI Screen (Placeholder)</div>,
+      },
+      {
+        path: 'profile',
+        element: <div>Profile Screen (Placeholder)</div>,
+      },
+    ],
   },
   // { path: '/register', Component: lazy(() => import('@/features/auth/components/RegisterForm')) },
   //
