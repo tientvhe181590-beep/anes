@@ -1,6 +1,12 @@
 package com.anes.server.auth.controller;
 
+import com.anes.server.auth.dto.AuthResponse;
+import com.anes.server.auth.dto.LoginRequest;
+import com.anes.server.auth.dto.RefreshRequest;
+import com.anes.server.auth.dto.RegisterRequest;
+import com.anes.server.auth.service.AuthService;
 import com.anes.server.common.dto.ApiResponse;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,28 +19,31 @@ import java.util.Map;
 @RequestMapping("/api/v1/auth")
 public class AuthController {
 
+    private final AuthService authService;
+
+    public AuthController(AuthService authService) {
+        this.authService = authService;
+    }
+
     @PostMapping("/register")
-    public ResponseEntity<ApiResponse<Map<String, String>>> register(
-            @RequestBody Map<String, String> request) {
-        // TODO: Implement registration
-        return ResponseEntity.ok(ApiResponse.ok(Map.of(
-                "message", "Registration endpoint — not yet implemented")));
+    public ResponseEntity<ApiResponse<AuthResponse>> register(
+            @Valid @RequestBody RegisterRequest request) {
+        var response = authService.register(request);
+        return ResponseEntity.ok(ApiResponse.ok(response));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse<Map<String, String>>> login(
-            @RequestBody Map<String, String> request) {
-        // TODO: Implement login
-        return ResponseEntity.ok(ApiResponse.ok(Map.of(
-                "message", "Login endpoint — not yet implemented")));
+    public ResponseEntity<ApiResponse<AuthResponse>> login(
+            @Valid @RequestBody LoginRequest request) {
+        var response = authService.login(request);
+        return ResponseEntity.ok(ApiResponse.ok(response));
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<ApiResponse<Map<String, String>>> refresh(
-            @RequestBody Map<String, String> request) {
-        // TODO: Implement token refresh
-        return ResponseEntity.ok(ApiResponse.ok(Map.of(
-                "message", "Token refresh endpoint — not yet implemented")));
+    public ResponseEntity<ApiResponse<AuthResponse>> refresh(
+            @Valid @RequestBody RefreshRequest request) {
+        var response = authService.refresh(request);
+        return ResponseEntity.ok(ApiResponse.ok(response));
     }
 
     @GetMapping("/health")
