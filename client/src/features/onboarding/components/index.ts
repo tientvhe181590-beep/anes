@@ -1,9 +1,10 @@
+// Export repurposed components with semantic names
 export { default as Step1Identity } from './steps/Step1Identity';
-export { default as Step2Age } from './steps/Step2Age';
-export { default as Step3Physique } from './steps/Step3Physique';
+export { default as Step2Stats } from './steps/Step2Age'; // Mapped from reused file
+export { default as Step3Goal } from './steps/Step5Goal'; // Mapped from reused file
+export { default as StepFocusArea } from './steps/StepFocusArea';
 export { default as Step4Level } from './steps/Step4Level';
-export { default as Step5Goal } from './steps/Step5Goal';
-export { default as Step6Target } from './steps/Step6Target';
-export { default as Step7Schedule } from './steps/Step7Schedule';
-export { default as Step8Equipment } from './steps/Step8Equipment';
+export { default as Step5Availability } from './steps/Step7Schedule'; // Mapped from reused file
+export { default as Step6Injuries } from './steps/Step6Target'; // Mapped from reused file
+export { default as Step7Allergies } from './steps/Step8Equipment'; // Mapped from reused file
 export { default as OnboardingLayout } from './OnboardingLayout';

@@ -1,74 +1,90 @@
-import { Target } from 'lucide-react';
 import OnboardingLayout from '../OnboardingLayout';
 import { useState } from 'react';
+import { Check } from 'lucide-react';
 
-/**
- * Basic toggle component
- */
-const UnitToggle = ({ value, onChange, options }: { value: string, onChange: (v: string) => void, options: string[] }) => (
-    <div className="flex rounded-md bg-[#2a2a2a] p-1">
-        {options.map((opt) => (
-            <button
-                key={opt}
-                onClick={() => onChange(opt)}
-                className={`rounded px-3 py-1 text-xs font-semibold uppercase transition-all
-          ${value === opt
-                        ? 'bg-[#3a3a3a] text-white shadow-sm'
-                        : 'text-[#8a8a8a] hover:text-[#b0b0b0]'
-                    }`}
-            >
-                {opt}
-            </button>
-        ))}
-    </div>
+// Reusable Checkbox Component
+const CheckboxItem = ({ label, isSelected, onToggle }: { label: string, isSelected: boolean, onToggle: () => void }) => (
+    <button
+        onClick={onToggle}
+        className={`flex items-center justify-between w-full h-14 px-4 rounded-xl border transition-all duration-200
+            ${isSelected
+                ? 'bg-[#1a1a1a] border-[#ff3b30] shadow-[0_0_0_1px_#ff3b30] z-10'
+                : 'bg-[#1a1a1a] border-transparent hover:bg-[#242424]'
+            }
+        `}
+    >
+        <span className={`text-[15px] font-['Inter'] font-medium ${isSelected ? 'text-white' : 'text-[#8a8a8a]'}`}>
+            {label}
+        </span>
+        <div className={`h-5 w-5 rounded flex items-center justify-center transition-colors border
+             ${isSelected ? 'bg-[#ff3b30] border-[#ff3b30]' : 'border-[#404040]'}
+        `}>
+            {isSelected && <Check className="h-3 w-3 text-white" strokeWidth={3} />}
+        </div>
+    </button>
 );
 
-export default function Step6Target({
+const injuriesList = ['Knee', 'Back', 'Shoulder', 'Wrist', 'Ankle', 'None'];
+
+export default function Step6Injuries({
     onNext,
     onBack,
-    initialTarget = '',
-    initialUnit = 'kg'
-}: { onNext: (target: any) => void, onBack: () => void, initialTarget?: string, initialUnit?: string }) {
+    initialData = []
+}: { onNext: (data: any) => void, onBack: () => void, initialData?: string[] }) {
 
-    const [targetValue, setTargetValue] = useState(initialTarget);
-    const [unit, setUnit] = useState(initialUnit);
+    const [selectedInjuries, setSelectedInjuries] = useState<string[]>(initialData || []);
+    const [otherInjury, setOtherInjury] = useState('');
 
-    const isValid = targetValue && parseInt(targetValue) > 0;
+    const toggleInjury = (item: string) => {
+        if (item === 'None') {
+            setSelectedInjuries(['None']);
+            return;
+        }
+
+        let newSel = selectedInjuries.includes('None') ? [] : [...selectedInjuries];
+
+        if (newSel.includes(item)) {
+            newSel = newSel.filter(i => i !== item);
+        } else {
+            newSel.push(item);
+        }
+        setSelectedInjuries(newSel);
+    };
+
+    const handleNextWrapper = () => {
+        const final = [...selectedInjuries];
+        if (otherInjury.trim()) final.push(otherInjury);
+        onNext(final);
+    }
 
     return (
         <OnboardingLayout
-            title="Target Weight"
-            subtitle="What is your goal weight?"
+            title="Injuries"
+            subtitle="Select any injuries you currently have."
             currentStep={6}
-            totalSteps={8}
-            onNext={() => onNext({ target: targetValue, unit })}
+            totalSteps={7}
+            onNext={handleNextWrapper}
             onBack={onBack}
-            isNextDisabled={!isValid}
         >
-            <div className="flex flex-col items-center pt-8">
-
-                <div className="mb-6">
-                    <UnitToggle value={unit} onChange={setUnit} options={['kg', 'lbs']} />
-                </div>
-
-                {/* Huge Input Style Match Step 2 */}
-                <div className="relative mb-4 flex items-center justify-center">
-                    <input
-                        type="number"
-                        value={targetValue}
-                        onChange={(e) => setTargetValue(e.target.value)}
-                        placeholder="70"
-                        className="w-full min-w-[200px] border-none bg-transparent text-center font-['Sora'] text-[80px] font-bold leading-none tracking-tight text-white placeholder-[#2a2a2a] outline-none drop-shadow-xl"
-                        autoFocus
+            <div className="flex flex-col gap-3">
+                {injuriesList.map(item => (
+                    <CheckboxItem
+                        key={item}
+                        label={item}
+                        isSelected={selectedInjuries.includes(item)}
+                        onToggle={() => toggleInjury(item)}
                     />
-                    <span className="absolute -right-12 bottom-4 text-xl font-medium text-[#525252]">
-                        {unit}
-                    </span>
-                </div>
+                ))}
 
-                <div className="mt-8 flex items-center gap-2 rounded-lg bg-[#1a1a1a] px-4 py-3 text-sm text-[#8a8a8a]">
-                    <Target className="h-4 w-4 text-[#ff3b30]" />
-                    <span>We'll adjust your daily calories to reach this.</span>
+                {/* Other Input */}
+                <div className="mt-2">
+                    <input
+                        type="text"
+                        value={otherInjury}
+                        onChange={(e) => setOtherInjury(e.target.value)}
+                        placeholder="Other injuries (optional)"
+                        className="w-full h-14 rounded-xl bg-[#1a1a1a] px-4 font-['Inter'] text-[15px] text-white placeholder-[#525252] outline-none border border-transparent focus:border-[#ff3b30] transition-all"
+                    />
                 </div>
             </div>
         </OnboardingLayout>

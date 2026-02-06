@@ -1,88 +1,90 @@
-import { Dumbbell, Home, Users } from 'lucide-react';
 import OnboardingLayout from '../OnboardingLayout';
 import { useState } from 'react';
+import { Check } from 'lucide-react';
 
-const equipmentOptions = [
-    {
-        id: 'gym',
-        title: 'Full Gym',
-        desc: 'Access to machines, barbells, and weights.',
-        icon: Users // Placeholder icon
-    },
-    {
-        id: 'home_dumbbells',
-        title: 'Home (Dumbbells)',
-        desc: 'Limited setup with free weights.',
-        icon: Dumbbell
-    },
-    {
-        id: 'bodyweight',
-        title: 'Bodyweight Only',
-        desc: 'No equipment needed, just you.',
-        icon: Home
-    },
-];
+const CheckboxItem = ({ label, isSelected, onToggle }: { label: string, isSelected: boolean, onToggle: () => void }) => (
+    <button
+        onClick={onToggle}
+        className={`flex items-center justify-between w-full h-14 px-4 rounded-xl border transition-all duration-200
+            ${isSelected
+                ? 'bg-[#1a1a1a] border-[#ff3b30] shadow-[0_0_0_1px_#ff3b30] z-10'
+                : 'bg-[#1a1a1a] border-transparent hover:bg-[#242424]'
+            }
+        `}
+    >
+        <span className={`text-[15px] font-['Inter'] font-medium ${isSelected ? 'text-white' : 'text-[#8a8a8a]'}`}>
+            {label}
+        </span>
+        <div className={`h-5 w-5 rounded flex items-center justify-center transition-colors border
+             ${isSelected ? 'bg-[#ff3b30] border-[#ff3b30]' : 'border-[#404040]'}
+        `}>
+            {isSelected && <Check className="h-3 w-3 text-white" strokeWidth={3} />}
+        </div>
+    </button>
+);
 
-export default function Step8Equipment({
+const allergiesList = ['Nuts', 'Dairy', 'Eggs', 'Seafood', 'Gluten', 'None'];
+
+export default function Step7Allergies({
     onNext,
     onBack,
-    initialEquip = ''
-}: { onNext: (equip: string) => void, onBack: () => void, initialEquip?: string }) {
+    initialData = [] // Fix default value type
+}: { onNext: (data: any) => void, onBack: () => void, initialData?: string[] }) {
 
-    const [selectedEquip, setSelectedEquip] = useState(initialEquip);
+    const [selectedAllergies, setSelectedAllergies] = useState<string[]>(initialData || []);
+    const [otherAllergy, setOtherAllergy] = useState('');
+
+    const toggleAllergy = (item: string) => {
+        if (item === 'None') {
+            setSelectedAllergies(['None']);
+            return;
+        }
+
+        let newSel = selectedAllergies.includes('None') ? [] : [...selectedAllergies];
+
+        if (newSel.includes(item)) {
+            newSel = newSel.filter(i => i !== item);
+        } else {
+            newSel.push(item);
+        }
+        setSelectedAllergies(newSel);
+    };
+
+    const handleNextWrapper = () => {
+        const final = [...selectedAllergies];
+        if (otherAllergy.trim()) final.push(otherAllergy);
+        onNext(final);
+    }
 
     return (
         <OnboardingLayout
-            title="Available Equipment"
-            subtitle="What equipment do you have access to?"
-            currentStep={8}
-            totalSteps={8}
-            onNext={() => onNext(selectedEquip)}
+            title="Allergies"
+            subtitle="Select any food allergies."
+            currentStep={7}
+            totalSteps={7}
+            onNext={handleNextWrapper}
             onBack={onBack}
-            nextLabel="Finish Profile"
-            isNextDisabled={!selectedEquip}
+            nextLabel="Finish"
         >
-            <div className="flex flex-col gap-4">
-                {equipmentOptions.map((opt) => {
-                    const Icon = opt.icon;
-                    return (
-                        <button
-                            key={opt.id}
-                            onClick={() => setSelectedEquip(opt.id)}
-                            className={`group relative flex w-full items-center gap-5 rounded-2xl border p-5 text-left transition-all duration-300
-                  ${selectedEquip === opt.id
-                                    ? 'bg-[#ff3b30]/10 border-[#ff3b30] shadow-[0_0_20px_rgba(255,59,48,0.15)]'
-                                    : 'bg-[#1a1a1a] border-[#2a2a2a] hover:border-[#3a3a3a] hover:bg-[#242424]'
-                                }
-                `}
-                        >
-                            {/* Icon Box */}
-                            <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full transition-colors
-                  ${selectedEquip === opt.id ? 'bg-[#ff3b30] text-white' : 'bg-[#2a2a2a] text-[#525252] group-hover:bg-[#333]'}
-                `}>
-                                <Icon className="h-6 w-6" />
-                            </div>
+            <div className="flex flex-col gap-3">
+                {allergiesList.map(item => (
+                    <CheckboxItem
+                        key={item}
+                        label={item}
+                        isSelected={selectedAllergies.includes(item)}
+                        onToggle={() => toggleAllergy(item)}
+                    />
+                ))}
 
-                            <div>
-                                <h3 className={`font-['Sora'] text-base font-bold ${selectedEquip === opt.id ? 'text-white' : 'text-[#e5e5e5]'}`}>
-                                    {opt.title}
-                                </h3>
-                                <p className="font-['Inter'] text-sm text-[#8a8a8a]">
-                                    {opt.desc}
-                                </p>
-                            </div>
-
-                            {/* Radio Circle Indicator */}
-                            <div className={`ml-auto h-6 w-6 rounded-full border-2 flex items-center justify-center
-                   ${selectedEquip === opt.id ? 'border-[#ff3b30]' : 'border-[#3a3a3a]'}
-                `}>
-                                {selectedEquip === opt.id && (
-                                    <div className="h-3 w-3 rounded-full bg-[#ff3b30]" />
-                                )}
-                            </div>
-                        </button>
-                    );
-                })}
+                <div className="mt-2">
+                    <input
+                        type="text"
+                        value={otherAllergy}
+                        onChange={(e) => setOtherAllergy(e.target.value)}
+                        placeholder="Other allergies (optional)"
+                        className="w-full h-14 rounded-xl bg-[#1a1a1a] px-4 font-['Inter'] text-[15px] text-white placeholder-[#525252] outline-none border border-transparent focus:border-[#ff3b30] transition-all"
+                    />
+                </div>
             </div>
         </OnboardingLayout>
     );

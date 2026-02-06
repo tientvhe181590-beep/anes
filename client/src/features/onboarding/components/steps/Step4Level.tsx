@@ -1,26 +1,10 @@
-import { Zap } from 'lucide-react'; // Using general icon, can substitute with simpler SVG
-import OnboardingLayout from '../OnboardingLayout';
 import { useState } from 'react';
+import OnboardingLayout from '../OnboardingLayout';
 
 const levels = [
-    {
-        id: 'beginner',
-        title: 'Beginner',
-        desc: 'New to training or getting back into it.',
-        iconLevel: 1 // 1 lightning bolt
-    },
-    {
-        id: 'intermediate',
-        title: 'Intermediate',
-        desc: 'Trains consistently 2-3 times a week.',
-        iconLevel: 2 // 2 lightning bolts
-    },
-    {
-        id: 'advanced',
-        title: 'Advanced',
-        desc: 'Confident with heavy weights & high volume.',
-        iconLevel: 3 // 3 lightning bolts
-    },
+    { id: 'beginner', title: 'Beginner' },
+    { id: 'intermediate', title: 'Intermediate' },
+    { id: 'advanced', title: 'Advanced' },
 ];
 
 export default function Step4Level({
@@ -33,56 +17,36 @@ export default function Step4Level({
 
     return (
         <OnboardingLayout
-            title="Fitness Level"
-            subtitle="Select your current experience level to get the right starting difficulty."
+            title="Experience Level"
+            subtitle="Choose your training level."
             currentStep={4}
-            totalSteps={8}
+            totalSteps={7}
             onNext={() => onNext(selectedLevel)}
             onBack={onBack}
             isNextDisabled={!selectedLevel}
         >
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-3">
                 {levels.map((level) => (
                     <button
                         key={level.id}
                         onClick={() => setSelectedLevel(level.id)}
-                        className={`relative flex w-full items-start gap-4 rounded-2xl border p-5 text-left transition-all duration-300
+                        className={`flex w-full items-center justify-between rounded-xl border px-6 py-5 text-left transition-all duration-200
               ${selectedLevel === level.id
-                                ? 'bg-[#ff3b30]/10 border-[#ff3b30] shadow-[0_0_20px_rgba(255,59,48,0.15)]'
-                                : 'bg-[#1a1a1a] border-[#2a2a2a] hover:border-[#3a3a3a] hover:bg-[#242424]'
+                                ? 'bg-[#1a1a1a] border-[#ff3b30] shadow-[0_0_0_1px_#ff3b30] text-white'
+                                : 'bg-[#1a1a1a] border-transparent text-[#8a8a8a] hover:bg-[#242424]'
                             }
             `}
                     >
-                        {/* Icon Area */}
-                        <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full
-               ${selectedLevel === level.id ? 'bg-[#ff3b30] text-white' : 'bg-[#2a2a2a] text-[#525252]'}
+                        <span className="font-['Sora'] text-base font-semibold">
+                            {level.title}
+                        </span>
+
+                        {/* Radio circle */}
+                        <div className={`h-5 w-5 rounded-full border flex items-center justify-center
+                ${selectedLevel === level.id ? 'border-[#ff3b30]' : 'border-[#3a3a3a]'}
              `}>
-                            <div className="flex gap-0.5">
-                                {Array.from({ length: 3 }).map((_, i) => (
-                                    <Zap
-                                        key={i}
-                                        className={`w-3 h-3 ${i < level.iconLevel ? 'opacity-100' : 'opacity-20'}`}
-                                        fill="currentColor"
-                                    />
-                                ))}
-                            </div>
+                            {selectedLevel === level.id && <div className="h-2.5 w-2.5 bg-[#ff3b30] rounded-full" />}
                         </div>
-
-                        {/* Text Area */}
-                        <div>
-                            <h3 className={`font-['Sora'] text-base font-bold ${selectedLevel === level.id ? 'text-white' : 'text-[#e5e5e5]'}`}>
-                                {level.title}
-                            </h3>
-                            <p className="mt-1 font-['Inter'] text-sm leading-relaxed text-[#8a8a8a]">
-                                {level.desc}
-                            </p>
-                        </div>
-
-                        {/* Active Border Glow (Internal) */}
-                        {selectedLevel === level.id && (
-                            <div className="pointer-events-none absolute inset-0 rounded-2xl border-2 border-[#ff3b30] opacity-100" />
-                        )}
-
                     </button>
                 ))}
             </div>

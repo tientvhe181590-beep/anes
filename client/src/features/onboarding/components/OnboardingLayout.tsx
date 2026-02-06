@@ -2,106 +2,92 @@ import { ArrowLeft } from 'lucide-react';
 import { ReactNode } from 'react';
 
 interface OnboardingLayoutProps {
-    children: ReactNode;
-    title: string;
-    subtitle: string;
-    currentStep: number;
-    totalSteps: number;
-    onNext: () => void;
-    onBack?: () => void;
-    nextLabel?: string;
-    isNextDisabled?: boolean;
-    showSkip?: boolean; // For optional steps?
+  children: ReactNode;
+  title: string;
+  subtitle: string;
+  currentStep: number;
+  totalSteps: number;
+  onNext: () => void;
+  onBack?: () => void;
+  nextLabel?: string;
+  isNextDisabled?: boolean;
 }
 
 export default function OnboardingLayout({
-    children,
-    title,
-    subtitle,
-    currentStep,
-    totalSteps,
-    onNext,
-    onBack,
-    nextLabel = 'Continue',
-    isNextDisabled = false,
+  children,
+  title,
+  subtitle,
+  currentStep,
+  totalSteps,
+  onNext,
+  onBack,
+  nextLabel = 'Next',
+  isNextDisabled = false,
 }: OnboardingLayoutProps) {
-    const progressPercentage = (currentStep / totalSteps) * 100;
 
-    return (
-        <div className="flex min-h-screen w-full flex-col bg-[#0c0c0c] text-white font-sans selection:bg-[#ff3b30] selection:text-white">
-            {/* Background Ambient Effect */}
-            <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_50%_0%,#1f1f1f_0%,#0c0c0c_70%)] opacity-80" />
+  return (
+    <div className="flex min-h-screen w-full flex-col bg-[#0c0c0c] text-white font-sans sm:items-center sm:justify-center">
+      {/* Mobile Container (Safe Area) */}
+      <div className="flex min-h-screen w-full max-w-[430px] flex-col overflow-hidden bg-[#0c0c0c] sm:h-[844px] sm:min-h-0 sm:border sm:border-[#2a2a2a] sm:rounded-[32px]">
 
-            {/* Top Bar / Navigation */}
-            <div className="relative z-10 flex h-16 w-full items-center justify-between px-6 pt-2">
-                {onBack ? (
-                    <button
-                        onClick={onBack}
-                        className="flex h-10 w-10 items-center justify-center rounded-full text-[#8a8a8a] transition-all hover:bg-white/5 hover:text-white"
-                    >
-                        <ArrowLeft className="h-5 w-5" />
-                    </button>
-                ) : (
-                    <div className="w-10" /> // Spacer
-                )}
+        {/* Header Section */}
+        <div className="flex-none px-6 pt-12 pb-2">
 
-                {/* Step Indicator (Optional, if we want centered 'Step 1 of 8') */}
-                {/* <span className="text-xs font-semibold uppercase tracking-wider text-[#ff3b30]">Step {currentStep} of {totalSteps}</span> */}
-                <div className="w-10" /> // Spacer
+          {/* Step Indicator */}
+          <div className="mb-6">
+            <span className="text-[13px] font-bold text-[#ff3b30]">Step {currentStep} of {totalSteps}</span>
+            <div className="mt-3 flex gap-1.5 h-1 w-full opacity-80">
+              {Array.from({ length: totalSteps }).map((_, idx) => (
+                <div
+                  key={idx}
+                  className={`h-full flex-1 rounded-full transition-all duration-300 ${idx + 1 <= currentStep ? 'bg-[#ff3b30]' : 'bg-[#2a2a2a]'
+                    }`}
+                />
+              ))}
             </div>
+          </div>
 
-            {/* Main Content */}
-            <div className="relative z-10 flex flex-1 flex-col px-6 pb-10 pt-2">
-
-                {/* Progress Bar Section */}
-                <div className="mb-8 w-full">
-                    <div className="mb-4 flex items-center justify-between">
-                        <span className="text-sm font-semibold text-[#ff3b30]">Step {currentStep} of {totalSteps}</span>
-                    </div>
-
-                    {/* Segmented Progress Bar */}
-                    <div className="flex gap-1.5 h-1.5 w-full">
-                        {Array.from({ length: totalSteps }).map((_, idx) => (
-                            <div
-                                key={idx}
-                                className={`h-full flex-1 rounded-full transition-all duration-500 ${idx + 1 <= currentStep ? 'bg-[#ff3b30]' : 'bg-[#2a2a2a]'
-                                    }`}
-                            />
-                        ))}
-                    </div>
-                </div>
-
-                {/* Text Header */}
-                <div className="mb-8 text-center sm:text-left">
-                    <h1 className="mb-3 font-['Sora'] text-2xl font-bold tracking-tight text-white sm:text-3xl">
-                        {title}
-                    </h1>
-                    <p className="font-['Inter'] text-[15px] font-medium leading-relaxed text-[#8a8a8a]">
-                        {subtitle}
-                    </p>
-                </div>
-
-                {/* Content / Form Area */}
-                <div className="flex-1">
-                    {children}
-                </div>
-
-                {/* Bottom Actions */}
-                <div className="mt-8">
-                    <button
-                        onClick={onNext}
-                        disabled={isNextDisabled}
-                        className={`group relative flex h-14 w-full items-center justify-center overflow-hidden rounded-xl bg-[#ff3b30] font-['Inter'] text-[16px] font-semibold text-white shadow-[0_4px_20px_rgba(255,59,48,0.25)] transition-all
-                ${isNextDisabled
-                                ? 'bg-[#2a2a2a] text-[#525252] shadow-none cursor-not-allowed'
-                                : 'hover:shadow-[0_4px_25px_rgba(255,59,48,0.4)] hover:scale-[1.02] active:scale-[0.98]'
-                            }`}
-                    >
-                        <span className="relative z-10">{nextLabel}</span>
-                    </button>
-                </div>
-
-            </div>
+          <h1 className="font-['Sora'] text-[32px] font-bold leading-tight tracking-tight text-white mb-2">
+            {title}
+          </h1>
+          <p className="font-['Inter'] text-[15px] font-normal text-[#8a8a8a] leading-relaxed">
+            {subtitle}
+          </p>
         </div>
-    );
+
+        {/* Scrollable Content Area */}
+        <div className="flex-1 overflow-y-auto px-6 py-6 scrollbar-hide">
+          {children}
+        </div>
+
+        {/* Bottom Sticky Action Area */}
+        <div className="flex-none bg-gradient-to-t from-[#0c0c0c] via-[#0c0c0c] to-transparent p-6 pt-8">
+          <div className="flex gap-4">
+            {onBack && (
+              <button
+                onClick={onBack}
+                className="flex h-14 w-14 items-center justify-center rounded-xl bg-[#1a1a1a] text-white transition-transform active:scale-95 hover:bg-[#2a2a2a]"
+              >
+                <ArrowLeft size={24} />
+              </button>
+            )}
+
+            <button
+              onClick={onNext}
+              disabled={isNextDisabled}
+              className={`h-14 flex-1 rounded-xl font-['Inter'] text-[16px] font-bold transition-all active:scale-[0.98]
+                 ${isNextDisabled
+                  ? 'bg-[#2a2a2a] text-[#525252] cursor-not-allowed'
+                  : 'bg-[#ff3b30] text-white shadow-[0_4px_20px_rgba(255,59,48,0.25)] hover:shadow-[0_4px_25px_rgba(255,59,48,0.4)]'
+                }
+               `}
+            >
+              {nextLabel}
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  );
 }

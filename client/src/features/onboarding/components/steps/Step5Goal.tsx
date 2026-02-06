@@ -1,4 +1,4 @@
-import { TrendingDown, TrendingUp, Heart, BicepsFlexed } from 'lucide-react';
+import { TrendingDown, Minus, TrendingUp } from 'lucide-react';
 import OnboardingLayout from '../OnboardingLayout';
 import { useState } from 'react';
 
@@ -6,78 +6,88 @@ const goals = [
     {
         id: 'lose_weight',
         title: 'Lose Weight',
-        desc: 'Burn fat and get lean.',
         icon: TrendingDown
     },
     {
+        id: 'maintain',
+        title: 'Maintain',
+        icon: Minus
+    },
+    {
         id: 'gain_muscle',
-        title: 'Build Muscle',
-        desc: 'Increase mass and strength.',
+        title: 'Gain Muscle',
         icon: TrendingUp
-    },
-    {
-        id: 'keep_fit',
-        title: 'Keep Fit',
-        desc: 'Maintain current physique.',
-        icon: Heart
-    },
-    {
-        id: 'get_stronger',
-        title: 'Get Stronger',
-        desc: 'Focus on power and PRs.',
-        icon: BicepsFlexed
     },
 ];
 
-export default function Step5Goal({
+export default function Step3Goal({
     onNext,
     onBack,
-    initialGoal = ''
-}: { onNext: (goal: string) => void, onBack: () => void, initialGoal?: string }) {
+    initialGoal = '',
+    initialTargetWeight = '70'
+}: { onNext: (data: any) => void, onBack: () => void, initialGoal?: string, initialTargetWeight?: string }) {
 
     const [selectedGoal, setSelectedGoal] = useState(initialGoal);
+    const [targetWeight, setTargetWeight] = useState(initialTargetWeight);
+
+    const showTargetInput = selectedGoal === 'lose_weight' || selectedGoal === 'maintain';
 
     return (
         <OnboardingLayout
-            title="What's your main goal?"
-            subtitle="We'll focus your plans around this target."
-            currentStep={5}
-            totalSteps={8}
-            onNext={() => onNext(selectedGoal)}
+            title="Fitness Goal"
+            subtitle="Choose your main objective."
+            currentStep={3}
+            totalSteps={7}
+            onNext={() => onNext({ goal: selectedGoal, targetWeight: showTargetInput ? targetWeight : null })}
             onBack={onBack}
-            isNextDisabled={!selectedGoal}
+            isNextDisabled={!selectedGoal || (showTargetInput && !targetWeight)}
         >
-            <div className="grid grid-cols-2 gap-4">
+            <div className="flex flex-col gap-4">
+
+                {/* Goal Cards */}
                 {goals.map((goal) => {
                     const Icon = goal.icon;
                     return (
                         <button
                             key={goal.id}
                             onClick={() => setSelectedGoal(goal.id)}
-                            className={`relative flex min-h-[160px] flex-col items-center justify-center gap-4 rounded-3xl border border-[#2a2a2a] p-4 text-center transition-all duration-300
+                            className={`relative flex items-center gap-4 rounded-xl border p-4 text-left transition-all duration-200
                 ${selectedGoal === goal.id
-                                    ? 'bg-[#1a1a1a] shadow-[0_0_0_2px_#ff3b30] scale-[1.02] z-10'
-                                    : 'bg-[#1a1a1a]/50 hover:bg-[#242424]'
+                                    ? 'bg-[#1a1a1a] border-[#ff3b30] shadow-[0_0_0_1px_#ff3b30]'
+                                    : 'bg-[#1a1a1a] border-transparent hover:bg-[#242424]'
                                 }
                 `}
                         >
-                            <div className={`flex h-14 w-14 items-center justify-center rounded-full
-                ${selectedGoal === goal.id ? 'bg-[#ff3b30] text-white' : 'bg-[#2a2a2a] text-[#525252]'}
+                            <div className={`flex h-10 w-10 items-center justify-center rounded-full
+                ${selectedGoal === goal.id ? 'bg-[#ff3b30] text-white' : 'bg-[#2a2a2a] text-[#8a8a8a]'}
                 `}>
-                                <Icon className="h-7 w-7" />
+                                <Icon className="h-5 w-5" />
                             </div>
 
-                            <div>
-                                <h3 className={`font-['Sora'] text-sm font-bold ${selectedGoal === goal.id ? 'text-white' : 'text-[#e5e5e5]'}`}>
-                                    {goal.title}
-                                </h3>
-                                <p className="mt-1 font-['Inter'] text-xs text-[#8a8a8a]">
-                                    {goal.desc}
-                                </p>
-                            </div>
+                            <span className={`font-['Sora'] text-[15px] font-semibold ${selectedGoal === goal.id ? 'text-white' : 'text-[#d4d4d4]'}`}>
+                                {goal.title}
+                            </span>
                         </button>
                     );
                 })}
+
+                {/* Dynamic Target Weight Input */}
+                {showTargetInput && (
+                    <div className="mt-6 animate-in fade-in slide-in-from-top-4 duration-300">
+                        <label className="text-[11px] font-bold uppercase tracking-[0.1em] text-[#8a8a8a] mb-3 block">Target Weight (kg)</label>
+                        <div className="flex h-16 w-full items-center rounded-xl bg-[#1a1a1a] px-6 border border-[#2a2a2a] focus-within:border-[#ff3b30]">
+                            <input
+                                type="number"
+                                value={targetWeight}
+                                onChange={(e) => setTargetWeight(e.target.value)}
+                                placeholder="0"
+                                className="h-full w-full bg-transparent font-['Sora'] text-2xl font-bold text-white outline-none placeholder-[#3a3a3a]"
+                            />
+                            <span className="text-[#525252] font-semibold">kg</span>
+                        </div>
+                    </div>
+                )}
+
             </div>
         </OnboardingLayout>
     );
