@@ -1,0 +1,24 @@
+spring:
+  # H2 in-memory database (MySQL compatibility mode)
+  datasource:
+    url: jdbc:h2:mem:anesdb;MODE=MYSQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+  # H2 Console (http://localhost:8080/h2-console)
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+  jpa:
+    show-sql: true
+
+  # CORS is configured in SecurityConfig.java (not via spring.web.cors)
+
+# Dev logging
+logging:
+  level:
+    "[com.anes]": DEBUG
+    "[org.springframework.security]": DEBUG

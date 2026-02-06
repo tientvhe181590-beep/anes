@@ -1,0 +1,54 @@
+# ===== Node =====
+node_modules/
+.pnpm-store/
+dist/
+build/
+*.tsbuildinfo
+.vite/
+
+# ===== Java / Maven =====
+target/
+*.jar
+*.war
+*.class
+*.log
+.mvn/wrapper/maven-wrapper.jar
+
+# ===== Environment =====
+.env
+.env.local
+.env.*.local
+server/src/main/resources/application-local.yml
+
+# ===== IDE =====
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+*.swp
+*.swo
+*~
+
+# ===== OS =====
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ===== Testing =====
+coverage/
+test-results/
+playwright-report/
+blob-report/
+
+# ===== PWA Build =====
+dev-dist/
+sw.js
+workbox-*.js
+
+# ===== Misc =====
+*.bak
+*.tmp
+*.temp
