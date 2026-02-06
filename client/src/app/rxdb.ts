@@ -19,7 +19,6 @@ import {
   recipesSchema,
   recipeIngredientsSchema,
   userDailyNutritionSchema,
-  chatLogsSchema,
 } from './schemas';
 
 import type {
@@ -39,7 +38,6 @@ import type {
   Recipe,
   RecipeIngredient,
   UserDailyNutrition,
-  ChatLog,
 } from './schemas';
 
 /**
@@ -62,12 +60,17 @@ export type AnesCollections = {
   recipes: RxCollection<Recipe>;
   recipe_ingredients: RxCollection<RecipeIngredient>;
   user_daily_nutrition: RxCollection<UserDailyNutrition>;
-  chat_logs: RxCollection<ChatLog>;
 };
 
 export type AnesDatabase = RxDatabase<AnesCollections>;
 
-let dbPromise: Promise<AnesDatabase> | null = null;
+type GlobalRxDbCache = {
+  __anes_rxdb_promise__?: Promise<AnesDatabase> | null;
+};
+
+const globalCache = globalThis as GlobalRxDbCache;
+
+let dbPromise: Promise<AnesDatabase> | null = globalCache.__anes_rxdb_promise__ ?? null;
 
 /**
  * Initialize or return the singleton RxDB database.
@@ -82,28 +85,32 @@ export async function getDatabase(): Promise<AnesDatabase> {
     multiInstance: true,
     eventReduce: true,
   }).then(async (db) => {
-    await db.addCollections({
-      users: { schema: userSchema },
-      user_physical_stats: { schema: userPhysicalStatsSchema },
-      user_preferences: { schema: userPreferencesSchema },
-      health_conditions: { schema: healthConditionsSchema },
-      user_health_constraints: { schema: userHealthConstraintsSchema },
-      workout_programs: { schema: workoutProgramsSchema },
-      workout_templates: { schema: workoutTemplatesSchema },
-      exercises: { schema: exercisesSchema },
-      workout_template_exercises: { schema: workoutTemplateExercisesSchema },
-      user_workout_schedule: { schema: userWorkoutScheduleSchema },
-      workout_session_exercises: { schema: workoutSessionExercisesSchema },
-      workout_session_sets: { schema: workoutSessionSetsSchema },
-      ingredients: { schema: ingredientsSchema },
-      recipes: { schema: recipesSchema },
-      recipe_ingredients: { schema: recipeIngredientsSchema },
-      user_daily_nutrition: { schema: userDailyNutritionSchema },
-      chat_logs: { schema: chatLogsSchema },
-    });
+    const hasCollections = Object.keys(db.collections).length > 0;
+    if (!hasCollections) {
+      await db.addCollections({
+        users: { schema: userSchema },
+        user_physical_stats: { schema: userPhysicalStatsSchema },
+        user_preferences: { schema: userPreferencesSchema },
+        health_conditions: { schema: healthConditionsSchema },
+        user_health_constraints: { schema: userHealthConstraintsSchema },
+        workout_programs: { schema: workoutProgramsSchema },
+        workout_templates: { schema: workoutTemplatesSchema },
+        exercises: { schema: exercisesSchema },
+        workout_template_exercises: { schema: workoutTemplateExercisesSchema },
+        user_workout_schedule: { schema: userWorkoutScheduleSchema },
+        workout_session_exercises: { schema: workoutSessionExercisesSchema },
+        workout_session_sets: { schema: workoutSessionSetsSchema },
+        ingredients: { schema: ingredientsSchema },
+        recipes: { schema: recipesSchema },
+        recipe_ingredients: { schema: recipeIngredientsSchema },
+        user_daily_nutrition: { schema: userDailyNutritionSchema },
+      });
+    }
 
     return db;
   });
+
+  globalCache.__anes_rxdb_promise__ = dbPromise;
 
   return dbPromise;
 }
