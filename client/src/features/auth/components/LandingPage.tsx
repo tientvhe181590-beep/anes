@@ -14,13 +14,16 @@ export default function LandingPage() {
   } = useLandingLogic();
 
   return (
-    <div className="flex min-h-screen w-full flex-col bg-[#0c0c0c] text-white font-sans">
+    <div className="flex min-h-screen w-full flex-col bg-[#0c0c0c] text-white font-sans selection:bg-[#ff3b30] selection:text-white">
+      {/* Background Ambient Effect */}
+      <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_50%_0%,#1f1f1f_0%,#0c0c0c_70%)] opacity-80" />
+
       {/* Top Bar */}
-      <div className="flex h-14 w-full items-center justify-end px-6 pt-6">
+      <div className="relative z-10 flex h-16 w-full items-center justify-end px-6 pt-2">
         {!isLastSlide && (
           <button
             onClick={handleSkip}
-            className="font-medium text-[#8a8a8a] hover:text-white transition-colors"
+            className="rounded-full px-4 py-2 text-sm font-medium text-[#8a8a8a] transition-all hover:bg-white/5 hover:text-white"
           >
             Skip
           </button>
@@ -28,69 +31,76 @@ export default function LandingPage() {
       </div>
 
       {/* Main Content */}
-      <div className="flex flex-1 flex-col items-center justify-between pb-8">
+      <div className="relative z-10 flex flex-1 flex-col justify-between pb-10">
 
         {/* Top/Hero Area */}
-        <div className="w-full px-4">
+        <div className="flex w-full flex-1 items-center justify-center px-6 py-8">
           <div
-            className={`w-full h-[380px] rounded-b-xl rounded-t-none ${currentSlide.imagePlaceholderColor} flex items-center justify-center opacity-80`}
+            className={`relative flex aspect-[4/5] w-full max-w-[340px] items-center justify-center overflow-hidden rounded-3xl ${currentSlide.imagePlaceholderColor}/20 ring-1 ring-white/10 backdrop-blur-3xl transition-all duration-500`}
           >
-            {/* Placeholder for Hero Illustration */}
-            <Dumbbell className="h-24 w-24 text-white/20" />
+            {/* Abstract Gradient Glow */}
+            <div className={`absolute inset-0 bg-gradient-to-br ${currentSlide.imagePlaceholderColor} opacity-30 mix-blend-screen bg-blend-overlay`} />
+
+            {/* Icon */}
+            <div className="relative z-10 flex h-24 w-24 items-center justify-center rounded-full bg-white/5 backdrop-blur-md ring-1 ring-white/20 shadow-2xl">
+              <Dumbbell className="h-10 w-10 text-white/90 drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]" />
+            </div>
           </div>
         </div>
 
         {/* Text Content */}
-        <div className="flex w-full flex-col items-center px-10 pt-10 text-center">
-          <h1 className="font-['Sora'] text-[28px] font-bold leading-tight tracking-tight text-white mb-4">
+        <div className="flex w-full flex-col items-center px-8 text-center">
+          <h1 className="mb-3 font-['Sora'] text-3xl font-bold tracking-tight text-white drop-shadow-sm sm:text-4xl">
             {currentSlide.title}
           </h1>
-          <p className="max-w-[300px] font-['Inter'] text-[15px] font-normal leading-relaxed text-[#8a8a8a]">
+          <p className="max-w-[320px] font-['Inter'] text-[15px] font-medium leading-relaxed text-[#8a8a8a] sm:text-base">
             {currentSlide.body}
           </p>
         </div>
 
         {/* Bottom Actions */}
-        <div className="flex w-full flex-col items-center gap-6 px-8 pb-8 pt-6">
+        <div className="flex w-full flex-col items-center gap-8 px-6 pt-8">
 
           {/* Pagination Dots */}
-          <div className="flex gap-2 mb-2">
+          <div className="flex items-center gap-3">
             {slides.map((s, idx) => (
               <div
                 key={s.id}
-                className={`h-2 rounded-full transition-all duration-300 ${idx === currentSlideIndex
-                    ? 'w-[10px] h-[10px] bg-[#ff3b30]'
-                    : 'w-2 h-2 bg-[#8a8a8a]'
+                className={`h-1.5 rounded-full transition-all duration-500 ease-out ${idx === currentSlideIndex
+                    ? 'w-8 bg-[#ff3b30] shadow-[0_0_10px_rgba(255,59,48,0.5)]'
+                    : 'w-1.5 bg-[#2a2a2a]'
                   }`}
               />
             ))}
           </div>
 
-          {!isLastSlide ? (
-            /* Next Button (Slide 1 & 2) */
-            <button
-              onClick={handleNext}
-              className="flex h-14 w-full items-center justify-center rounded-md bg-[#ff3b30] font-['Inter'] text-base font-semibold text-white transition-transform active:scale-95"
-            >
-              Next
-            </button>
-          ) : (
-            /* Login / Sign Up Buttons (Slide 3) */
-            <div className="flex w-full flex-col gap-4">
+          <div className="w-full max-w-sm">
+            {!isLastSlide ? (
+              /* Next Button */
               <button
-                onClick={handleLogin}
-                className="flex h-14 w-full items-center justify-center rounded-md bg-[#ff3b30] font-['Inter'] text-base font-semibold text-white transition-transform active:scale-95"
+                onClick={handleNext}
+                className="group relative flex h-14 w-full items-center justify-center overflow-hidden rounded-xl bg-[#ff3b30] font-['Inter'] text-[16px] font-semibold text-white shadow-[0_4px_20px_rgba(255,59,48,0.25)] transition-all hover:shadow-[0_4px_25px_rgba(255,59,48,0.4)] hover:scale-[1.02] active:scale-[0.98]"
               >
-                Login
+                <span className="relative z-10">Next</span>
               </button>
-              <button
-                onClick={handleSignUp}
-                className="flex h-14 w-full items-center justify-center rounded-md border border-[#ff3b30] bg-[#0c0c0c] font-['Inter'] text-base font-semibold text-[#ff3b30] transition-transform active:scale-95"
-              >
-                Sign Up
-              </button>
-            </div>
-          )}
+            ) : (
+              /* Login / Sign Up Buttons */
+              <div className="flex w-full flex-col gap-3">
+                <button
+                  onClick={handleLogin}
+                  className="group relative flex h-14 w-full items-center justify-center overflow-hidden rounded-xl bg-[#ff3b30] font-['Inter'] text-[16px] font-semibold text-white shadow-[0_4px_20px_rgba(255,59,48,0.25)] transition-all hover:shadow-[0_4px_25px_rgba(255,59,48,0.4)] hover:scale-[1.02] active:scale-[0.98]"
+                >
+                  Login
+                </button>
+                <button
+                  onClick={handleSignUp}
+                  className="item-center flex h-14 w-full justify-center rounded-xl border border-[#2a2a2a] bg-[#0c0c0c] font-['Inter'] text-[16px] font-semibold text-white hover:bg-[#1a1a1a] hover:border-white/10 transition-all active:scale-[0.98]"
+                >
+                  Sign Up
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
