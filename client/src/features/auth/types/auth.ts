@@ -13,7 +13,7 @@ export interface LoginCredentials {
 export interface RegisterCredentials {
   email: string;
   password: string;
-  fullName: string;
+  fullName?: string;
 }
 
 /** Authenticated user info returned from backend */
@@ -36,6 +36,7 @@ export interface AuthResponse {
 export interface AuthFormErrors {
   email?: string;
   password?: string;
+  confirmPassword?: string;
   fullName?: string;
   general?: string;
 }
