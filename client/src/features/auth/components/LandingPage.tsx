@@ -1,21 +1,71 @@
+import { useNavigate } from 'react-router-dom';
+import { Sparkles } from 'lucide-react';
+
 /**
- * Landing Page — Entry screen for unauthenticated users.
- * SRS 3.1.1.1 — Intro Carousel with CTA to Login/Register.
- * This is a stub component to be implemented per the screen plan.
+ * LandingPage — Onboarding/welcome screen with centered card layout.
+ * Dark modern theme matching Login screen style.
+ * SRS 3.1.1.1 — AI-Powered Workouts onboarding screen.
+ *
+ * Design: Full-screen dark background with centered card, compact spacing,
+ * matching AuthLayout visual style (rounded corners, border, surface color).
  */
 export default function LandingPage() {
+  const navigate = useNavigate();
+
+  const handleGetStarted = () => {
+    navigate('/login');
+  };
+
+  const handleSkip = () => {
+    navigate('/login');
+  };
+
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-indigo-50 to-white px-4">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold tracking-tight text-indigo-600">ANES</h1>
-        <p className="mt-2 text-lg text-gray-600">AI-driven Nutrition & Exercise System</p>
-        <p className="mt-6 text-sm text-gray-400">Project skeleton initialized successfully.</p>
-        <div className="mt-8 flex justify-center gap-4">
-          <button className="rounded-lg bg-indigo-600 px-6 py-3 font-medium text-white shadow-sm transition-colors hover:bg-indigo-700">
+    <div className="flex min-h-screen items-center justify-center bg-(--bg) px-4 py-8">
+      <div className="w-full max-w-md">
+        {/* Logo & Brand */}
+        <div className="mb-8 text-center">
+          <h1 className="text-3xl font-bold tracking-tight text-(--accent)">ANES</h1>
+          <p className="mt-1 text-sm text-(--text-secondary)">
+            AI-driven Nutrition & Exercise System
+          </p>
+        </div>
+
+        {/* Main Card */}
+        <div className="rounded-2xl border border-(--border) bg-(--surface) p-8">
+          {/* Icon / Visual */}
+          <div className="mb-6 flex justify-center">
+            <div className="rounded-full bg-(--accent)/10 p-4">
+              <Sparkles className="h-8 w-8 text-(--accent)" />
+            </div>
+          </div>
+
+          {/* Title */}
+          <div className="mb-6 text-center">
+            <h2 className="text-xl font-semibold text-(--text-primary)">
+              AI-Powered Workouts
+            </h2>
+          </div>
+
+          {/* Subtitle / Description */}
+          <p className="mb-8 text-center text-sm leading-relaxed text-(--text-secondary)">
+            Get personalized fitness plans, smart nutrition guidance, and easy progress tracking—all powered by AI.
+          </p>
+
+          {/* Primary CTA */}
+          <button
+            onClick={handleGetStarted}
+            className="mb-4 flex h-12 w-full items-center justify-center rounded-lg bg-(--accent) font-semibold text-white transition-transform active:scale-95"
+          >
             Get Started
           </button>
-          <button className="rounded-lg border border-gray-300 px-6 py-3 font-medium text-gray-700 transition-colors hover:bg-gray-50">
-            Sign In
+
+          {/* Skip Link */}
+          <button
+            onClick={handleSkip}
+            className="flex h-10 w-full items-center justify-center rounded-lg text-sm font-medium text-(--text-secondary) transition-colors hover:text-(--text-primary)"
+          >
+            Skip For Now
           </button>
         </div>
       </div>
