@@ -4,6 +4,7 @@ import { lazy } from 'react';
 // Lazy-loaded feature routes
 const LandingPage = lazy(() => import('@/features/auth/components/LandingPage'));
 const LoginPage = lazy(() => import('@/features/auth/components/LoginPage'));
+const DashboardScreen = lazy(() => import('@/features/dashboard/DashboardScreen'));
 
 /**
  * Application router configuration.
@@ -17,6 +18,10 @@ export const router = createBrowserRouter([
   {
     path: '/login',
     Component: LoginPage,
+  },
+  {
+    path: '/dashboard',
+    Component: DashboardScreen,
   },
   // { path: '/register', Component: lazy(() => import('@/features/auth/components/RegisterForm')) },
   //
