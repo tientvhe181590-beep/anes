@@ -1,0 +1,9 @@
+export { default as Step1Identity } from './steps/Step1Identity';
+export { default as Step2Age } from './steps/Step2Age';
+export { default as Step3Physique } from './steps/Step3Physique';
+export { default as Step4Level } from './steps/Step4Level';
+export { default as Step5Goal } from './steps/Step5Goal';
+export { default as Step6Target } from './steps/Step6Target';
+export { default as Step7Schedule } from './steps/Step7Schedule';
+export { default as Step8Equipment } from './steps/Step8Equipment';
+export { default as OnboardingLayout } from './OnboardingLayout';
