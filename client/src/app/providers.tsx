@@ -24,31 +24,12 @@ export function Providers({ children }: ProvidersProps) {
       });
   }, []);
 
+  // Allow app to render even if RxDB fails (landing screen doesn't need it)
+  // Database context will be null, features requiring DB will handle gracefully
   if (error) {
-    return (
-      <div className="flex min-h-screen items-center justify-center p-4">
-        <div className="text-center">
-          <h1 className="text-xl font-bold text-red-600">Database Error</h1>
-          <p className="mt-2 text-gray-600">{error.message}</p>
-          <button
-            className="mt-4 rounded bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700"
-            onClick={() => window.location.reload()}
-          >
-            Retry
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  if (!db) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="text-center">
-          <div className="mx-auto h-8 w-8 animate-spin rounded-full border-4 border-indigo-600 border-t-transparent" />
-          <p className="mt-4 text-gray-500">Initializing ANES...</p>
-        </div>
-      </div>
+    console.warn(
+      '[RxDB] Database initialization failed, app will run without persistent storage:',
+      error.message,
     );
   }
 

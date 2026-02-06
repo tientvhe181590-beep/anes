@@ -42,14 +42,13 @@ export default function LandingPage() {
 
           {/* Title */}
           <div className="mb-6 text-center">
-            <h2 className="text-xl font-semibold text-(--text-primary)">
-              AI-Powered Workouts
-            </h2>
+            <h2 className="text-xl font-semibold text-(--text-primary)">AI-Powered Workouts</h2>
           </div>
 
           {/* Subtitle / Description */}
           <p className="mb-8 text-center text-sm leading-relaxed text-(--text-secondary)">
-            Get personalized fitness plans, smart nutrition guidance, and easy progress tracking—all powered by AI.
+            Get personalized fitness plans, smart nutrition guidance, and easy progress tracking—all
+            powered by AI.
           </p>
 
           {/* Primary CTA */}
