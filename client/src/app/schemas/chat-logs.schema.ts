@@ -17,12 +17,12 @@ export const chatLogsSchema: RxJsonSchema<ChatLog> = {
   properties: {
     id: { type: 'string', maxLength: 36 },
     userId: { type: 'string', maxLength: 36 },
-    timestamp: { type: 'string', format: 'date-time' },
+    timestamp: { type: 'string', format: 'date-time', maxLength: 30 },
     messageContent: { type: 'string' },
     sender: { type: 'string', enum: ['User', 'AI'] },
-    updatedAt: { type: 'string', format: 'date-time' },
+    updatedAt: { type: 'string', format: 'date-time', maxLength: 30 },
     deleted: { type: 'boolean', default: false },
   },
-  required: ['id', 'userId', 'messageContent', 'sender', 'updatedAt', 'deleted'],
+  required: ['id', 'userId', 'timestamp', 'messageContent', 'sender', 'updatedAt', 'deleted'],
   indexes: ['userId', ['userId', 'timestamp'], 'updatedAt'],
 };

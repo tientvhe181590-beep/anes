@@ -30,7 +30,7 @@ export const userPhysicalStatsSchema: RxJsonSchema<UserPhysicalStats> = {
     recordedAt: { type: ['string', 'null'], format: 'date' },
     healthData: { type: ['object', 'null'] },
     createdAt: { type: 'string', format: 'date-time' },
-    updatedAt: { type: 'string', format: 'date-time' },
+    updatedAt: { type: 'string', format: 'date-time', maxLength: 30 },
     deleted: { type: 'boolean', default: false },
   },
   required: ['id', 'userId', 'updatedAt', 'deleted'],

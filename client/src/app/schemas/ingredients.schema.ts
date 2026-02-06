@@ -22,7 +22,7 @@ export const ingredientsSchema: RxJsonSchema<Ingredient> = {
     proteinPer100g: { type: ['number', 'null'] },
     carbsPer100g: { type: ['number', 'null'] },
     fatPer100g: { type: ['number', 'null'] },
-    updatedAt: { type: 'string', format: 'date-time' },
+    updatedAt: { type: 'string', format: 'date-time', maxLength: 30 },
     deleted: { type: 'boolean', default: false },
   },
   required: ['id', 'name', 'updatedAt', 'deleted'],

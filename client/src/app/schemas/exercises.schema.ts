@@ -26,7 +26,7 @@ export const exercisesSchema: RxJsonSchema<Exercise> = {
     videoSource: { type: 'string', enum: ['YouTube', 'SelfHosted'], default: 'YouTube' },
     caloriesPerMin: { type: ['number', 'null'] },
     createdAt: { type: 'string', format: 'date-time' },
-    updatedAt: { type: 'string', format: 'date-time' },
+    updatedAt: { type: 'string', format: 'date-time', maxLength: 30 },
     deleted: { type: 'boolean', default: false },
   },
   required: ['id', 'name', 'type', 'updatedAt', 'deleted'],
