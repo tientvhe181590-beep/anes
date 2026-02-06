@@ -1,4 +1,4 @@
-import { TrendingDown, Minus, TrendingUp } from 'lucide-react';
+import { TrendingDown, Minus, TrendingUp, Dumbbell } from 'lucide-react';
 import OnboardingLayout from '../OnboardingLayout';
 import { useState } from 'react';
 
@@ -9,6 +9,11 @@ const goals = [
         icon: TrendingDown
     },
     {
+        id: 'gain_weight',
+        title: 'Gain Weight',
+        icon: TrendingUp
+    },
+    {
         id: 'maintain',
         title: 'Maintain',
         icon: Minus
@@ -16,7 +21,7 @@ const goals = [
     {
         id: 'gain_muscle',
         title: 'Gain Muscle',
-        icon: TrendingUp
+        icon: Dumbbell
     },
 ];
 
@@ -30,7 +35,7 @@ export default function Step3Goal({
     const [selectedGoal, setSelectedGoal] = useState(initialGoal);
     const [targetWeight, setTargetWeight] = useState(initialTargetWeight);
 
-    const showTargetInput = selectedGoal === 'lose_weight' || selectedGoal === 'maintain';
+    const showTargetInput = selectedGoal === 'lose_weight' || selectedGoal === 'maintain' || selectedGoal === 'gain_weight';
 
     return (
         <OnboardingLayout
