@@ -32,7 +32,6 @@ export default function Step3Goal({
 }: { onNext: (data: any) => void, onBack: () => void, initialGoal?: string }) {
 
     const [selectedGoal, setSelectedGoal] = useState(initialGoal);
-    const [selectedGoal, setSelectedGoal] = useState(initialGoal);
 
     return (
         <OnboardingLayout
