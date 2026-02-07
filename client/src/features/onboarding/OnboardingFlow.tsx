@@ -5,6 +5,7 @@ import {
     Step2Stats,
     Step3Goal,
     StepFocusArea,
+    StepTargetWeight,
     Step4Level,
     Step5Availability,
     Step6Injuries,
@@ -16,11 +17,12 @@ export default function OnboardingFlow() {
     // Flow management
     const [step, setStep] = useState(1);
     const [showFocusArea, setShowFocusArea] = useState(false);
+    const [showTargetWeight, setShowTargetWeight] = useState(false);
 
     const [formData, setFormData] = useState({
         name: '', gender: '',
         birthYear: '2000', height: 175, weight: 70,
-        goal: '', targetWeight: '',
+        goal: '', targetWeight: '', targetUnit: 'kg',
         focusAreas: [] as string[],
         level: '',
         daysPerWeek: 3, equipment: [] as string[],
@@ -35,6 +37,11 @@ export default function OnboardingFlow() {
     const goBack = () => {
         if (showFocusArea) {
             setShowFocusArea(false);
+            return;
+        }
+
+        if (showTargetWeight) {
+            setShowTargetWeight(false);
             return;
         }
 
@@ -60,11 +67,16 @@ export default function OnboardingFlow() {
     const handleGoal = (data: any) => {
         setFormData(prev => ({ ...prev, ...data }));
 
-        if (data.goal === 'gain_muscle') {
+        const goal = data.goal;
+
+        if (goal === 'gain_muscle') {
             setShowFocusArea(true);
-            // Don't increment step yet, show sub-screen
-        } else {
+            setShowTargetWeight(false);
+        } else if (['lose_weight', 'maintain', 'gain_weight'].includes(goal)) {
+            setShowTargetWeight(true);
             setShowFocusArea(false);
+        } else {
+            // Fallback
             goNext();
         }
     }
@@ -72,6 +84,12 @@ export default function OnboardingFlow() {
     const handleFocusArea = (areas: string[]) => {
         setFormData(prev => ({ ...prev, focusAreas: areas }));
         setShowFocusArea(false);
+        goNext();
+    }
+
+    const handleTargetWeight = (data: any) => {
+        setFormData(prev => ({ ...prev, targetWeight: data.target, targetUnit: data.unit }));
+        setShowTargetWeight(false);
         goNext();
     }
 
@@ -100,13 +118,25 @@ export default function OnboardingFlow() {
 
     // --- Render ---
 
-    // Special case for Focus Area Sub-screen
+    // Sub-screens for Step 3
     if (showFocusArea) {
         return (
             <StepFocusArea
                 onNext={handleFocusArea}
                 onBack={goBack}
                 initialSelection={formData.focusAreas}
+            />
+        );
+    }
+
+    if (showTargetWeight) {
+        return (
+            <StepTargetWeight
+                onNext={handleTargetWeight}
+                onBack={goBack}
+                currentWeight={formData.weight}
+                initialTarget={formData.targetWeight ? parseFloat(formData.targetWeight as string) : formData.weight}
+                initialUnit={formData.targetUnit}
             />
         );
     }

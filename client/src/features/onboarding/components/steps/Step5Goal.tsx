@@ -29,13 +29,10 @@ export default function Step3Goal({
     onNext,
     onBack,
     initialGoal = '',
-    initialTargetWeight = '70'
-}: { onNext: (data: any) => void, onBack: () => void, initialGoal?: string, initialTargetWeight?: string }) {
+}: { onNext: (data: any) => void, onBack: () => void, initialGoal?: string }) {
 
     const [selectedGoal, setSelectedGoal] = useState(initialGoal);
-    const [targetWeight, setTargetWeight] = useState(initialTargetWeight);
-
-    const showTargetInput = selectedGoal === 'lose_weight' || selectedGoal === 'maintain' || selectedGoal === 'gain_weight';
+    const [selectedGoal, setSelectedGoal] = useState(initialGoal);
 
     return (
         <OnboardingLayout
@@ -43,9 +40,9 @@ export default function Step3Goal({
             subtitle="Choose your main objective."
             currentStep={3}
             totalSteps={7}
-            onNext={() => onNext({ goal: selectedGoal, targetWeight: showTargetInput ? targetWeight : null })}
+            onNext={() => onNext({ goal: selectedGoal })}
             onBack={onBack}
-            isNextDisabled={!selectedGoal || (showTargetInput && !targetWeight)}
+            isNextDisabled={!selectedGoal}
         >
             <div className="flex flex-col gap-4">
 
@@ -76,22 +73,7 @@ export default function Step3Goal({
                     );
                 })}
 
-                {/* Dynamic Target Weight Input */}
-                {showTargetInput && (
-                    <div className="mt-6 animate-in fade-in slide-in-from-top-4 duration-300">
-                        <label className="text-[11px] font-bold uppercase tracking-[0.1em] text-[#8a8a8a] mb-3 block">Target Weight (kg)</label>
-                        <div className="flex h-16 w-full items-center rounded-xl bg-[#1a1a1a] px-6 border border-[#2a2a2a] focus-within:border-[#ff3b30]">
-                            <input
-                                type="number"
-                                value={targetWeight}
-                                onChange={(e) => setTargetWeight(e.target.value)}
-                                placeholder="0"
-                                className="h-full w-full bg-transparent font-['Sora'] text-2xl font-bold text-white outline-none placeholder-[#3a3a3a]"
-                            />
-                            <span className="text-[#525252] font-semibold">kg</span>
-                        </div>
-                    </div>
-                )}
+
 
             </div>
         </OnboardingLayout>
