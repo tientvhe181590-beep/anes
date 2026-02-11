@@ -53,7 +53,7 @@ public class AuthService {
         user.setPremium(false);
 
         User saved = userRepository.save(user);
-        return issueTokens(saved);
+        return issueTokens(saved, true);
     }
 
     public AuthResponse login(LoginRequest request) {
@@ -66,10 +66,29 @@ public class AuthService {
             throw new BadCredentialsException("Incorrect email or password. Please check again.");
         }
 
-        return issueTokens(user);
+        return issueTokens(user, true);
     }
 
-    private AuthResponse issueTokens(User user) {
+    public AuthResponse refreshTokens(String refreshToken) {
+        RefreshToken tokenEntity = refreshTokenRepository.findByToken(refreshToken)
+                .orElseThrow(() -> new BadCredentialsException("Invalid or expired refresh token."));
+
+        if (tokenEntity.isRevoked()) {
+            refreshTokenRepository.revokeAllByUserId(tokenEntity.getUser().getId());
+            throw new BadCredentialsException("Invalid or expired refresh token.");
+        }
+
+        if (tokenEntity.getExpiresAt().isBefore(LocalDateTime.now())) {
+            throw new BadCredentialsException("Invalid or expired refresh token.");
+        }
+
+        tokenEntity.setRevoked(true);
+        refreshTokenRepository.save(tokenEntity);
+
+        return issueTokens(tokenEntity.getUser(), false);
+    }
+
+    private AuthResponse issueTokens(User user, boolean includeUser) {
         String accessToken = jwtService.generateAccessToken(user.getId(), user.getEmail(), user.getRole());
         String refreshToken = jwtService.generateRefreshToken(user.getId());
 
@@ -80,12 +99,14 @@ public class AuthService {
             .plusMillis(jwtProperties.refreshTokenExpiration()));
         refreshTokenRepository.save(refreshTokenEntity);
 
-        AuthUserDto userDto = new AuthUserDto(
+        AuthUserDto userDto = includeUser
+            ? new AuthUserDto(
                 user.getId(),
                 user.getEmail(),
                 user.getFullName(),
                 user.isOnboardingComplete()
-        );
+            )
+            : null;
 
         return new AuthResponse(
                 accessToken,
