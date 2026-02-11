@@ -10,5 +10,7 @@ public interface HealthConditionRepository extends JpaRepository<HealthCondition
 
     List<HealthCondition> findAllByType(ConditionType type);
 
+    List<HealthCondition> findAllByNameIn(List<String> names);
+
     List<HealthCondition> findAllByIdIn(List<Long> ids);
 }
