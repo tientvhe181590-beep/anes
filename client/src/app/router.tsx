@@ -1,36 +1,75 @@
-import { createBrowserRouter, Navigate } from 'react-router-dom';
-import { lazy } from 'react';
+import { createBrowserRouter, Navigate } from "react-router";
+import { ProtectedRoute } from "@/app/ProtectedRoute";
+import { MainLayout } from "@/app/MainLayout";
+import { LandingPage } from "@/app/pages/LandingPage";
+import { LoginPage } from "@/app/pages/LoginPage";
+import { SignUpPage } from "@/app/pages/SignUpPage";
+import { OnboardingFlow } from "@/app/pages/OnboardingFlow";
+import { DashboardScreen } from "@/app/pages/DashboardScreen";
+import { PlaceholderPage } from "@/app/pages/PlaceholderPage";
+import { NotFoundPage } from "@/app/pages/NotFoundPage";
+import { GoogleOAuthCallback } from "@/app/pages/GoogleOAuthCallback";
 
-// Lazy-loaded feature routes
-const LandingPage = lazy(() => import('@/features/auth/components/LandingPage'));
-const LoginPage = lazy(() => import('@/features/auth/components/LoginPage'));
-const SignUpPage = lazy(() => import('@/features/auth/components/SignUpPage'));
-
-/**
- * Application router configuration.
- * Routes are lazy-loaded per feature for code-splitting.
- */
 export const router = createBrowserRouter([
   {
-    path: '/',
+    path: "/",
     element: <Navigate to="/landing" replace />,
   },
   {
-    path: '/landing',
-    Component: LandingPage,
+    path: "/landing",
+    element: <LandingPage />,
   },
   {
-    path: '/login',
-    Component: LoginPage,
+    path: "/login",
+    element: <LoginPage />,
   },
   {
-    path: '/register',
-    Component: SignUpPage,
+    path: "/register",
+    element: <SignUpPage />,
   },
-  //
-  // Protected routes (require auth) will be wrapped in a layout
-  // { path: '/dashboard', Component: lazy(() => import('@/features/dashboard/DashboardView')) },
-  // { path: '/workouts/*', Component: lazy(() => import('@/features/workouts/WorkoutsLayout')) },
-  // { path: '/nutrition/*', Component: lazy(() => import('@/features/nutrition/NutritionLayout')) },
-  // { path: '/chat', Component: lazy(() => import('@/features/ai-coach/ChatView')) },
+  {
+    path: "/auth/google/callback",
+    element: <GoogleOAuthCallback />,
+  },
+  {
+    path: "/onboarding",
+    element: (
+      <ProtectedRoute requireOnboardingComplete={false}>
+        <OnboardingFlow />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    element: (
+      <ProtectedRoute>
+        <MainLayout />
+      </ProtectedRoute>
+    ),
+    children: [
+      {
+        path: "/dashboard",
+        element: <DashboardScreen />,
+      },
+      {
+        path: "/workouts",
+        element: <PlaceholderPage title="Workouts" />,
+      },
+      {
+        path: "/nutrition",
+        element: <PlaceholderPage title="Nutrition" />,
+      },
+      {
+        path: "/chat",
+        element: <PlaceholderPage title="Chat" />,
+      },
+      {
+        path: "/profile",
+        element: <PlaceholderPage title="Profile" />,
+      },
+    ],
+  },
+  {
+    path: "*",
+    element: <NotFoundPage />,
+  },
 ]);
