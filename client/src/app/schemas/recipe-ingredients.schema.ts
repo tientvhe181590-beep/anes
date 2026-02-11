@@ -18,7 +18,7 @@ export const recipeIngredientsSchema: RxJsonSchema<RecipeIngredient> = {
     recipeId: { type: 'string', maxLength: 36 },
     ingredientId: { type: 'string', maxLength: 36 },
     amountGrams: { type: 'number' },
-    updatedAt: { type: 'string', format: 'date-time' },
+    updatedAt: { type: 'string', format: 'date-time', maxLength: 30 },
     deleted: { type: 'boolean', default: false },
   },
   required: ['id', 'recipeId', 'ingredientId', 'amountGrams', 'updatedAt', 'deleted'],

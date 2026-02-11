@@ -18,7 +18,7 @@ export const userHealthConstraintsSchema: RxJsonSchema<UserHealthConstraint> = {
     userId: { type: 'string', maxLength: 36 },
     conditionId: { type: 'string', maxLength: 36 },
     severityNotes: { type: ['string', 'null'] },
-    updatedAt: { type: 'string', format: 'date-time' },
+    updatedAt: { type: 'string', format: 'date-time', maxLength: 30 },
     deleted: { type: 'boolean', default: false },
   },
   required: ['id', 'userId', 'conditionId', 'updatedAt', 'deleted'],

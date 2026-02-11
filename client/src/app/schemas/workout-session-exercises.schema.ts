@@ -22,7 +22,7 @@ export const workoutSessionExercisesSchema: RxJsonSchema<WorkoutSessionExercise>
     isExtra: { type: 'boolean', default: false },
     orderIndex: { type: 'number' },
     notes: { type: ['string', 'null'] },
-    updatedAt: { type: 'string', format: 'date-time' },
+    updatedAt: { type: 'string', format: 'date-time', maxLength: 30 },
     deleted: { type: 'boolean', default: false },
   },
   required: ['id', 'scheduleId', 'exerciseId', 'orderIndex', 'updatedAt', 'deleted'],

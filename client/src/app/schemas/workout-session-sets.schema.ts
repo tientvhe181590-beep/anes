@@ -24,7 +24,7 @@ export const workoutSessionSetsSchema: RxJsonSchema<WorkoutSessionSet> = {
     weightKg: { type: ['number', 'null'] },
     durationSec: { type: ['number', 'null'] },
     completedAt: { type: ['string', 'null'], format: 'date-time' },
-    updatedAt: { type: 'string', format: 'date-time' },
+    updatedAt: { type: 'string', format: 'date-time', maxLength: 30 },
     deleted: { type: 'boolean', default: false },
   },
   required: ['id', 'sessionExerciseId', 'setNumber', 'updatedAt', 'deleted'],

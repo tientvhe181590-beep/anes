@@ -24,7 +24,7 @@ export const workoutTemplateExercisesSchema: RxJsonSchema<WorkoutTemplateExercis
     targetReps: { type: ['number', 'null'] },
     targetDurationSec: { type: ['number', 'null'] },
     restTimeSec: { type: ['number', 'null'] },
-    updatedAt: { type: 'string', format: 'date-time' },
+    updatedAt: { type: 'string', format: 'date-time', maxLength: 30 },
     deleted: { type: 'boolean', default: false },
   },
   required: ['id', 'templateId', 'exerciseId', 'orderIndex', 'updatedAt', 'deleted'],

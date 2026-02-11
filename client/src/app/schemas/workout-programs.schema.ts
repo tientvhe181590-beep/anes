@@ -22,7 +22,7 @@ export const workoutProgramsSchema: RxJsonSchema<WorkoutProgram> = {
     durationWeeks: { type: ['number', 'null'] },
     level: { type: 'string', enum: ['Basic', 'Intermediate', 'Advanced'] },
     createdAt: { type: 'string', format: 'date-time' },
-    updatedAt: { type: 'string', format: 'date-time' },
+    updatedAt: { type: 'string', format: 'date-time', maxLength: 30 },
     deleted: { type: 'boolean', default: false },
   },
   required: ['id', 'name', 'level', 'updatedAt', 'deleted'],

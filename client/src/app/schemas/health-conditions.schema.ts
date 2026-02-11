@@ -16,7 +16,7 @@ export const healthConditionsSchema: RxJsonSchema<HealthCondition> = {
     id: { type: 'string', maxLength: 36 },
     name: { type: 'string', maxLength: 255 },
     type: { type: 'string', enum: ['Injury', 'Medical', 'Allergy'] },
-    updatedAt: { type: 'string', format: 'date-time' },
+    updatedAt: { type: 'string', format: 'date-time', maxLength: 30 },
     deleted: { type: 'boolean', default: false },
   },
   required: ['id', 'name', 'type', 'updatedAt', 'deleted'],

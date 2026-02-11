@@ -22,7 +22,7 @@ export const workoutTemplatesSchema: RxJsonSchema<WorkoutTemplate> = {
     focusArea: { type: ['string', 'null'] },
     estimatedDurationMins: { type: ['number', 'null'] },
     createdAt: { type: 'string', format: 'date-time' },
-    updatedAt: { type: 'string', format: 'date-time' },
+    updatedAt: { type: 'string', format: 'date-time', maxLength: 30 },
     deleted: { type: 'boolean', default: false },
   },
   required: ['id', 'programId', 'dayNumber', 'updatedAt', 'deleted'],
