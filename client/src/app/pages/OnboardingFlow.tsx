@@ -1,10 +1,1 @@
-export function OnboardingFlow() {
-  return (
-    <main className="min-h-screen px-6 py-10">
-      <h1 className="text-2xl font-semibold">Onboarding</h1>
-      <p className="mt-2 text-[var(--text-secondary)]">
-        Onboarding flow will be implemented soon.
-      </p>
-    </main>
-  );
-}
+export { OnboardingFlow } from "@/features/onboarding";
