@@ -13,4 +13,6 @@ public interface ExerciseRepository extends JpaRepository<Exercise, Long> {
     Optional<Exercise> findByIdAndDeletedFalse(Long id);
 
     List<Exercise> findAllByPrimaryMuscleGroupAndDeletedFalse(String primaryMuscleGroup);
+
+    Optional<Exercise> findByNameAndDeletedFalse(String name);
 }

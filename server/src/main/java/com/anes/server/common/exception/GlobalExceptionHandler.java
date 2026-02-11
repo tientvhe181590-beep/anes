@@ -55,6 +55,18 @@ public class GlobalExceptionHandler {
                 .body(ApiResponse.error("RATE_LIMITED", ex.getMessage()));
     }
 
+    @ExceptionHandler(AiServiceTimeoutException.class)
+    public ResponseEntity<ApiResponse<Void>> handleAiTimeout(AiServiceTimeoutException ex) {
+        return ResponseEntity.status(504)
+                .body(ApiResponse.error("GATEWAY_TIMEOUT", ex.getMessage()));
+    }
+
+    @ExceptionHandler(AiServiceUnavailableException.class)
+    public ResponseEntity<ApiResponse<Void>> handleAiUnavailable(AiServiceUnavailableException ex) {
+        return ResponseEntity.status(502)
+                .body(ApiResponse.error("BAD_GATEWAY", ex.getMessage()));
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<Void>> handleGeneric(Exception ex) {
         log.error("Unhandled exception", ex);

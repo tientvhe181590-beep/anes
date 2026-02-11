@@ -2,6 +2,8 @@ package com.anes.server.onboarding.service;
 
 import com.anes.server.common.exception.EntityNotFoundException;
 import com.anes.server.onboarding.dto.OnboardingRequest;
+import com.anes.server.ai.dto.GeneratePlanRequest;
+import com.anes.server.ai.service.AiService;
 import com.anes.server.user.entity.ActivityLevel;
 import com.anes.server.user.entity.ConditionType;
 import com.anes.server.user.entity.ExperienceLevel;
@@ -38,6 +40,7 @@ public class OnboardingService {
     private final UserHealthConstraintRepository userHealthConstraintRepository;
     private final HealthConditionRepository healthConditionRepository;
     private final ObjectMapper objectMapper;
+    private final AiService aiService;
 
     public OnboardingService(
             UserRepository userRepository,
@@ -45,7 +48,8 @@ public class OnboardingService {
             UserPreferencesRepository userPreferencesRepository,
             UserHealthConstraintRepository userHealthConstraintRepository,
             HealthConditionRepository healthConditionRepository,
-            ObjectMapper objectMapper
+            ObjectMapper objectMapper,
+            AiService aiService
     ) {
         this.userRepository = userRepository;
         this.userPhysicalStatsRepository = userPhysicalStatsRepository;
@@ -53,6 +57,7 @@ public class OnboardingService {
         this.userHealthConstraintRepository = userHealthConstraintRepository;
         this.healthConditionRepository = healthConditionRepository;
         this.objectMapper = objectMapper;
+        this.aiService = aiService;
     }
 
     public void completeOnboarding(Long userId, OnboardingRequest request) {
@@ -102,6 +107,8 @@ public class OnboardingService {
             constraint.setCondition(condition);
             userHealthConstraintRepository.save(constraint);
         }
+
+        aiService.generatePlan(userId, new GeneratePlanRequest(false));
     }
 
     private List<HealthCondition> resolveConditions(List<String> names, ConditionType type) {
