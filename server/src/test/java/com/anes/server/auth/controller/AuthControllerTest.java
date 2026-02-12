@@ -4,6 +4,8 @@ import com.anes.server.auth.dto.AuthResponse;
 import com.anes.server.auth.dto.AuthUserDto;
 import com.anes.server.auth.service.AuthService;
 import com.anes.server.common.exception.GlobalExceptionHandler;
+import com.anes.server.config.FirebaseProperties;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -29,6 +31,14 @@ class AuthControllerTest {
 
     @MockBean
     private AuthService authService;
+
+    @MockBean
+    private FirebaseProperties firebaseProperties;
+
+    @BeforeEach
+    void setUp() {
+        org.mockito.Mockito.when(firebaseProperties.enabled()).thenReturn(false);
+    }
 
     @Test
     void registerReturnsCreated() throws Exception {
