@@ -1,17 +1,17 @@
-import { useAuthStore } from "@/app/store";
-import { useDashboard } from "../hooks/useDashboard";
-import { CalorieProgress } from "./CalorieProgress";
-import { MacrosSummary } from "./MacrosSummary";
-import { TodayWorkoutCard } from "./TodayWorkoutCard";
-import { WeekScheduleBar } from "./WeekScheduleBar";
-import { StreakCounter } from "./StreakCounter";
+import { useAuthStore } from '@/app/store';
+import { useDashboard } from '../hooks/useDashboard';
+import { CalorieProgress } from './CalorieProgress';
+import { MacrosSummary } from './MacrosSummary';
+import { TodayWorkoutCard } from './TodayWorkoutCard';
+import { WeekScheduleBar } from './WeekScheduleBar';
+import { StreakCounter } from './StreakCounter';
 
 export function DashboardScreen() {
   const user = useAuthStore((s) => s.user);
   const { summary, isLoading, isError, refetch } = useDashboard();
 
   const greeting = getGreeting();
-  const firstName = user?.fullName?.split(" ")[0] ?? "there";
+  const firstName = user?.fullName?.split(' ')[0] ?? 'there';
 
   if (isLoading) {
     return (
@@ -43,9 +43,7 @@ export function DashboardScreen() {
   if (isError || !summary) {
     return (
       <div className="flex flex-col items-center justify-center gap-4 px-4 py-20">
-        <p className="text-sm text-[var(--text-secondary)]">
-          Something went wrong. Pull to retry.
-        </p>
+        <p className="text-sm text-[var(--text-secondary)]">Something went wrong. Pull to retry.</p>
         <button
           type="button"
           onClick={() => refetch()}
@@ -70,10 +68,7 @@ export function DashboardScreen() {
       </div>
 
       {/* Calorie circular progress */}
-      <CalorieProgress
-        consumed={summary.caloriesConsumed}
-        target={summary.calorieTarget}
-      />
+      <CalorieProgress consumed={summary.caloriesConsumed} target={summary.calorieTarget} />
 
       {/* Macros summary */}
       <MacrosSummary macros={summary.macros} />
@@ -88,9 +83,7 @@ export function DashboardScreen() {
 
       {/* Weekly schedule */}
       <div>
-        <h2 className="mb-2 text-sm font-semibold text-[var(--text-primary)]">
-          This Week
-        </h2>
+        <h2 className="mb-2 text-sm font-semibold text-[var(--text-primary)]">This Week</h2>
         <WeekScheduleBar schedule={summary.weekSchedule} />
       </div>
 
@@ -102,7 +95,7 @@ export function DashboardScreen() {
 
 function getGreeting(): string {
   const hour = new Date().getHours();
-  if (hour < 12) return "Good morning";
-  if (hour < 18) return "Good afternoon";
-  return "Good evening";
+  if (hour < 12) return 'Good morning';
+  if (hour < 18) return 'Good afternoon';
+  return 'Good evening';
 }

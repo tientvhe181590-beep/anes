@@ -1,5 +1,5 @@
-import { RulerSlider } from "@/shared/components/RulerSlider";
-import type { OnboardingData } from "../types/onboarding.types";
+import { RulerSlider } from '@/shared/components/RulerSlider';
+import type { OnboardingData } from '../types/onboarding.types';
 
 interface StepStatsProps {
   data: OnboardingData;
@@ -11,9 +11,7 @@ export function StepStats({ data, updateData, getError }: StepStatsProps) {
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h2 className="text-xl font-bold text-[var(--text-primary)]">
-          Your physical stats
-        </h2>
+        <h2 className="text-xl font-bold text-[var(--text-primary)]">Your physical stats</h2>
         <p className="mt-1 text-sm text-[var(--text-secondary)]">
           We'll use these to personalize your plan
         </p>
@@ -21,10 +19,7 @@ export function StepStats({ data, updateData, getError }: StepStatsProps) {
 
       {/* Age */}
       <div className="flex flex-col gap-1.5">
-        <label
-          htmlFor="age"
-          className="text-sm font-medium text-[var(--text-secondary)]"
-        >
+        <label htmlFor="age" className="text-sm font-medium text-[var(--text-secondary)]">
           Age
         </label>
         <input
@@ -34,20 +29,18 @@ export function StepStats({ data, updateData, getError }: StepStatsProps) {
           min={13}
           max={99}
           placeholder="25"
-          value={data.age ?? ""}
+          value={data.age ?? ''}
           onChange={(e) => {
             const val = e.target.value ? parseInt(e.target.value, 10) : null;
             updateData({ age: val });
           }}
           className={`h-12 rounded-xl border bg-[var(--surface)] px-4 text-base text-[var(--text-primary)] outline-none placeholder:text-[var(--text-muted)] focus:border-[var(--accent)] ${
-            getError("age")
-              ? "border-[var(--negative)]"
-              : "border-[var(--border)]"
+            getError('age') ? 'border-[var(--negative)]' : 'border-[var(--border)]'
           }`}
         />
-        {getError("age") && (
+        {getError('age') && (
           <p className="text-xs text-[var(--negative)]" role="alert">
-            {getError("age")}
+            {getError('age')}
           </p>
         )}
       </div>
@@ -62,9 +55,9 @@ export function StepStats({ data, updateData, getError }: StepStatsProps) {
         value={data.heightCm}
         onChange={(v) => updateData({ heightCm: v })}
       />
-      {getError("heightCm") && (
+      {getError('heightCm') && (
         <p className="-mt-2 text-center text-xs text-[var(--negative)]" role="alert">
-          {getError("heightCm")}
+          {getError('heightCm')}
         </p>
       )}
 
@@ -78,9 +71,9 @@ export function StepStats({ data, updateData, getError }: StepStatsProps) {
         value={data.weightKg}
         onChange={(v) => updateData({ weightKg: v })}
       />
-      {getError("weightKg") && (
+      {getError('weightKg') && (
         <p className="-mt-2 text-center text-xs text-[var(--negative)]" role="alert">
-          {getError("weightKg")}
+          {getError('weightKg')}
         </p>
       )}
     </div>

@@ -1,5 +1,5 @@
-import type { OnboardingData } from "../types/onboarding.types";
-import { ChipSelect } from "@/shared/components/ChipSelect";
+import type { OnboardingData } from '../types/onboarding.types';
+import { ChipSelect } from '@/shared/components/ChipSelect';
 
 interface StepInjuriesProps {
   data: OnboardingData;
@@ -8,18 +8,14 @@ interface StepInjuriesProps {
 }
 
 const injuryOptions = [
-  "Knee Injury",
-  "Back Injury",
-  "Shoulder Injury",
-  "Wrist Injury",
-  "Ankle Injury",
+  'Knee Injury',
+  'Back Injury',
+  'Shoulder Injury',
+  'Wrist Injury',
+  'Ankle Injury',
 ];
 
-export function StepInjuries({
-  data,
-  updateData,
-  getError,
-}: StepInjuriesProps) {
+export function StepInjuries({ data, updateData, getError }: StepInjuriesProps) {
   return (
     <div className="flex flex-col gap-6">
       <div>
@@ -40,9 +36,9 @@ export function StepInjuries({
         otherLabel="Other injury…"
       />
 
-      {getError("injuries") && (
+      {getError('injuries') && (
         <p className="text-xs text-[var(--negative)]" role="alert">
-          {getError("injuries")}
+          {getError('injuries')}
         </p>
       )}
     </div>

@@ -1,6 +1,6 @@
-import { Navigate } from "react-router";
-import type { ReactElement } from "react";
-import { useAuthStore } from "@/app/store";
+import { Navigate } from 'react-router';
+import type { ReactElement } from 'react';
+import { useAuthStore } from '@/app/store';
 
 interface ProtectedRouteProps {
   requireOnboardingComplete?: boolean;

@@ -1,11 +1,11 @@
-import { NavLink } from "react-router";
+import { NavLink } from 'react-router';
 
 const items = [
-  { label: "Home", to: "/dashboard" },
-  { label: "Workouts", to: "/workouts" },
-  { label: "Nutrition", to: "/nutrition" },
-  { label: "Chat", to: "/chat" },
-  { label: "Profile", to: "/profile" },
+  { label: 'Home', to: '/dashboard' },
+  { label: 'Workouts', to: '/workouts' },
+  { label: 'Nutrition', to: '/nutrition' },
+  { label: 'Chat', to: '/chat' },
+  { label: 'Profile', to: '/profile' },
 ];
 
 export function BottomNav() {
@@ -21,8 +21,8 @@ export function BottomNav() {
             to={item.to}
             className={({ isActive }) =>
               isActive
-                ? "text-[var(--accent)] text-xs font-semibold"
-                : "text-[var(--text-muted)] text-xs"
+                ? 'text-xs font-semibold text-[var(--accent)]'
+                : 'text-xs text-[var(--text-muted)]'
             }
           >
             {item.label}

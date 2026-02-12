@@ -1,4 +1,4 @@
-import { useRef, useCallback, useEffect, useState } from "react";
+import { useRef, useCallback, useEffect, useState } from 'react';
 
 interface RulerSliderProps {
   label: string;
@@ -10,15 +10,7 @@ interface RulerSliderProps {
   onChange: (value: number) => void;
 }
 
-export function RulerSlider({
-  label,
-  unit,
-  min,
-  max,
-  step,
-  value,
-  onChange,
-}: RulerSliderProps) {
+export function RulerSlider({ label, unit, min, max, step, value, onChange }: RulerSliderProps) {
   const trackRef = useRef<HTMLDivElement>(null);
   const isDragging = useRef(false);
   const [displayValue, setDisplayValue] = useState(value);
@@ -52,7 +44,7 @@ export function RulerSlider({
       const scrollPos = offset - containerWidth / 2;
       container.scrollTo({
         left: scrollPos,
-        behavior: smooth ? "smooth" : "instant",
+        behavior: smooth ? 'smooth' : 'instant',
       });
     },
     [valueToOffset],
@@ -112,9 +104,9 @@ export function RulerSlider({
       }, 120);
     };
 
-    container.addEventListener("scroll", onScroll, { passive: true });
+    container.addEventListener('scroll', onScroll, { passive: true });
     return () => {
-      container.removeEventListener("scroll", onScroll);
+      container.removeEventListener('scroll', onScroll);
       clearTimeout(scrollTimer);
     };
   }, [handleScroll, commitValue]);
@@ -134,9 +126,7 @@ export function RulerSlider({
   return (
     <div className="flex flex-col items-center gap-3">
       {/* Label */}
-      <span className="text-sm font-medium text-[var(--text-secondary)]">
-        {label}
-      </span>
+      <span className="text-sm font-medium text-[var(--text-secondary)]">{label}</span>
 
       {/* Value display */}
       <div className="flex items-baseline gap-1">
@@ -157,15 +147,15 @@ export function RulerSlider({
           onPointerDown={handlePointerDown}
           onPointerUp={handlePointerUp}
           onPointerCancel={handlePointerUp}
-          style={{ touchAction: "pan-x" }}
+          style={{ touchAction: 'pan-x' }}
         >
           <div
             ref={trackRef}
             className="flex items-end"
             style={{
               width: totalWidth,
-              paddingLeft: "50%",
-              paddingRight: "50%",
+              paddingLeft: '50%',
+              paddingRight: '50%',
               height: 64,
             }}
           >
@@ -179,15 +169,11 @@ export function RulerSlider({
                   className="w-px"
                   style={{
                     height: tick.isMajor ? 32 : 16,
-                    backgroundColor: tick.isMajor
-                      ? "var(--text-secondary)"
-                      : "var(--text-muted)",
+                    backgroundColor: tick.isMajor ? 'var(--text-secondary)' : 'var(--text-muted)',
                   }}
                 />
                 {tick.isMajor && (
-                  <span className="mt-1 text-[10px] text-[var(--text-muted)]">
-                    {tick.value}
-                  </span>
+                  <span className="mt-1 text-[10px] text-[var(--text-muted)]">{tick.value}</span>
                 )}
               </div>
             ))}

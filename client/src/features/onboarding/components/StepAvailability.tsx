@@ -1,5 +1,5 @@
-import type { OnboardingData, TrainingLocation } from "../types/onboarding.types";
-import { ChipSelect } from "@/shared/components/ChipSelect";
+import type { OnboardingData, TrainingLocation } from '../types/onboarding.types';
+import { ChipSelect } from '@/shared/components/ChipSelect';
 
 interface StepAvailabilityProps {
   data: OnboardingData;
@@ -9,24 +9,13 @@ interface StepAvailabilityProps {
 
 const daysOptions = [2, 3, 4, 5, 6];
 
-const equipmentOptions = [
-  "Dumbbells",
-  "Resistance Bands",
-  "Yoga Mat",
-  "Pull-up Bar",
-];
+const equipmentOptions = ['Dumbbells', 'Resistance Bands', 'Yoga Mat', 'Pull-up Bar'];
 
-export function StepAvailability({
-  data,
-  updateData,
-  getError,
-}: StepAvailabilityProps) {
+export function StepAvailability({ data, updateData, getError }: StepAvailabilityProps) {
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h2 className="text-xl font-bold text-[var(--text-primary)]">
-          Availability & equipment
-        </h2>
+        <h2 className="text-xl font-bold text-[var(--text-primary)]">Availability & equipment</h2>
         <p className="mt-1 text-sm text-[var(--text-secondary)]">
           How often and where do you train?
         </p>
@@ -47,8 +36,8 @@ export function StepAvailability({
                 onClick={() => updateData({ trainingDaysPerWeek: d })}
                 className={`flex h-11 w-11 items-center justify-center rounded-xl border-2 text-sm font-semibold transition-colors ${
                   active
-                    ? "border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--accent)]"
-                    : "border-[var(--border)] bg-[var(--surface)] text-[var(--text-secondary)]"
+                    ? 'border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--accent)]'
+                    : 'border-[var(--border)] bg-[var(--surface)] text-[var(--text-secondary)]'
                 }`}
               >
                 {d}
@@ -56,9 +45,9 @@ export function StepAvailability({
             );
           })}
         </div>
-        {getError("trainingDaysPerWeek") && (
+        {getError('trainingDaysPerWeek') && (
           <p className="mt-1 text-xs text-[var(--negative)]" role="alert">
-            {getError("trainingDaysPerWeek")}
+            {getError('trainingDaysPerWeek')}
           </p>
         )}
       </div>
@@ -69,7 +58,7 @@ export function StepAvailability({
           Where do you train?
         </label>
         <div className="flex gap-3">
-          {(["Home", "Gym"] as TrainingLocation[]).map((loc) => {
+          {(['Home', 'Gym'] as TrainingLocation[]).map((loc) => {
             const active = data.trainingLocation === loc;
             return (
               <button
@@ -78,18 +67,18 @@ export function StepAvailability({
                 onClick={() => updateData({ trainingLocation: loc })}
                 className={`flex-1 rounded-xl border-2 px-4 py-3 text-sm font-semibold transition-colors ${
                   active
-                    ? "border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--accent)]"
-                    : "border-[var(--border)] bg-[var(--surface)] text-[var(--text-secondary)]"
+                    ? 'border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--accent)]'
+                    : 'border-[var(--border)] bg-[var(--surface)] text-[var(--text-secondary)]'
                 }`}
               >
-                {loc === "Home" ? "🏠" : "🏋️"} {loc}
+                {loc === 'Home' ? '🏠' : '🏋️'} {loc}
               </button>
             );
           })}
         </div>
-        {getError("trainingLocation") && (
+        {getError('trainingLocation') && (
           <p className="mt-1 text-xs text-[var(--negative)]" role="alert">
-            {getError("trainingLocation")}
+            {getError('trainingLocation')}
           </p>
         )}
       </div>
@@ -101,8 +90,8 @@ export function StepAvailability({
         </label>
         <ChipSelect
           options={equipmentOptions}
-          selected={data.availableEquipment}
-          onChange={(v) => updateData({ availableEquipment: v })}
+          selected={data.equipment}
+          onChange={(v) => updateData({ equipment: v })}
           noneLabel="None"
         />
       </div>

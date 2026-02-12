@@ -1,6 +1,6 @@
-import { cn } from "@/shared/utils/cn";
+import { cn } from '@/shared/utils/cn';
 
-type ButtonVariant = "primary" | "secondary" | "ghost";
+type ButtonVariant = 'primary' | 'secondary' | 'ghost';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
@@ -8,16 +8,14 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const variantStyles: Record<ButtonVariant, string> = {
-  primary:
-    "bg-[var(--accent)] text-white active:opacity-90",
+  primary: 'bg-[var(--accent)] text-white active:opacity-90',
   secondary:
-    "border-2 border-[var(--border)] bg-transparent text-[var(--text-primary)] active:bg-[var(--surface-elevated)]",
-  ghost:
-    "bg-transparent text-[var(--text-secondary)] active:bg-[var(--surface-elevated)]",
+    'border-2 border-[var(--border)] bg-transparent text-[var(--text-primary)] active:bg-[var(--surface-elevated)]',
+  ghost: 'bg-transparent text-[var(--text-secondary)] active:bg-[var(--surface-elevated)]',
 };
 
 export function Button({
-  variant = "primary",
+  variant = 'primary',
   loading = false,
   disabled,
   className,
@@ -29,7 +27,7 @@ export function Button({
       type="button"
       disabled={disabled || loading}
       className={cn(
-        "inline-flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold transition-colors disabled:opacity-50",
+        'inline-flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold transition-colors disabled:opacity-50',
         variantStyles[variant],
         className,
       )}
@@ -43,20 +41,8 @@ export function Button({
 
 function Spinner() {
   return (
-    <svg
-      className="h-4 w-4 animate-spin"
-      viewBox="0 0 24 24"
-      fill="none"
-      aria-hidden="true"
-    >
-      <circle
-        className="opacity-25"
-        cx="12"
-        cy="12"
-        r="10"
-        stroke="currentColor"
-        strokeWidth="4"
-      />
+    <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
       <path
         className="opacity-75"
         fill="currentColor"

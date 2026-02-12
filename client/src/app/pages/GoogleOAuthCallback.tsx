@@ -1,1 +1,1 @@
-export { GoogleOAuthCallback } from "@/features/auth/components/GoogleOAuthCallback";
+export { GoogleOAuthCallback } from '@/features/auth/components/GoogleOAuthCallback';

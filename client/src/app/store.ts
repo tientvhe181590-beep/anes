@@ -1,4 +1,4 @@
-import { create } from "zustand";
+import { create } from 'zustand';
 
 export interface UserProfile {
   id: number;
@@ -25,13 +25,13 @@ interface OnboardingState {
   reset: () => void;
 }
 
-const ACCESS_TOKEN_KEY = "anes.accessToken";
-const REFRESH_TOKEN_KEY = "anes.refreshToken";
-const USER_KEY = "anes.user";
+const ACCESS_TOKEN_KEY = 'anes.accessToken';
+const REFRESH_TOKEN_KEY = 'anes.refreshToken';
+const USER_KEY = 'anes.user';
 
 const isTokenExpired = (token: string): boolean => {
   try {
-    const payload = JSON.parse(atob(token.split(".")[1]));
+    const payload = JSON.parse(atob(token.split('.')[1]));
     const exp = payload.exp ? payload.exp * 1000 : 0;
     return exp > 0 && Date.now() >= exp;
   } catch {
@@ -64,10 +64,10 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
     if (refreshToken) {
       try {
-        const baseUrl = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8080";
+        const baseUrl = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8080';
         const response = await fetch(`${baseUrl}/api/v1/auth/refresh`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ refreshToken }),
         });
 

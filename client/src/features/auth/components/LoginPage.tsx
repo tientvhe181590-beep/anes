@@ -1,21 +1,17 @@
-import { useState, type FormEvent } from "react";
-import { Link } from "react-router";
-import { FormInput } from "@/shared/components/FormInput";
-import { useLogin, type LoginFields } from "../hooks/useLogin";
-import { useGoogleAuth } from "../hooks/useGoogleAuth";
+import { useState, type FormEvent } from 'react';
+import { Link } from 'react-router';
+import { FormInput } from '@/shared/components/FormInput';
+import { useLogin, type LoginFields } from '../hooks/useLogin';
+import { useGoogleAuth } from '../hooks/useGoogleAuth';
 
 export function LoginPage() {
   const [values, setValues] = useState<LoginFields>({
-    email: "",
-    password: "",
+    email: '',
+    password: '',
   });
 
   const { submit, fieldErrors, serverError, isLoading } = useLogin();
-  const {
-    initiateGoogleSignIn,
-    error: googleError,
-    isLoading: googleLoading,
-  } = useGoogleAuth();
+  const { initiateGoogleSignIn, error: googleError, isLoading: googleLoading } = useGoogleAuth();
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -39,7 +35,10 @@ export function LoginPage() {
 
         {/* Server / Google error */}
         {(serverError ?? googleError) && (
-          <div className="mt-6 rounded-xl bg-[var(--accent-soft)] px-4 py-3 text-sm text-[var(--negative)]" role="alert">
+          <div
+            className="mt-6 rounded-xl bg-[var(--accent-soft)] px-4 py-3 text-sm text-[var(--negative)]"
+            role="alert"
+          >
             {serverError ?? googleError}
           </div>
         )}
@@ -52,7 +51,7 @@ export function LoginPage() {
             placeholder="you@example.com"
             autoComplete="email"
             value={values.email}
-            onChange={(e) => handleChange("email", e.target.value)}
+            onChange={(e) => handleChange('email', e.target.value)}
             error={fieldErrors.email}
           />
 
@@ -62,7 +61,7 @@ export function LoginPage() {
             placeholder="••••••••"
             autoComplete="current-password"
             value={values.password}
-            onChange={(e) => handleChange("password", e.target.value)}
+            onChange={(e) => handleChange('password', e.target.value)}
             error={fieldErrors.password}
           />
 
@@ -83,7 +82,7 @@ export function LoginPage() {
             {isLoading ? (
               <span className="inline-block h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
             ) : (
-              "Login"
+              'Login'
             )}
           </button>
         </form>
@@ -125,11 +124,8 @@ export function LoginPage() {
 
         {/* Sign Up link */}
         <p className="mt-8 text-center text-sm text-[var(--text-secondary)]">
-          Don&apos;t have an account?{" "}
-          <Link
-            to="/register"
-            className="font-medium text-[var(--accent)] hover:underline"
-          >
+          Don&apos;t have an account?{' '}
+          <Link to="/register" className="font-medium text-[var(--accent)] hover:underline">
             Sign Up
           </Link>
         </p>

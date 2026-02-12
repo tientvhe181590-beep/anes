@@ -1,4 +1,4 @@
-import { useState, useCallback, type KeyboardEvent } from "react";
+import { useState, useCallback, type KeyboardEvent } from 'react';
 
 interface ChipSelectProps {
   options: string[];
@@ -13,12 +13,12 @@ export function ChipSelect({
   options,
   selected,
   onChange,
-  noneLabel = "None",
+  noneLabel = 'None',
   allowOther = false,
-  otherLabel = "Other",
+  otherLabel = 'Other',
 }: ChipSelectProps) {
   const [showOtherInput, setShowOtherInput] = useState(false);
-  const [otherText, setOtherText] = useState("");
+  const [otherText, setOtherText] = useState('');
 
   const isNone = selected.length === 1 && selected[0] === noneLabel;
   const predefined = new Set([...options, noneLabel]);
@@ -65,7 +65,7 @@ export function ChipSelect({
       const withoutNone = selected.filter((s) => s !== noneLabel);
       onChange([...withoutNone, tag]);
     }
-    setOtherText("");
+    setOtherText('');
   }, [otherText, selected, onChange, noneLabel]);
 
   const removeCustomTag = useCallback(
@@ -77,7 +77,7 @@ export function ChipSelect({
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === "Enter" || e.key === ",") {
+      if (e.key === 'Enter' || e.key === ',') {
         e.preventDefault();
         addCustomTag();
       }
@@ -98,8 +98,8 @@ export function ChipSelect({
               onClick={() => toggleChip(option)}
               className={`rounded-full border px-4 py-2 text-sm font-medium transition-colors ${
                 active
-                  ? "border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--accent)]"
-                  : "border-[var(--border)] bg-[var(--surface)] text-[var(--text-secondary)]"
+                  ? 'border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--accent)]'
+                  : 'border-[var(--border)] bg-[var(--surface)] text-[var(--text-secondary)]'
               }`}
             >
               {option}
@@ -113,8 +113,8 @@ export function ChipSelect({
           onClick={() => toggleChip(noneLabel)}
           className={`rounded-full border px-4 py-2 text-sm font-medium transition-colors ${
             isNone
-              ? "border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--accent)]"
-              : "border-[var(--border)] bg-[var(--surface)] text-[var(--text-secondary)]"
+              ? 'border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--accent)]'
+              : 'border-[var(--border)] bg-[var(--surface)] text-[var(--text-secondary)]'
           }`}
         >
           {noneLabel}
@@ -127,8 +127,8 @@ export function ChipSelect({
             onClick={toggleOther}
             className={`rounded-full border px-4 py-2 text-sm font-medium transition-colors ${
               showOtherInput
-                ? "border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--accent)]"
-                : "border-[var(--border)] bg-[var(--surface)] text-[var(--text-secondary)]"
+                ? 'border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--accent)]'
+                : 'border-[var(--border)] bg-[var(--surface)] text-[var(--text-secondary)]'
             }`}
           >
             {otherLabel}

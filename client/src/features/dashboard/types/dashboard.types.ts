@@ -17,7 +17,7 @@ export interface DashboardTodayWorkout {
   status: string;
 }
 
-export type WeekDayStatus = "completed" | "today" | "upcoming" | "rest";
+export type WeekDayStatus = 'completed' | 'today' | 'upcoming' | 'rest';
 
 export interface WeekDayEntry {
   day: string;

@@ -1,4 +1,4 @@
-import Dexie, { type Table } from "dexie";
+import Dexie, { type Table } from 'dexie';
 
 export interface UserRecord {
   id?: number;
@@ -265,33 +265,33 @@ export class AppDatabase extends Dexie {
   systemMessages!: Table<SystemMessageRecord>;
 
   constructor() {
-    super("anes-local");
+    super('anes-local');
     this.version(1).stores({
-      users: "++id,email,deleted",
-      userPhysicalStats: "++id,userId,recordedAt,deleted",
-      userPreferences: "++id,userId,deleted",
-      healthConditions: "++id,name,type",
-      userHealthConstraints: "++id,userId,conditionId,deleted",
-      workoutPrograms: "++id,userId,goalType,deleted",
-      workoutTemplates: "++id,programId,dayNumber,deleted",
-      exercises: "++id,name,primaryMuscleGroup,deleted",
-      workoutTemplateExercises: "++id,templateId,exerciseId",
-      userWorkoutSchedule: "++id,userId,scheduledDate,status,deleted",
-      workoutSessionExercises: "++id,scheduleId,exerciseId",
-      workoutSessionSets: "++id,sessionExerciseId,setNumber",
-      ingredients: "++id,name,category,deleted",
-      recipes: "++id,name,mealType,deleted",
-      recipeIngredients: "++id,recipeId,ingredientId",
-      userDailyNutrition: "++id,userId,date,deleted",
-      chatLogs: "++id,userId,sessionId,role",
-      symptoms: "++id,name",
-      conditionSymptoms: "conditionId,symptomId",
-      healthRecommendations: "++id,conditionId,type",
-      refreshTokens: "++id,userId,token,revoked",
-      membershipTiers: "++id,name",
-      subscriptions: "++id,userId,plan,status,deleted",
-      payments: "++id,userId,subscriptionId,status",
-      systemMessages: "++id,title",
+      users: '++id,email,deleted',
+      userPhysicalStats: '++id,userId,recordedAt,deleted',
+      userPreferences: '++id,userId,deleted',
+      healthConditions: '++id,name,type',
+      userHealthConstraints: '++id,userId,conditionId,deleted',
+      workoutPrograms: '++id,userId,goalType,deleted',
+      workoutTemplates: '++id,programId,dayNumber,deleted',
+      exercises: '++id,name,primaryMuscleGroup,deleted',
+      workoutTemplateExercises: '++id,templateId,exerciseId',
+      userWorkoutSchedule: '++id,userId,scheduledDate,status,deleted',
+      workoutSessionExercises: '++id,scheduleId,exerciseId',
+      workoutSessionSets: '++id,sessionExerciseId,setNumber',
+      ingredients: '++id,name,category,deleted',
+      recipes: '++id,name,mealType,deleted',
+      recipeIngredients: '++id,recipeId,ingredientId',
+      userDailyNutrition: '++id,userId,date,deleted',
+      chatLogs: '++id,userId,sessionId,role',
+      symptoms: '++id,name',
+      conditionSymptoms: 'conditionId,symptomId',
+      healthRecommendations: '++id,conditionId,type',
+      refreshTokens: '++id,userId,token,revoked',
+      membershipTiers: '++id,name',
+      subscriptions: '++id,userId,plan,status,deleted',
+      payments: '++id,userId,subscriptionId,status',
+      systemMessages: '++id,title',
     });
   }
 }

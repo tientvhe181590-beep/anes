@@ -1,9 +1,9 @@
-import { useState, useCallback } from "react";
-import { useNavigate } from "react-router";
-import { useMutation } from "@tanstack/react-query";
-import { AxiosError } from "axios";
-import { useAuthStore } from "@/app/store";
-import { googleAuthApi } from "../api/auth.api";
+import { useState, useCallback } from 'react';
+import { useNavigate } from 'react-router';
+import { useMutation } from '@tanstack/react-query';
+import { AxiosError } from 'axios';
+import { useAuthStore } from '@/app/store';
+import { googleAuthApi } from '../api/auth.api';
 
 declare global {
   interface Window {
@@ -32,19 +32,16 @@ export function useGoogleAuth() {
       setTokens(data.accessToken, data.refreshToken);
       setUser(data.user);
       if (data.user.onboardingComplete) {
-        navigate("/dashboard", { replace: true });
+        navigate('/dashboard', { replace: true });
       } else {
-        navigate("/onboarding", { replace: true });
+        navigate('/onboarding', { replace: true });
       }
     },
     onError: (err: unknown) => {
       if (err instanceof AxiosError) {
-        setError(
-          err.response?.data?.message ??
-            "Google sign-in failed. Please try again.",
-        );
+        setError(err.response?.data?.message ?? 'Google sign-in failed. Please try again.');
       } else {
-        setError("An unexpected error occurred.");
+        setError('An unexpected error occurred.');
       }
     },
   });
@@ -54,12 +51,12 @@ export function useGoogleAuth() {
     const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
     if (!clientId) {
-      setError("Google Sign-In is not configured.");
+      setError('Google Sign-In is not configured.');
       return;
     }
 
     if (!window.google?.accounts?.id) {
-      setError("Google Sign-In SDK not loaded.");
+      setError('Google Sign-In SDK not loaded.');
       return;
     }
 

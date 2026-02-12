@@ -33,7 +33,7 @@ export type {
   SubscriptionRecord,
   PaymentRecord,
   SystemMessageRecord,
-} from "@/app/db";
+} from '@/app/db';
 
 // ── Standard API envelope ────────────────────────────────────────────
 

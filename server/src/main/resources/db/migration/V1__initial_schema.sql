@@ -77,10 +77,13 @@ CREATE TABLE symptoms (
 
 -- CONDITION SYMPTOMS (Mapping)
 CREATE TABLE condition_symptoms (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
     condition_id BIGINT NOT NULL,
     symptom_id BIGINT NOT NULL,
     significance ENUM('PRIMARY', 'SECONDARY', 'RARE') NOT NULL DEFAULT 'PRIMARY',
-    PRIMARY KEY (condition_id, symptom_id),
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    UNIQUE KEY uk_condition_symptom (condition_id, symptom_id),
     FOREIGN KEY (condition_id) REFERENCES health_conditions(id),
     FOREIGN KEY (symptom_id) REFERENCES symptoms(id)
 );
