@@ -8,7 +8,6 @@ import { OnboardingFlow } from '@/app/pages/OnboardingFlow';
 import { DashboardScreen } from '@/app/pages/DashboardScreen';
 import { PlaceholderPage } from '@/app/pages/PlaceholderPage';
 import { NotFoundPage } from '@/app/pages/NotFoundPage';
-import { GoogleOAuthCallback } from '@/app/pages/GoogleOAuthCallback';
 
 export const router = createBrowserRouter([
   {
@@ -26,10 +25,6 @@ export const router = createBrowserRouter([
   {
     path: '/register',
     element: <SignUpPage />,
-  },
-  {
-    path: '/auth/google/callback',
-    element: <GoogleOAuthCallback />,
   },
   {
     path: '/onboarding',

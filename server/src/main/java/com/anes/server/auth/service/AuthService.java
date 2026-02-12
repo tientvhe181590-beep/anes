@@ -25,21 +25,18 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final com.anes.server.config.JwtProperties jwtProperties;
-    private final GoogleTokenVerifier googleTokenVerifier;
 
     public AuthService(
             UserRepository userRepository,
             RefreshTokenRepository refreshTokenRepository,
             PasswordEncoder passwordEncoder,
             JwtService jwtService,
-            com.anes.server.config.JwtProperties jwtProperties,
-            GoogleTokenVerifier googleTokenVerifier) {
+            com.anes.server.config.JwtProperties jwtProperties) {
         this.userRepository = userRepository;
         this.refreshTokenRepository = refreshTokenRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
         this.jwtProperties = jwtProperties;
-        this.googleTokenVerifier = googleTokenVerifier;
     }
 
     public AuthResponse register(RegisterRequest request) {
@@ -91,27 +88,9 @@ public class AuthService {
         refreshTokenRepository.save(tokenEntity);
 
         User user = userRepository.findByIdAndDeletedFalse(userId)
-            .orElseThrow(() -> new BadCredentialsException("Invalid or expired refresh token."));
+                .orElseThrow(() -> new BadCredentialsException("Invalid or expired refresh token."));
 
         return issueTokens(user, false);
-    }
-
-    public AuthResponse googleAuth(String idToken) {
-        GoogleTokenVerifier.GoogleTokenInfo tokenInfo = googleTokenVerifier.verify(idToken);
-
-        User user = userRepository.findByEmailAndDeletedFalse(tokenInfo.email())
-                .orElseGet(() -> {
-                    User created = new User();
-                    created.setEmail(tokenInfo.email());
-                    created.setFullName(tokenInfo.name());
-                    created.setPasswordHash(null);
-                    created.setRole(Role.MEMBER);
-                    created.setOnboardingComplete(false);
-                    created.setPremium(false);
-                    return userRepository.save(created);
-                });
-
-        return issueTokens(user, true);
     }
 
     private AuthResponse issueTokens(User user, boolean includeUser) {

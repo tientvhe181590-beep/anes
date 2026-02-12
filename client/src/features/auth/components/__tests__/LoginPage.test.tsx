@@ -5,7 +5,6 @@ import { MemoryRouter } from 'react-router';
 import { LoginPage } from '../LoginPage';
 
 const submitMock = vi.fn();
-const googleMock = vi.fn();
 
 let loginState = {
   submit: submitMock,
@@ -14,26 +13,22 @@ let loginState = {
   isLoading: false,
 };
 
-let googleState = {
-  initiateGoogleSignIn: googleMock,
-  error: null as string | null,
-  isLoading: false,
-};
-
 vi.mock('../../hooks/useLogin', () => ({
   useLogin: () => loginState,
 }));
 
-vi.mock('../../hooks/useGoogleAuth', () => ({
-  useGoogleAuth: () => googleState,
+vi.mock('../GoogleSignInButton', () => ({
+  GoogleSignInButton: ({ label }: { label?: string }) => (
+    <button type="button" aria-label={label ?? 'Sign in with Google'}>
+      {label ?? 'Sign in with Google'}
+    </button>
+  ),
 }));
 
 describe('LoginPage', () => {
   beforeEach(() => {
     submitMock.mockReset();
-    googleMock.mockReset();
     loginState = { submit: submitMock, fieldErrors: {}, serverError: null, isLoading: false };
-    googleState = { initiateGoogleSignIn: googleMock, error: null, isLoading: false };
   });
 
   it('renders the login form', () => {

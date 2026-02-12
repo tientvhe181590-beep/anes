@@ -43,9 +43,6 @@ class AuthServiceTest {
     @Mock
     private JwtService jwtService;
 
-    @Mock
-    private GoogleTokenVerifier googleTokenVerifier;
-
     private JwtProperties jwtProperties;
     private AuthService authService;
 
@@ -57,8 +54,7 @@ class AuthServiceTest {
                 refreshTokenRepository,
                 passwordEncoder,
                 jwtService,
-                jwtProperties,
-                googleTokenVerifier);
+                jwtProperties);
     }
 
     @Test
@@ -130,29 +126,4 @@ class AuthServiceTest {
         assertThat(tokenCaptor.getValue().isRevoked()).isTrue();
     }
 
-    @Test
-    void googleAuthCreatesNewUserWhenMissing() {
-        GoogleTokenVerifier.GoogleTokenInfo tokenInfo = new GoogleTokenVerifier.GoogleTokenInfo("sub",
-                "google@example.com", "Google User");
-
-        when(googleTokenVerifier.verify("id-token")).thenReturn(tokenInfo);
-        when(userRepository.findByEmailAndDeletedFalse("google@example.com"))
-                .thenReturn(Optional.empty());
-
-        User saved = new User();
-        saved.setId(5L);
-        saved.setEmail("google@example.com");
-        saved.setFullName("Google User");
-        saved.setRole(Role.MEMBER);
-        when(userRepository.save(any(User.class))).thenReturn(saved);
-
-        when(jwtService.generateAccessToken(eq(5L), eq("google@example.com"), eq(Role.MEMBER)))
-                .thenReturn("access");
-        when(jwtService.generateRefreshToken(eq(5L))).thenReturn("refresh");
-
-        AuthResponse response = authService.googleAuth("id-token");
-
-        assertThat(response.user()).isNotNull();
-        assertThat(response.user().email()).isEqualTo("google@example.com");
-    }
 }

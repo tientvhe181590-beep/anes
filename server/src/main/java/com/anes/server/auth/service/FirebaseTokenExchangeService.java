@@ -55,11 +55,18 @@ public class FirebaseTokenExchangeService {
         String email = firebaseAuthService.extractEmail(decodedToken);
         String displayName = firebaseAuthService.extractDisplayName(decodedToken);
         String provider = firebaseAuthService.extractProvider(decodedToken);
+        String pictureUrl = firebaseAuthService.extractPictureUrl(decodedToken);
 
         // 1. Check if identity mapping already exists
         var existingIdentity = authIdentityRepository.findByProviderAndProviderUid(provider, uid);
         if (existingIdentity.isPresent()) {
             User user = existingIdentity.get().getUser();
+            // Update profile image if not yet set (e.g. existing user links a Google
+            // account)
+            if (user.getProfileImageUrl() == null && pictureUrl != null) {
+                user.setProfileImageUrl(pictureUrl);
+                userRepository.save(user);
+            }
             log.info("Existing user found via auth identity: userId={}, provider={}", user.getId(), provider);
             return new ExchangeResult(buildResponse(user), false);
         }
@@ -74,6 +81,7 @@ public class FirebaseTokenExchangeService {
             user.setEmail(email);
             user.setFullName(displayName != null ? displayName : "");
             user.setPasswordHash(null); // Firebase-managed auth, no server password
+            user.setProfileImageUrl(pictureUrl);
             user.setRole(Role.MEMBER);
             user.setOnboardingComplete(false);
             user.setPremium(false);
@@ -81,6 +89,11 @@ public class FirebaseTokenExchangeService {
             newUser = true;
             log.info("New user created from Firebase auth: userId={}, email={}", user.getId(), email);
         } else {
+            // Update profile image if not yet set during account linking
+            if (user.getProfileImageUrl() == null && pictureUrl != null) {
+                user.setProfileImageUrl(pictureUrl);
+                userRepository.save(user);
+            }
             log.info("Existing user linked to Firebase auth: userId={}, email={}", user.getId(), email);
         }
 

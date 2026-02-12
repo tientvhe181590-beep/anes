@@ -5,18 +5,11 @@ import { MemoryRouter } from 'react-router';
 import { SignUpPage } from '../SignUpPage';
 
 const submitMock = vi.fn();
-const googleMock = vi.fn();
 
 let registerState = {
   submit: submitMock,
   fieldErrors: {} as Record<string, string | undefined>,
   serverError: null as string | null,
-  isLoading: false,
-};
-
-let googleState = {
-  initiateGoogleSignIn: googleMock,
-  error: null as string | null,
   isLoading: false,
 };
 
@@ -31,16 +24,18 @@ vi.mock('../../hooks/useRegister', () => ({
   checkPasswordStrength: () => strengthState,
 }));
 
-vi.mock('../../hooks/useGoogleAuth', () => ({
-  useGoogleAuth: () => googleState,
+vi.mock('../GoogleSignInButton', () => ({
+  GoogleSignInButton: ({ label }: { label?: string }) => (
+    <button type="button" aria-label={label ?? 'Sign in with Google'}>
+      {label ?? 'Sign in with Google'}
+    </button>
+  ),
 }));
 
 describe('SignUpPage', () => {
   beforeEach(() => {
     submitMock.mockReset();
-    googleMock.mockReset();
     registerState = { submit: submitMock, fieldErrors: {}, serverError: null, isLoading: false };
-    googleState = { initiateGoogleSignIn: googleMock, error: null, isLoading: false };
   });
 
   it('renders the sign-up form', () => {

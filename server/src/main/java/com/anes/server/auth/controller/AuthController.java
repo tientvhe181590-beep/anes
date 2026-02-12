@@ -3,7 +3,6 @@ package com.anes.server.auth.controller;
 import com.anes.server.auth.dto.AuthResponse;
 import com.anes.server.auth.dto.FirebaseAuthRequest;
 import com.anes.server.auth.dto.FirebaseAuthResponse;
-import com.anes.server.auth.dto.GoogleAuthRequest;
 import com.anes.server.auth.dto.LoginRequest;
 import com.anes.server.auth.dto.RefreshRequest;
 import com.anes.server.auth.dto.RegisterRequest;
@@ -76,10 +75,8 @@ public class AuthController {
     }
 
     @PostMapping("/google")
-    public ResponseEntity<ApiResponse<AuthResponse>> google(
-            @Valid @RequestBody GoogleAuthRequest request) {
-        AuthResponse response = authService.googleAuth(request.idToken());
-        return ResponseEntity.ok(ApiResponse.success(response, "Google authentication successful."));
+    public ResponseEntity<ApiResponse<AuthResponse>> google() {
+        return legacyDeprecatedResponse();
     }
 
     @PostMapping("/refresh")
