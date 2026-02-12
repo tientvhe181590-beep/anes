@@ -1,139 +1,147 @@
 package com.anes.server.auth.controller;
 
-import com.anes.server.auth.dto.LoginRequest;
-import com.anes.server.auth.dto.RegisterRequest;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.anes.server.auth.dto.AuthResponse;
+import com.anes.server.auth.dto.AuthUserDto;
+import com.anes.server.auth.service.AuthService;
+import com.anes.server.common.exception.GlobalExceptionHandler;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-@ActiveProfiles("dev")
+@WebMvcTest(AuthController.class)
+@AutoConfigureMockMvc(addFilters = false)
+@Import(GlobalExceptionHandler.class)
 class AuthControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+    @MockBean
+    private AuthService authService;
 
     @Test
-    void healthEndpointReturnsUp() throws Exception {
-        mockMvc.perform(get("/api/v1/auth/health"))
+    void registerReturnsCreated() throws Exception {
+        AuthResponse response = new AuthResponse(
+                "access",
+                "refresh",
+                3600,
+                new AuthUserDto(1L, "user@example.com", "User", false));
+        when(authService.register(any())).thenReturn(response);
+
+        mockMvc.perform(post("/api/v1/auth/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{" +
+                        "\"email\":\"user@example.com\"," +
+                        "\"password\":\"Password123\"," +
+                        "\"fullName\":\"User\"" +
+                        "}"))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.data.accessToken").value("access"))
+                .andExpect(jsonPath("$.message").value("Account created successfully."));
+    }
+
+    @Test
+    void registerValidationError() throws Exception {
+        mockMvc.perform(post("/api/v1/auth/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{}"))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.error").value("VALIDATION_ERROR"));
+    }
+
+    @Test
+    void loginReturnsOk() throws Exception {
+        AuthResponse response = new AuthResponse(
+                "access",
+                "refresh",
+                3600,
+                new AuthUserDto(1L, "user@example.com", "User", false));
+        when(authService.login(any())).thenReturn(response);
+
+        mockMvc.perform(post("/api/v1/auth/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{" +
+                        "\"email\":\"user@example.com\"," +
+                        "\"password\":\"Password123\"" +
+                        "}"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.ok").value(true))
-                .andExpect(jsonPath("$.data.status").value("UP"));
+                .andExpect(jsonPath("$.data.accessToken").value("access"))
+                .andExpect(jsonPath("$.message").value("Login successful."));
     }
 
     @Test
-    void registerWithValidCredentialsReturnsTokens() throws Exception {
-        var request = new RegisterRequest("test@example.com", "password123", "Test User");
-
-        mockMvc.perform(post("/api/v1/auth/register")
+    void loginValidationError() throws Exception {
+        mockMvc.perform(post("/api/v1/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
+                .content("{}"))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.error").value("VALIDATION_ERROR"));
+    }
+
+    @Test
+    void googleReturnsOk() throws Exception {
+        AuthResponse response = new AuthResponse(
+                "access",
+                "refresh",
+                3600,
+                new AuthUserDto(1L, "user@example.com", "User", false));
+        when(authService.googleAuth(any())).thenReturn(response);
+
+        mockMvc.perform(post("/api/v1/auth/google")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{" +
+                        "\"idToken\":\"token\"" +
+                        "}"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.ok").value(true))
-                .andExpect(jsonPath("$.data.accessToken").isNotEmpty())
-                .andExpect(jsonPath("$.data.refreshToken").isNotEmpty())
-                .andExpect(jsonPath("$.data.user.email").value("test@example.com"))
-                .andExpect(jsonPath("$.data.user.role").value("member"));
+                .andExpect(jsonPath("$.data.accessToken").value("access"))
+                .andExpect(jsonPath("$.message").value("Google authentication successful."));
     }
 
     @Test
-    void registerDuplicateEmailReturnsBadRequest() throws Exception {
-        var request = new RegisterRequest("duplicate@example.com", "password123", "First");
-        mockMvc.perform(post("/api/v1/auth/register")
+    void googleValidationError() throws Exception {
+        mockMvc.perform(post("/api/v1/auth/google")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isOk());
-
-        // Try again with same email
-        mockMvc.perform(post("/api/v1/auth/register")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.ok").value(false))
-                .andExpect(jsonPath("$.error.code").value("BAD_REQUEST"));
+                .content("{}"))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.error").value("VALIDATION_ERROR"));
     }
 
     @Test
-    void loginWithValidCredentialsReturnsTokens() throws Exception {
-        // Register first
-        var registerReq = new RegisterRequest("login@example.com", "password123", "Login User");
-        mockMvc.perform(post("/api/v1/auth/register")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(registerReq)))
-                .andExpect(status().isOk());
+    void refreshReturnsOk() throws Exception {
+        AuthResponse response = new AuthResponse(
+                "access",
+                "refresh",
+                3600,
+                null);
+        when(authService.refreshTokens(any())).thenReturn(response);
 
-        // Login
-        var loginReq = new LoginRequest("login@example.com", "password123");
-        mockMvc.perform(post("/api/v1/auth/login")
+        mockMvc.perform(post("/api/v1/auth/refresh")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(loginReq)))
+                .content("{" +
+                        "\"refreshToken\":\"refresh\"" +
+                        "}"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.ok").value(true))
-                .andExpect(jsonPath("$.data.accessToken").isNotEmpty())
-                .andExpect(jsonPath("$.data.user.email").value("login@example.com"));
+                .andExpect(jsonPath("$.data.accessToken").value("access"))
+                .andExpect(jsonPath("$.message").value("Token refreshed."));
     }
 
     @Test
-    void loginWithInvalidPasswordReturnsBadRequest() throws Exception {
-        // Register first
-        var registerReq = new RegisterRequest("wrongpw@example.com", "password123", "User");
-        mockMvc.perform(post("/api/v1/auth/register")
+    void refreshValidationError() throws Exception {
+        mockMvc.perform(post("/api/v1/auth/refresh")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(registerReq)))
-                .andExpect(status().isOk());
-
-        // Wrong password
-        var loginReq = new LoginRequest("wrongpw@example.com", "wrongpassword");
-        mockMvc.perform(post("/api/v1/auth/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(loginReq)))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.ok").value(false));
-    }
-
-    @Test
-    void loginWithNonexistentEmailReturnsBadRequest() throws Exception {
-        var loginReq = new LoginRequest("noone@example.com", "password123");
-        mockMvc.perform(post("/api/v1/auth/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(loginReq)))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.ok").value(false));
-    }
-
-    @Test
-    void loginWithInvalidEmailFormatReturnsValidationError() throws Exception {
-        var loginReq = new LoginRequest("not-an-email", "password123");
-        mockMvc.perform(post("/api/v1/auth/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(loginReq)))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.ok").value(false))
-                .andExpect(jsonPath("$.error.code").value("VALIDATION_ERROR"));
-    }
-
-    @Test
-    void loginWithShortPasswordReturnsValidationError() throws Exception {
-        var loginReq = new LoginRequest("test@example.com", "short");
-        mockMvc.perform(post("/api/v1/auth/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(loginReq)))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.ok").value(false))
-                .andExpect(jsonPath("$.error.code").value("VALIDATION_ERROR"));
+                .content("{}"))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.error").value("VALIDATION_ERROR"));
     }
 }

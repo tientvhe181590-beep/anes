@@ -1,23 +1,13 @@
-// Feature: Authentication (Login, Register, JWT, Profile)
-
-// Components
-export { AuthLayout } from './components/AuthLayout';
-export { LoginForm } from './components/LoginForm';
-export { SignUpForm } from './components/SignUpForm';
-
-// Hooks
-export { useAuthStore } from './hooks/useAuthStore';
-export { useLogin, getLoginErrorMessage } from './hooks/useLogin';
-export { useRegister, getRegisterErrorMessage } from './hooks/useRegister';
-
-// API
-export { loginApi, registerApi, refreshApi } from './api/auth-api';
-
-// Types
+export { LandingPage } from './components/LandingPage';
+export { LoginPage } from './components/LoginPage';
+export { SignUpPage } from './components/SignUpPage';
+export { GoogleOAuthCallback } from './components/GoogleOAuthCallback';
+export { useLogin } from './hooks/useLogin';
+export { useRegister } from './hooks/useRegister';
+export { useGoogleAuth } from './hooks/useGoogleAuth';
 export type {
-  LoginCredentials,
-  RegisterCredentials,
   AuthResponse,
-  UserInfo,
-  AuthFormErrors,
-} from './types/auth';
+  LoginRequest,
+  RegisterRequest,
+  GoogleAuthRequest,
+} from './types/auth.types';

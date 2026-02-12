@@ -1,69 +1,62 @@
-import axios from 'axios';
-import type { ApiResponse } from '@/shared/types';
+import axios, { AxiosError } from 'axios';
+import { useAuthStore } from '@/app/store';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:8080';
+const baseURL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8080';
 
-/**
- * Pre-configured Axios instance for all API calls.
- * - Base URL from environment
- * - JWT bearer token injection
- * - Standard error handling
- */
 export const apiClient = axios.create({
-  baseURL: `${API_BASE_URL}/api/v1`,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  timeout: 15_000,
+  baseURL,
 });
 
-// Request interceptor: attach JWT token
 apiClient.interceptors.request.use((config) => {
-  const token = localStorage.getItem('anes_access_token');
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+  const { accessToken } = useAuthStore.getState();
+  if (accessToken) {
+    config.headers.Authorization = `Bearer ${accessToken}`;
   }
   return config;
 });
 
-// Response interceptor: unwrap envelope & handle errors
+let refreshPromise: Promise<string | null> | null = null;
+
+const refreshAccessToken = async (): Promise<string | null> => {
+  const { refreshToken, setTokens, logout } = useAuthStore.getState();
+  if (!refreshToken) {
+    logout();
+    return null;
+  }
+
+  try {
+    const response = await axios.post(`${baseURL}/api/v1/auth/refresh`, { refreshToken });
+    const data = response.data?.data;
+    const nextAccessToken = data?.accessToken ?? null;
+    const nextRefreshToken = data?.refreshToken ?? null;
+    setTokens(nextAccessToken, nextRefreshToken);
+    return nextAccessToken;
+  } catch {
+    logout();
+    return null;
+  }
+};
+
 apiClient.interceptors.response.use(
   (response) => response,
-  (error) => {
-    if (!navigator.onLine) {
-      // Offline — let RxDB handle it
-      console.warn('[API] Offline, request queued or skipped.');
-    }
+  async (error: AxiosError) => {
+    const originalRequest = error.config as typeof error.config & {
+      _retry?: boolean;
+    };
 
-    if (axios.isAxiosError(error) && error.response?.status === 401) {
-      // Token expired — could trigger refresh flow here
-      localStorage.removeItem('anes_access_token');
-      window.location.href = '/login';
+    if (error.response?.status === 401 && originalRequest && !originalRequest._retry) {
+      originalRequest._retry = true;
+      refreshPromise = refreshPromise ?? refreshAccessToken();
+      const token = await refreshPromise;
+      refreshPromise = null;
+
+      if (token) {
+        originalRequest.headers = originalRequest.headers ?? {};
+        originalRequest.headers.Authorization = `Bearer ${token}`;
+        return apiClient(originalRequest);
+      }
     }
 
     return Promise.reject(error);
   },
 );
-
-/**
- * Type-safe API helper that unwraps the standard envelope.
- */
-export async function apiGet<T>(url: string): Promise<ApiResponse<T>> {
-  const { data } = await apiClient.get<ApiResponse<T>>(url);
-  return data;
-}
-
-export async function apiPost<T, B = unknown>(url: string, body: B): Promise<ApiResponse<T>> {
-  const { data } = await apiClient.post<ApiResponse<T>>(url, body);
-  return data;
-}
-
-export async function apiPut<T, B = unknown>(url: string, body: B): Promise<ApiResponse<T>> {
-  const { data } = await apiClient.put<ApiResponse<T>>(url, body);
-  return data;
-}
-
-export async function apiDelete<T>(url: string): Promise<ApiResponse<T>> {
-  const { data } = await apiClient.delete<ApiResponse<T>>(url);
-  return data;
-}

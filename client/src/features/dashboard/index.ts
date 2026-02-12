@@ -1,2 +1,1 @@
-// Feature: Individual Dashboard (Home)
-export {};
+export { DashboardScreen } from './components/DashboardScreen';

@@ -1,16 +1,21 @@
 package com.anes.server.auth.service;
 
-import com.anes.server.auth.dto.*;
-import com.anes.server.auth.entity.RefreshTokenEntity;
+import com.anes.server.auth.dto.AuthResponse;
+import com.anes.server.auth.dto.AuthUserDto;
+import com.anes.server.auth.dto.LoginRequest;
+import com.anes.server.auth.dto.RegisterRequest;
+import com.anes.server.auth.entity.RefreshToken;
 import com.anes.server.auth.repository.RefreshTokenRepository;
-import com.anes.server.user.entity.UserEntity;
+import com.anes.server.common.exception.DuplicateResourceException;
+import com.anes.server.user.entity.Role;
+import com.anes.server.user.entity.User;
 import com.anes.server.user.repository.UserRepository;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
-import java.util.UUID;
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 @Service
 public class AuthService {
@@ -19,88 +24,114 @@ public class AuthService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final com.anes.server.config.JwtProperties jwtProperties;
+    private final GoogleTokenVerifier googleTokenVerifier;
 
-    public AuthService(UserRepository userRepository,
+    public AuthService(
+            UserRepository userRepository,
             RefreshTokenRepository refreshTokenRepository,
             PasswordEncoder passwordEncoder,
-            JwtService jwtService) {
+            JwtService jwtService,
+            com.anes.server.config.JwtProperties jwtProperties,
+            GoogleTokenVerifier googleTokenVerifier) {
         this.userRepository = userRepository;
         this.refreshTokenRepository = refreshTokenRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
+        this.jwtProperties = jwtProperties;
+        this.googleTokenVerifier = googleTokenVerifier;
     }
 
-    @Transactional
     public AuthResponse register(RegisterRequest request) {
         if (userRepository.existsByEmailAndDeletedFalse(request.email())) {
-            throw new IllegalArgumentException("Email already registered");
+            throw new DuplicateResourceException("User", "email", request.email());
         }
 
-        var user = new UserEntity();
-        user.setId(UUID.randomUUID().toString());
-        user.setEmail(request.email().toLowerCase().trim());
+        User user = new User();
+        user.setEmail(request.email());
         user.setPasswordHash(passwordEncoder.encode(request.password()));
         user.setFullName(request.fullName());
-        userRepository.save(user);
+        user.setRole(Role.MEMBER);
+        user.setOnboardingComplete(false);
+        user.setPremium(false);
 
-        return generateAuthResponse(user);
+        User saved = userRepository.save(user);
+        return issueTokens(saved, true);
     }
 
-    @Transactional
     public AuthResponse login(LoginRequest request) {
-        var user = userRepository.findByEmailAndDeletedFalse(request.email().toLowerCase().trim())
-                .orElseThrow(() -> new IllegalArgumentException("Incorrect email or password"));
+        User user = userRepository.findByEmailAndDeletedFalse(request.email())
+                .orElseThrow(() -> new BadCredentialsException(
+                        "Incorrect email or password. Please check again."));
 
-        if (!passwordEncoder.matches(request.password(), user.getPasswordHash())) {
-            throw new IllegalArgumentException("Incorrect email or password");
+        if (user.getPasswordHash() == null
+                || !passwordEncoder.matches(request.password(), user.getPasswordHash())) {
+            throw new BadCredentialsException("Incorrect email or password. Please check again.");
         }
 
-        return generateAuthResponse(user);
+        return issueTokens(user, true);
     }
 
-    @Transactional
-    public AuthResponse refresh(RefreshRequest request) {
-        var storedToken = refreshTokenRepository
-                .findByTokenAndRevokedFalseAndDeletedFalse(request.refreshToken())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid refresh token"));
+    public AuthResponse refreshTokens(String refreshToken) {
+        RefreshToken tokenEntity = refreshTokenRepository.findByToken(refreshToken)
+                .orElseThrow(() -> new BadCredentialsException("Invalid or expired refresh token."));
 
-        if (storedToken.getExpiresAt().isBefore(Instant.now())) {
-            throw new IllegalArgumentException("Refresh token expired");
+        if (tokenEntity.isRevoked()) {
+            refreshTokenRepository.revokeAllByUserId(tokenEntity.getUser().getId());
+            throw new BadCredentialsException("Invalid or expired refresh token.");
         }
 
-        // Validate JWT signature
-        jwtService.parseToken(request.refreshToken())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid refresh token signature"));
+        if (tokenEntity.getExpiresAt().isBefore(LocalDateTime.now())) {
+            throw new BadCredentialsException("Invalid or expired refresh token.");
+        }
 
-        var user = storedToken.getUser();
+        tokenEntity.setRevoked(true);
+        refreshTokenRepository.save(tokenEntity);
 
-        // Revoke old token
-        storedToken.setRevoked(true);
-        refreshTokenRepository.save(storedToken);
-
-        return generateAuthResponse(user);
+        return issueTokens(tokenEntity.getUser(), false);
     }
 
-    private AuthResponse generateAuthResponse(UserEntity user) {
-        var accessToken = jwtService.generateAccessToken(user.getId(), user.getEmail(), user.getRole());
-        var refreshTokenStr = jwtService.generateRefreshToken(user.getId());
+    public AuthResponse googleAuth(String idToken) {
+        GoogleTokenVerifier.GoogleTokenInfo tokenInfo = googleTokenVerifier.verify(idToken);
 
-        // Persist refresh token
-        var refreshToken = new RefreshTokenEntity();
-        refreshToken.setId(UUID.randomUUID().toString());
-        refreshToken.setUser(user);
-        refreshToken.setToken(refreshTokenStr);
-        refreshToken.setExpiresAt(Instant.now().plusMillis(jwtService.getRefreshTokenExpiryMs()));
-        refreshTokenRepository.save(refreshToken);
+        User user = userRepository.findByEmailAndDeletedFalse(tokenInfo.email())
+                .orElseGet(() -> {
+                    User created = new User();
+                    created.setEmail(tokenInfo.email());
+                    created.setFullName(tokenInfo.name());
+                    created.setPasswordHash(null);
+                    created.setRole(Role.MEMBER);
+                    created.setOnboardingComplete(false);
+                    created.setPremium(false);
+                    return userRepository.save(created);
+                });
 
-        return new AuthResponse(
-                accessToken,
-                refreshTokenStr,
-                new AuthResponse.UserInfo(
+        return issueTokens(user, true);
+    }
+
+    private AuthResponse issueTokens(User user, boolean includeUser) {
+        String accessToken = jwtService.generateAccessToken(user.getId(), user.getEmail(), user.getRole());
+        String refreshToken = jwtService.generateRefreshToken(user.getId());
+
+        RefreshToken refreshTokenEntity = new RefreshToken();
+        refreshTokenEntity.setUser(user);
+        refreshTokenEntity.setToken(refreshToken);
+        refreshTokenEntity.setExpiresAt(LocalDateTime.now()
+                .plus(Duration.ofMillis(jwtProperties.refreshTokenExpiration())));
+        refreshTokenRepository.save(refreshTokenEntity);
+
+        AuthUserDto userDto = includeUser
+                ? new AuthUserDto(
                         user.getId(),
                         user.getEmail(),
                         user.getFullName(),
-                        user.getRole(),
-                        user.getMembershipTier()));
+                        user.isOnboardingComplete())
+                : null;
+
+        return new AuthResponse(
+                accessToken,
+                refreshToken,
+                jwtProperties.accessTokenExpiration() / 1000,
+                userDto);
     }
 }

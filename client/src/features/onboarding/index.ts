@@ -1,2 +1,1 @@
-// Feature: User Onboarding Flow (7-step wizard)
-export {};
+export { OnboardingFlow } from './components/OnboardingFlow';

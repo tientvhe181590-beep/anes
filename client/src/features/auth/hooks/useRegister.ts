@@ -1,44 +1,98 @@
-/**
- * useRegister hook — TanStack Query mutation for registration flow.
- * SRS 3.1.1.3 — Register new user, persist tokens, redirect to onboarding.
- */
+import { useState } from 'react';
+import { useNavigate } from 'react-router';
 import { useMutation } from '@tanstack/react-query';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import { registerApi } from '../api/auth-api';
-import { useAuthStore } from './useAuthStore';
-import type { RegisterCredentials } from '../types/auth';
+import { z } from 'zod/v4';
+import { AxiosError } from 'axios';
+import { useAuthStore } from '@/app/store';
+import { registerApi } from '../api/auth.api';
 
-export function useRegister() {
-  const login = useAuthStore((s) => s.login);
-  const navigate = useNavigate();
-
-  return useMutation({
-    mutationFn: (credentials: RegisterCredentials) => registerApi(credentials),
-    onSuccess: (data) => {
-      login(data.accessToken, data.refreshToken, data.user);
-      navigate('/onboarding');
-    },
+const registerSchema = z
+  .object({
+    email: z.email('Please enter a valid email address.'),
+    password: z
+      .string()
+      .min(8, 'Password must be at least 8 characters with 1 uppercase and 1 number.')
+      .regex(/[A-Z]/, 'Password must be at least 8 characters with 1 uppercase and 1 number.')
+      .regex(/[0-9]/, 'Password must be at least 8 characters with 1 uppercase and 1 number.'),
+    confirmPassword: z.string().min(1, 'Please confirm your password.'),
+    fullName: z.string().min(1, 'Full name is required.').max(255),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: 'Passwords do not match.',
+    path: ['confirmPassword'],
   });
+
+export type RegisterFields = z.infer<typeof registerSchema>;
+
+export interface PasswordStrength {
+  hasLength: boolean;
+  hasUppercase: boolean;
+  hasNumber: boolean;
+  isStrong: boolean;
 }
 
-/**
- * Maps API errors to user-friendly messages for registration.
- */
-export function getRegisterErrorMessage(error: unknown): string {
-  if (axios.isAxiosError(error)) {
-    const status = error.response?.status;
-    const apiMessage = error.response?.data?.error?.message as string | undefined;
+export function checkPasswordStrength(password: string): PasswordStrength {
+  const hasLength = password.length >= 8;
+  const hasUppercase = /[A-Z]/.test(password);
+  const hasNumber = /[0-9]/.test(password);
+  return {
+    hasLength,
+    hasUppercase,
+    hasNumber,
+    isStrong: hasLength && hasUppercase && hasNumber,
+  };
+}
 
-    if (status === 409 || (status === 400 && apiMessage?.toLowerCase().includes('already'))) {
-      return 'This email is already registered. Try logging in.';
+export function useRegister() {
+  const navigate = useNavigate();
+  const { setTokens, setUser } = useAuthStore();
+  const [fieldErrors, setFieldErrors] = useState<Partial<Record<keyof RegisterFields, string>>>({});
+  const [serverError, setServerError] = useState<string | null>(null);
+
+  const mutation = useMutation({
+    mutationFn: registerApi,
+    onSuccess: (data) => {
+      setTokens(data.accessToken, data.refreshToken);
+      setUser(data.user);
+      navigate('/onboarding', { replace: true });
+    },
+    onError: (error: unknown) => {
+      if (error instanceof AxiosError) {
+        const msg = error.response?.data?.message ?? 'Registration failed. Please try again.';
+        setServerError(msg);
+      } else {
+        setServerError('An unexpected error occurred.');
+      }
+    },
+  });
+
+  function validate(values: RegisterFields): boolean {
+    const result = registerSchema.safeParse(values);
+    if (!result.success) {
+      const errs: Partial<Record<keyof RegisterFields, string>> = {};
+      for (const issue of result.error.issues) {
+        const key = issue.path[0] as keyof RegisterFields;
+        if (!errs[key]) errs[key] = issue.message;
+      }
+      setFieldErrors(errs);
+      return false;
     }
-    if (status === 400) {
-      if (apiMessage) return apiMessage;
-      return 'Please check your input and try again.';
-    }
-    if (!navigator.onLine) return 'You are offline. Please check your connection.';
-    return 'Service unavailable. Please try again later.';
+    setFieldErrors({});
+    return true;
   }
-  return 'An unexpected error occurred.';
+
+  function submit(values: RegisterFields) {
+    setServerError(null);
+    if (!validate(values)) return;
+    const { confirmPassword, ...body } = values;
+    void confirmPassword;
+    mutation.mutate(body);
+  }
+
+  return {
+    submit,
+    fieldErrors,
+    serverError,
+    isLoading: mutation.isPending,
+  };
 }

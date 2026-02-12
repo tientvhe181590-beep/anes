@@ -1,35 +1,38 @@
 package com.anes.server.common.dto;
 
-import java.util.Map;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.Builder;
+import lombok.Getter;
 
-/**
- * Standard API response envelope.
- * All endpoints return this structure for consistency.
- */
-public record ApiResponse<T>(
-        boolean ok,
-        T data,
-        Meta meta,
-        ApiError error) {
-    public record Meta(int page, int size, long total) {
+import java.time.LocalDateTime;
+
+@Getter
+@Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class ApiResponse<T> {
+
+    private T data;
+    private String message;
+    private String error;
+    private LocalDateTime timestamp;
+
+    public static <T> ApiResponse<T> success(T data, String message) {
+        return ApiResponse.<T>builder()
+                .data(data)
+                .message(message)
+                .timestamp(LocalDateTime.now())
+                .build();
     }
 
-    public record ApiError(String code, String message, Map<String, String> details) {
+    public static <T> ApiResponse<T> success(T data) {
+        return success(data, "Success");
     }
 
-    public static <T> ApiResponse<T> ok(T data) {
-        return new ApiResponse<>(true, data, null, null);
-    }
-
-    public static <T> ApiResponse<T> ok(T data, Meta meta) {
-        return new ApiResponse<>(true, data, meta, null);
-    }
-
-    public static <T> ApiResponse<T> error(String code, String message) {
-        return new ApiResponse<>(false, null, null, new ApiError(code, message, null));
-    }
-
-    public static <T> ApiResponse<T> error(String code, String message, Map<String, String> details) {
-        return new ApiResponse<>(false, null, null, new ApiError(code, message, details));
+    public static <T> ApiResponse<T> error(String error, String message) {
+        return ApiResponse.<T>builder()
+                .error(error)
+                .message(message)
+                .timestamp(LocalDateTime.now())
+                .build();
     }
 }

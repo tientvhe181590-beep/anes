@@ -1,68 +1,74 @@
 package com.anes.server.auth.service;
 
 import com.anes.server.config.JwtProperties;
+import com.anes.server.user.entity.Role;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
+import javax.crypto.SecretKey;
 import java.time.Instant;
 import java.util.Date;
-import java.util.Map;
-import java.util.Optional;
 
-@Component
+@Service
 public class JwtService {
 
+    private final JwtProperties jwtProperties;
     private final SecretKey signingKey;
-    private final JwtProperties props;
 
-    public JwtService(JwtProperties props) {
-        this.props = props;
-        // Pad secret to at least 32 bytes for HS256
-        var secret = props.getSecret();
-        if (secret.length() < 32) {
-            secret = secret + "0".repeat(32 - secret.length());
-        }
-        this.signingKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+    public JwtService(JwtProperties jwtProperties) {
+        this.jwtProperties = jwtProperties;
+        this.signingKey = Keys.hmacShaKeyFor(jwtProperties.secret().getBytes(StandardCharsets.UTF_8));
     }
 
-    public String generateAccessToken(String userId, String email, String role) {
+    public String generateAccessToken(Long userId, String email, Role role) {
+        Instant now = Instant.now();
+        Instant expiry = now.plusMillis(jwtProperties.accessTokenExpiration());
+
         return Jwts.builder()
-                .subject(userId)
-                .claims(Map.of("email", email, "role", role))
-                .issuedAt(Date.from(Instant.now()))
-                .expiration(Date.from(Instant.now().plusMillis(props.getAccessTokenExpiryMs())))
+                .subject(String.valueOf(userId))
+                .claim("email", email)
+                .claim("role", role.name())
+                .issuedAt(Date.from(now))
+                .expiration(Date.from(expiry))
                 .signWith(signingKey)
                 .compact();
     }
 
-    public String generateRefreshToken(String userId) {
+    public String generateRefreshToken(Long userId) {
+        Instant now = Instant.now();
+        Instant expiry = now.plusMillis(jwtProperties.refreshTokenExpiration());
+
         return Jwts.builder()
-                .subject(userId)
-                .issuedAt(Date.from(Instant.now()))
-                .expiration(Date.from(Instant.now().plusMillis(props.getRefreshTokenExpiryMs())))
+                .subject(String.valueOf(userId))
+                .issuedAt(Date.from(now))
+                .expiration(Date.from(expiry))
                 .signWith(signingKey)
                 .compact();
     }
 
-    public Optional<Claims> parseToken(String token) {
+    public boolean validateToken(String token) {
         try {
-            var claims = Jwts.parser()
-                    .verifyWith(signingKey)
-                    .build()
-                    .parseSignedClaims(token)
-                    .getPayload();
-            return Optional.of(claims);
-        } catch (JwtException | IllegalArgumentException e) {
-            return Optional.empty();
+            parseClaims(token);
+            return true;
+        } catch (JwtException | IllegalArgumentException ex) {
+            return false;
         }
     }
 
-    public long getRefreshTokenExpiryMs() {
-        return props.getRefreshTokenExpiryMs();
+    public Long extractUserId(String token) {
+        Claims claims = parseClaims(token);
+        return Long.parseLong(claims.getSubject());
+    }
+
+    private Claims parseClaims(String token) {
+        return Jwts.parser()
+                .verifyWith(signingKey)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
     }
 }
