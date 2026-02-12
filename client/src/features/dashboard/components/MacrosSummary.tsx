@@ -7,7 +7,7 @@ interface MacrosSummaryProps {
 const items: { key: keyof DashboardMacros; label: string; color: string }[] = [
   { key: 'protein', label: 'Protein', color: 'var(--accent)' },
   { key: 'carbs', label: 'Carbs', color: 'var(--positive)' },
-  { key: 'fat', label: 'Fat', color: '#F5A623' },
+  { key: 'fat', label: 'Fat', color: 'var(--warning)' },
 ];
 
 export function MacrosSummary({ macros }: MacrosSummaryProps) {

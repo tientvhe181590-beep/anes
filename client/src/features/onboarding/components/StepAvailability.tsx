@@ -90,8 +90,8 @@ export function StepAvailability({ data, updateData, getError }: StepAvailabilit
         </label>
         <ChipSelect
           options={equipmentOptions}
-          selected={data.availableEquipment}
-          onChange={(v) => updateData({ availableEquipment: v })}
+          selected={data.equipment}
+          onChange={(v) => updateData({ equipment: v })}
           noneLabel="None"
         />
       </div>

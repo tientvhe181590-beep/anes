@@ -176,6 +176,17 @@ export function useOnboarding() {
 
     setErrors([]);
 
+    if (currentStep === 'goal' && data.goal === 'WeightLoss') {
+      const bmi = calculateBmi(data.weightKg, data.heightCm);
+      if (bmi !== null && bmi < 18.5) {
+        const message = `Your BMI is ${bmi.toFixed(1)}. Weight loss is not recommended.`;
+        const proceed = window.confirm(message);
+        if (!proceed) {
+          return;
+        }
+      }
+    }
+
     if (currentStepIndex < steps.length - 1) {
       setCurrentStepIndex((i) => i + 1);
     } else {
@@ -241,4 +252,11 @@ export function useOnboarding() {
     serverError,
     isSubmitting: mutation.isPending,
   };
+}
+
+function calculateBmi(weightKg: number, heightCm: number): number | null {
+  if (!weightKg || !heightCm) return null;
+  const heightMeters = heightCm / 100;
+  if (heightMeters <= 0) return null;
+  return weightKg / (heightMeters * heightMeters);
 }

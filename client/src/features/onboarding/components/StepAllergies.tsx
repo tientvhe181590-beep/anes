@@ -34,16 +34,16 @@ export function StepAllergies({ data, updateData, getError }: StepAllergiesProps
 
       <ChipSelect
         options={allergyOptions}
-        selected={data.dietaryPreferences}
-        onChange={(v) => updateData({ dietaryPreferences: v })}
+        selected={data.allergies}
+        onChange={(v) => updateData({ allergies: v })}
         noneLabel="None"
         allowOther
         otherLabel="Other preference…"
       />
 
-      {getError('dietaryPreferences') && (
+      {getError('allergies') && (
         <p className="text-xs text-[var(--negative)]" role="alert">
-          {getError('dietaryPreferences')}
+          {getError('allergies')}
         </p>
       )}
     </div>
