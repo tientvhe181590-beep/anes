@@ -13,15 +13,18 @@ let registerState = {
   isLoading: false,
 };
 
-const strengthState = {
-  hasLength: true,
-  hasUppercase: false,
-  hasNumber: false,
-};
-
 vi.mock('../../hooks/useRegister', () => ({
   useRegister: () => registerState,
-  checkPasswordStrength: () => strengthState,
+}));
+
+vi.mock('../../hooks/usePasswordStrength', () => ({
+  usePasswordStrength: (pw: string) => ({
+    score: pw.length > 0 ? 60 : 0,
+    level: pw.length > 0 ? 'good' : 'weak',
+    feedback: pw.length > 0 ? 'Good password strength.' : '',
+    isBlocked: false,
+    isBreached: false,
+  }),
 }));
 
 vi.mock('../GoogleSignInButton', () => ({
@@ -30,6 +33,16 @@ vi.mock('../GoogleSignInButton', () => ({
       {label ?? 'Sign in with Google'}
     </button>
   ),
+}));
+
+vi.mock('../PasswordStrengthMeter', () => ({
+  PasswordStrengthMeter: ({ level, feedback, visible }: { level: string; feedback: string; visible: boolean }) =>
+    visible ? (
+      <div role="status">
+        <span>{level}</span>
+        <span>{feedback}</span>
+      </div>
+    ) : null,
 }));
 
 describe('SignUpPage', () => {
@@ -53,7 +66,7 @@ describe('SignUpPage', () => {
     expect(screen.getByRole('button', { name: 'Create Account' })).toBeInTheDocument();
   });
 
-  it('shows strength indicators when password is entered', async () => {
+  it('shows strength meter when password is entered', async () => {
     const user = userEvent.setup();
     render(
       <MemoryRouter>
@@ -61,11 +74,10 @@ describe('SignUpPage', () => {
       </MemoryRouter>,
     );
 
-    await user.type(screen.getByLabelText('Password'), 'Password123');
+    await user.type(screen.getByLabelText('Password'), 'MySecurePass12');
 
-    expect(screen.getByText('8+ characters')).toBeInTheDocument();
-    expect(screen.getByText('1 uppercase letter')).toBeInTheDocument();
-    expect(screen.getByText('1 number')).toBeInTheDocument();
+    expect(screen.getByRole('status')).toBeInTheDocument();
+    expect(screen.getByText('good')).toBeInTheDocument();
   });
 
   it('submits registration details', async () => {

@@ -1,8 +1,10 @@
 import { useState, type FormEvent } from 'react';
 import { Link } from 'react-router';
 import { FormInput } from '@/shared/components/FormInput';
-import { useRegister, checkPasswordStrength, type RegisterFields } from '../hooks/useRegister';
+import { useRegister, type RegisterFields } from '../hooks/useRegister';
+import { usePasswordStrength } from '../hooks/usePasswordStrength';
 import { GoogleSignInButton } from './GoogleSignInButton';
+import { PasswordStrengthMeter } from './PasswordStrengthMeter';
 
 export function SignUpPage() {
   const [values, setValues] = useState<RegisterFields>({
@@ -13,8 +15,7 @@ export function SignUpPage() {
   });
 
   const { submit, fieldErrors, serverError, isLoading } = useRegister();
-
-  const strength = checkPasswordStrength(values.password);
+  const strength = usePasswordStrength(values.password);
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -72,20 +73,17 @@ export function SignUpPage() {
             <FormInput
               label="Password"
               type="password"
-              placeholder="••••••••"
+              placeholder="••••••••••••"
               autoComplete="new-password"
               value={values.password}
               onChange={(e) => handleChange('password', e.target.value)}
               error={fieldErrors.password}
             />
-            {/* Strength indicators */}
-            {values.password.length > 0 && (
-              <div className="mt-1 flex flex-col gap-1 text-xs">
-                <StrengthItem met={strength.hasLength} text="8+ characters" />
-                <StrengthItem met={strength.hasUppercase} text="1 uppercase letter" />
-                <StrengthItem met={strength.hasNumber} text="1 number" />
-              </div>
-            )}
+            <PasswordStrengthMeter
+              level={strength.level}
+              feedback={strength.feedback}
+              visible={values.password.length > 0}
+            />
           </div>
 
           <FormInput
@@ -130,17 +128,5 @@ export function SignUpPage() {
         </p>
       </div>
     </main>
-  );
-}
-
-function StrengthItem({ met, text }: { met: boolean; text: string }) {
-  return (
-    <span
-      className="flex items-center gap-1.5"
-      style={{ color: met ? 'var(--positive)' : 'var(--text-muted)' }}
-    >
-      <span>{met ? '✓' : '○'}</span>
-      {text}
-    </span>
   );
 }

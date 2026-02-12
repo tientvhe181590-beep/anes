@@ -4,6 +4,7 @@ import { useMutation } from '@tanstack/react-query';
 import { z } from 'zod/v4';
 import { AxiosError } from 'axios';
 import { useAuthStore } from '@/app/store';
+import { isBlockedPassword } from '@/shared/utils/common-passwords';
 import { registerApi } from '../api/auth.api';
 
 const registerSchema = z
@@ -11,9 +12,11 @@ const registerSchema = z
     email: z.email('Please enter a valid email address.'),
     password: z
       .string()
-      .min(8, 'Password must be at least 8 characters with 1 uppercase and 1 number.')
-      .regex(/[A-Z]/, 'Password must be at least 8 characters with 1 uppercase and 1 number.')
-      .regex(/[0-9]/, 'Password must be at least 8 characters with 1 uppercase and 1 number.'),
+      .min(12, 'Password must be at least 12 characters.')
+      .max(128, 'Password must be at most 128 characters.')
+      .refine((pw) => !isBlockedPassword(pw), {
+        message: 'This password is too common. Please choose a different one.',
+      }),
     confirmPassword: z.string().min(1, 'Please confirm your password.'),
     fullName: z.string().min(1, 'Full name is required.').max(255),
   })
@@ -23,25 +26,6 @@ const registerSchema = z
   });
 
 export type RegisterFields = z.infer<typeof registerSchema>;
-
-export interface PasswordStrength {
-  hasLength: boolean;
-  hasUppercase: boolean;
-  hasNumber: boolean;
-  isStrong: boolean;
-}
-
-export function checkPasswordStrength(password: string): PasswordStrength {
-  const hasLength = password.length >= 8;
-  const hasUppercase = /[A-Z]/.test(password);
-  const hasNumber = /[0-9]/.test(password);
-  return {
-    hasLength,
-    hasUppercase,
-    hasNumber,
-    isStrong: hasLength && hasUppercase && hasNumber,
-  };
-}
 
 export function useRegister() {
   const navigate = useNavigate();
