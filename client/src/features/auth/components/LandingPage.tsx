@@ -44,7 +44,16 @@ export function LandingPage() {
     [],
   );
 
-  const swipeHandlers = useSwipe({
+  const {
+    onTouchStart,
+    onTouchMove,
+    onTouchEnd,
+    onMouseDown,
+    onMouseMove,
+    onMouseUp,
+    onMouseLeave,
+    ref: swipeRef,
+  } = useSwipe({
     threshold: 50,
     onSwipeLeft: goNext,
     onSwipeRight: goPrev,
@@ -56,16 +65,14 @@ export function LandingPage() {
     <main
       className="relative h-dvh w-full overflow-hidden select-none"
       style={{ maxWidth: 480, margin: "0 auto" }}
-      {...{
-        onTouchStart: swipeHandlers.onTouchStart,
-        onTouchMove: swipeHandlers.onTouchMove,
-        onTouchEnd: swipeHandlers.onTouchEnd,
-        onMouseDown: swipeHandlers.onMouseDown,
-        onMouseMove: swipeHandlers.onMouseMove,
-        onMouseUp: swipeHandlers.onMouseUp,
-        onMouseLeave: swipeHandlers.onMouseLeave,
-      }}
-      ref={swipeHandlers.ref}
+      onTouchStart={onTouchStart}
+      onTouchMove={onTouchMove}
+      onTouchEnd={onTouchEnd}
+      onMouseDown={onMouseDown}
+      onMouseMove={onMouseMove}
+      onMouseUp={onMouseUp}
+      onMouseLeave={onMouseLeave}
+      ref={swipeRef}
     >
       {/* Skip button */}
       {!isLastSlide && (

@@ -94,7 +94,8 @@ export function useRegister() {
   function submit(values: RegisterFields) {
     setServerError(null);
     if (!validate(values)) return;
-    const { confirmPassword: _, ...body } = values;
+    const { confirmPassword, ...body } = values;
+    void confirmPassword;
     mutation.mutate(body);
   }
 
