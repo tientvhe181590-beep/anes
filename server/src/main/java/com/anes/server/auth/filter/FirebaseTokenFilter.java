@@ -2,7 +2,9 @@ package com.anes.server.auth.filter;
 
 import com.anes.server.auth.entity.AuthIdentity;
 import com.anes.server.auth.repository.AuthIdentityRepository;
+import com.anes.server.auth.service.AuditLogService;
 import com.anes.server.auth.service.FirebaseAuthService;
+import com.anes.server.auth.util.CloudflareIpResolver;
 import com.anes.server.common.dto.ApiResponse;
 import com.anes.server.user.entity.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -39,15 +41,18 @@ public class FirebaseTokenFilter extends OncePerRequestFilter {
 
     private final FirebaseAuthService firebaseAuthService;
     private final AuthIdentityRepository authIdentityRepository;
+    private final AuditLogService auditLogService;
     private final ObjectMapper objectMapper;
     private final AntPathMatcher pathMatcher = new AntPathMatcher();
 
     public FirebaseTokenFilter(
             FirebaseAuthService firebaseAuthService,
             AuthIdentityRepository authIdentityRepository,
+            AuditLogService auditLogService,
             ObjectMapper objectMapper) {
         this.firebaseAuthService = firebaseAuthService;
         this.authIdentityRepository = authIdentityRepository;
+        this.auditLogService = auditLogService;
         this.objectMapper = objectMapper;
     }
 
@@ -110,6 +115,10 @@ public class FirebaseTokenFilter extends OncePerRequestFilter {
 
             filterChain.doFilter(request, response);
         } catch (org.springframework.security.authentication.BadCredentialsException ex) {
+            String clientIp = CloudflareIpResolver.resolve(request);
+            auditLogService.logEvent(AuditLogService.AUTH_FAILURE, null, clientIp,
+                    request.getHeader("User-Agent"),
+                    java.util.Map.of("reason", ex.getMessage()));
             writeUnauthorized(response, ex.getMessage());
         }
     }

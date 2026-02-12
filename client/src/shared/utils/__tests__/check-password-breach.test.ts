@@ -21,9 +21,7 @@ describe('checkPasswordBreach', () => {
       '00D4F6E8FA6EECAD2A3AA415EEC418D38EC:2',
     ].join('\n');
 
-    vi.mocked(fetch).mockResolvedValue(
-      new Response(responseTxt, { status: 200 }),
-    );
+    vi.mocked(fetch).mockResolvedValue(new Response(responseTxt, { status: 200 }));
 
     const result = await checkPasswordBreach('password');
 
@@ -44,9 +42,7 @@ describe('checkPasswordBreach', () => {
       '00D4F6E8FA6EECAD2A3AA415EEC418D38EC:2',
     ].join('\n');
 
-    vi.mocked(fetch).mockResolvedValue(
-      new Response(responseTxt, { status: 200 }),
-    );
+    vi.mocked(fetch).mockResolvedValue(new Response(responseTxt, { status: 200 }));
 
     const result = await checkPasswordBreach('xK9#mP2!uNiQuE_987!');
 
@@ -56,9 +52,7 @@ describe('checkPasswordBreach', () => {
   });
 
   it('soft-fails when API returns non-OK status', async () => {
-    vi.mocked(fetch).mockResolvedValue(
-      new Response('Service Unavailable', { status: 503 }),
-    );
+    vi.mocked(fetch).mockResolvedValue(new Response('Service Unavailable', { status: 503 }));
 
     const result = await checkPasswordBreach('anything');
 

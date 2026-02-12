@@ -18,16 +18,12 @@ describe('PasswordStrengthMeter', () => {
   });
 
   it('displays the correct label for weak', () => {
-    render(
-      <PasswordStrengthMeter level="weak" feedback="Too weak" visible={true} />,
-    );
+    render(<PasswordStrengthMeter level="weak" feedback="Too weak" visible={true} />);
     expect(screen.getByText('Weak')).toBeInTheDocument();
   });
 
   it('displays the correct label for fair', () => {
-    render(
-      <PasswordStrengthMeter level="fair" feedback="Getting there" visible={true} />,
-    );
+    render(<PasswordStrengthMeter level="fair" feedback="Getting there" visible={true} />);
     expect(screen.getByText('Fair')).toBeInTheDocument();
   });
 
@@ -39,16 +35,12 @@ describe('PasswordStrengthMeter', () => {
   });
 
   it('displays the correct label for strong', () => {
-    render(
-      <PasswordStrengthMeter level="strong" feedback="Excellent!" visible={true} />,
-    );
+    render(<PasswordStrengthMeter level="strong" feedback="Excellent!" visible={true} />);
     expect(screen.getByText('Strong')).toBeInTheDocument();
   });
 
   it('displays feedback text', () => {
-    render(
-      <PasswordStrengthMeter level="fair" feedback="Add more variety." visible={true} />,
-    );
+    render(<PasswordStrengthMeter level="fair" feedback="Add more variety." visible={true} />);
     expect(screen.getByText('Add more variety.')).toBeInTheDocument();
   });
 

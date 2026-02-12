@@ -1,5 +1,6 @@
 package com.anes.server.auth.service;
 
+import com.google.firebase.ErrorCode;
 import com.google.firebase.auth.AuthErrorCode;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
@@ -70,7 +71,7 @@ class FirebaseAuthServiceTest {
     void verifyIdToken_expiredToken_throwsBadCredentials() throws FirebaseAuthException {
         FirebaseAuth mockAuth = mock(FirebaseAuth.class);
         FirebaseAuthException expiredException = new FirebaseAuthException(
-                AuthErrorCode.EXPIRED_ID_TOKEN, "Token expired", null, null, null);
+                ErrorCode.INVALID_ARGUMENT, "Token expired", null, null, AuthErrorCode.EXPIRED_ID_TOKEN);
         when(mockAuth.verifyIdToken(anyString(), anyBoolean())).thenThrow(expiredException);
 
         try (MockedStatic<FirebaseAuth> staticMock = mockStatic(FirebaseAuth.class)) {
@@ -87,7 +88,7 @@ class FirebaseAuthServiceTest {
     void verifyIdToken_invalidToken_throwsBadCredentials() throws FirebaseAuthException {
         FirebaseAuth mockAuth = mock(FirebaseAuth.class);
         FirebaseAuthException invalidException = new FirebaseAuthException(
-                AuthErrorCode.INVALID_ID_TOKEN, "Invalid token", null, null, null);
+                ErrorCode.INVALID_ARGUMENT, "Invalid token", null, null, AuthErrorCode.INVALID_ID_TOKEN);
         when(mockAuth.verifyIdToken(anyString(), anyBoolean())).thenThrow(invalidException);
 
         try (MockedStatic<FirebaseAuth> staticMock = mockStatic(FirebaseAuth.class)) {
@@ -104,7 +105,7 @@ class FirebaseAuthServiceTest {
     void verifyIdToken_revokedToken_throwsBadCredentials() throws FirebaseAuthException {
         FirebaseAuth mockAuth = mock(FirebaseAuth.class);
         FirebaseAuthException revokedException = new FirebaseAuthException(
-                AuthErrorCode.REVOKED_ID_TOKEN, "Token revoked", null, null, null);
+                ErrorCode.INVALID_ARGUMENT, "Token revoked", null, null, AuthErrorCode.REVOKED_ID_TOKEN);
         when(mockAuth.verifyIdToken(anyString(), anyBoolean())).thenThrow(revokedException);
 
         try (MockedStatic<FirebaseAuth> staticMock = mockStatic(FirebaseAuth.class)) {

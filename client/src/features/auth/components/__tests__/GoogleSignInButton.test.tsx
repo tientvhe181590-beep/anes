@@ -141,13 +141,10 @@ describe('GoogleSignInButton', () => {
     signInWithPopupMock.mockResolvedValue({
       user: { getIdToken: () => Promise.resolve('firebase-id-token') },
     });
-    const axiosErr = new AxiosError(
-      'fail',
-      'ERR_BAD_RESPONSE',
-      undefined,
-      undefined,
-      { data: { message: 'Server error occurred' }, status: 401 } as AxiosResponse,
-    );
+    const axiosErr = new AxiosError('fail', 'ERR_BAD_RESPONSE', undefined, undefined, {
+      data: { message: 'Server error occurred' },
+      status: 401,
+    } as AxiosResponse);
     firebaseAuthApiMock.mockRejectedValue(axiosErr);
 
     render(

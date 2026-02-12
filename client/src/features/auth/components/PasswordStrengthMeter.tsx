@@ -7,21 +7,14 @@ interface PasswordStrengthMeterProps {
   visible: boolean;
 }
 
-const LEVEL_CONFIG: Record<
-  StrengthLevel,
-  { segments: number; color: string; label: string }
-> = {
+const LEVEL_CONFIG: Record<StrengthLevel, { segments: number; color: string; label: string }> = {
   weak: { segments: 1, color: 'var(--negative)', label: 'Weak' },
   fair: { segments: 2, color: '#F59E0B', label: 'Fair' },
   good: { segments: 3, color: '#EAB308', label: 'Good' },
   strong: { segments: 4, color: 'var(--positive)', label: 'Strong' },
 };
 
-export function PasswordStrengthMeter({
-  level,
-  feedback,
-  visible,
-}: PasswordStrengthMeterProps) {
+export function PasswordStrengthMeter({ level, feedback, visible }: PasswordStrengthMeterProps) {
   if (!visible) return null;
 
   const config = LEVEL_CONFIG[level];
@@ -46,9 +39,7 @@ export function PasswordStrengthMeter({
         <span style={{ color: config.color }} className="font-medium">
           {config.label}
         </span>
-        {feedback && (
-          <span className="text-[var(--text-muted)]">{feedback}</span>
-        )}
+        {feedback && <span className="text-[var(--text-muted)]">{feedback}</span>}
       </div>
     </div>
   );

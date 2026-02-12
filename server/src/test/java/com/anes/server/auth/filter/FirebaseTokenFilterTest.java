@@ -2,10 +2,12 @@ package com.anes.server.auth.filter;
 
 import com.anes.server.auth.entity.AuthIdentity;
 import com.anes.server.auth.repository.AuthIdentityRepository;
+import com.anes.server.auth.service.AuditLogService;
 import com.anes.server.auth.service.FirebaseAuthService;
 import com.anes.server.user.entity.Role;
 import com.anes.server.user.entity.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.firebase.auth.FirebaseToken;
 import jakarta.servlet.FilterChain;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,14 +40,17 @@ class FirebaseTokenFilterTest {
     private AuthIdentityRepository authIdentityRepository;
 
     @Mock
+    private AuditLogService auditLogService;
+
+    @Mock
     private FilterChain filterChain;
 
     private FirebaseTokenFilter filter;
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
     @BeforeEach
     void setUp() {
-        filter = new FirebaseTokenFilter(firebaseAuthService, authIdentityRepository, objectMapper);
+        filter = new FirebaseTokenFilter(firebaseAuthService, authIdentityRepository, auditLogService, objectMapper);
         SecurityContextHolder.clearContext();
     }
 
@@ -102,7 +107,6 @@ class FirebaseTokenFilterTest {
         FirebaseToken mockToken = mock(FirebaseToken.class);
         when(mockToken.getUid()).thenReturn("fb-uid-123");
         when(firebaseAuthService.verifyIdToken("valid-firebase-token")).thenReturn(mockToken);
-        when(firebaseAuthService.extractProvider(mockToken)).thenReturn("firebase");
 
         User user = new User();
         user.setId(42L);
@@ -192,7 +196,6 @@ class FirebaseTokenFilterTest {
         FirebaseToken mockToken = mock(FirebaseToken.class);
         when(mockToken.getUid()).thenReturn("fb-uid-deleted");
         when(firebaseAuthService.verifyIdToken("valid-token")).thenReturn(mockToken);
-        when(firebaseAuthService.extractProvider(mockToken)).thenReturn("firebase");
 
         User deletedUser = new User();
         deletedUser.setId(99L);

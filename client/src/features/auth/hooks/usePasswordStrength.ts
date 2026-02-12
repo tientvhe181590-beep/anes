@@ -63,7 +63,7 @@ function calculatePenalty(password: string): number {
   const seqRatio = sequences / totalLen;
 
   // Heavy penalty for highly repetitive or sequential passwords
-  let penalty = 1 - repeatRatio * 0.5 - seqRatio * 0.3;
+  const penalty = 1 - repeatRatio * 0.5 - seqRatio * 0.3;
   return Math.max(0.3, Math.min(1, penalty));
 }
 
@@ -112,10 +112,7 @@ function levelToFeedback(level: StrengthLevel, isBlocked: boolean, isBreached: b
  * @param password - The password string to evaluate
  * @param isBreached - Whether the password was found in HIBP (external async check)
  */
-export function usePasswordStrength(
-  password: string,
-  isBreached = false,
-): PasswordStrengthResult {
+export function usePasswordStrength(password: string, isBreached = false): PasswordStrengthResult {
   return useMemo(() => {
     if (password.length === 0) {
       return {

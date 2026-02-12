@@ -8,7 +8,8 @@ import {
 } from '../usePasswordStrength';
 
 vi.mock('@/shared/utils/common-passwords', () => ({
-  isBlockedPassword: (pw: string) => ['password', 'password123', '123456'].includes(pw.toLowerCase()),
+  isBlockedPassword: (pw: string) =>
+    ['password', 'password123', '123456'].includes(pw.toLowerCase()),
 }));
 
 describe('calculateEntropy', () => {
@@ -101,9 +102,7 @@ describe('usePasswordStrength', () => {
   });
 
   it('caps score to weak when breached', () => {
-    const { result } = renderHook(() =>
-      usePasswordStrength('aB3!xK9#mP2z', true),
-    );
+    const { result } = renderHook(() => usePasswordStrength('aB3!xK9#mP2z', true));
     expect(result.current.isBreached).toBe(true);
     expect(result.current.level).toBe('weak');
     expect(result.current.score).toBeLessThanOrEqual(15);
@@ -111,9 +110,7 @@ describe('usePasswordStrength', () => {
   });
 
   it('rates a strong password correctly', () => {
-    const { result } = renderHook(() =>
-      usePasswordStrength('xK9#mP2!qR4z&wT7'),
-    );
+    const { result } = renderHook(() => usePasswordStrength('xK9#mP2!qR4z&wT7'));
     expect(result.current.level).toBe('strong');
     expect(result.current.score).toBeGreaterThanOrEqual(80);
     expect(result.current.feedback).toContain('Excellent');

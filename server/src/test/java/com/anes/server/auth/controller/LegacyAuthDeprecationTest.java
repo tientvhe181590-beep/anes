@@ -1,5 +1,8 @@
 package com.anes.server.auth.controller;
 
+import com.anes.server.auth.filter.PayloadSizeFilter;
+import com.anes.server.auth.filter.RateLimitFilter;
+import com.anes.server.auth.service.AuditLogService;
 import com.anes.server.auth.service.AuthService;
 import com.anes.server.common.exception.GlobalExceptionHandler;
 import com.anes.server.config.FirebaseProperties;
@@ -7,12 +10,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.cors.CorsConfigurationSource;
 
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -31,11 +35,28 @@ class LegacyAuthDeprecationTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @MockitoBean
     private AuthService authService;
 
-    @MockBean
+    @MockitoBean
     private FirebaseProperties firebaseProperties;
+
+    @MockitoBean
+    private AuditLogService auditLogService;
+
+    // SecurityConfig dependencies (not used with addFilters=false but needed for
+    // context)
+    @MockitoBean
+    private com.anes.server.auth.filter.JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    @MockitoBean
+    private RateLimitFilter rateLimitFilter;
+
+    @MockitoBean
+    private PayloadSizeFilter payloadSizeFilter;
+
+    @MockitoBean
+    private CorsConfigurationSource corsConfigurationSource;
 
     @BeforeEach
     void setUp() {
@@ -82,14 +103,13 @@ class LegacyAuthDeprecationTest {
     }
 
     @Test
-    @DisplayName("POST /auth/google is NOT deprecated (works regardless of Firebase flag)")
-    void google_isNotDeprecated_whenFirebaseEnabled() throws Exception {
-        // Google endpoint has no deprecation guard — it should still produce
-        // a validation error (empty body) instead of 410
+    @DisplayName("POST /auth/google always returns 410 GONE")
+    void google_alwaysReturnsGone() throws Exception {
         mockMvc.perform(post("/api/v1/auth/google")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{}"))
-                .andExpect(status().isUnprocessableEntity())
-                .andExpect(jsonPath("$.error").value("VALIDATION_ERROR"));
+                .andExpect(status().isGone())
+                .andExpect(jsonPath("$.error").value("GONE"))
+                .andExpect(jsonPath("$.message").value("Legacy auth is deprecated. Use Firebase authentication."));
     }
 }

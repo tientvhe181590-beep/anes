@@ -10,12 +10,29 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
 
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      timeout: 2000ms
+      connect-timeout: 2000ms
+
   flyway:
     enabled: true
     locations: classpath:db/migration
 
 server:
   port: 8080
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-components: always
 
 anes:
   firebase:
@@ -39,3 +56,34 @@ anes:
 
   cors:
     allowed-origin: ${ANES_CORS_ORIGIN:http://localhost:5173}
+
+  redis:
+    enabled: ${ANES_REDIS_ENABLED:true}
+
+  rate-limit:
+    ip-limits:
+      auth:
+        max-requests: 20
+        window-seconds: 900
+        block-seconds: 900
+      legacy-login:
+        max-requests: 10
+        window-seconds: 900
+        block-seconds: 1800
+      register:
+        max-requests: 5
+        window-seconds: 3600
+        block-seconds: 3600
+    user-limits:
+      ai:
+        max-requests: 10
+        window-seconds: 60
+        block-seconds: 60
+      password-change:
+        max-requests: 3
+        window-seconds: 3600
+        block-seconds: 3600
+      sync-push:
+        max-requests: 30
+        window-seconds: 60
+        block-seconds: 60

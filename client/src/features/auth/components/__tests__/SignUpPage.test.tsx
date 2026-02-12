@@ -36,7 +36,15 @@ vi.mock('../GoogleSignInButton', () => ({
 }));
 
 vi.mock('../PasswordStrengthMeter', () => ({
-  PasswordStrengthMeter: ({ level, feedback, visible }: { level: string; feedback: string; visible: boolean }) =>
+  PasswordStrengthMeter: ({
+    level,
+    feedback,
+    visible,
+  }: {
+    level: string;
+    feedback: string;
+    visible: boolean;
+  }) =>
     visible ? (
       <div role="status">
         <span>{level}</span>
