@@ -13,6 +13,7 @@
   --accent-soft: #ff3b3020;
   --positive: #32d74b;
   --negative: #ff453a;
+  --warning: #f5a623;
 }
 
 @theme {
@@ -28,6 +29,7 @@
   --color-accent-soft: var(--accent-soft);
   --color-positive: var(--positive);
   --color-negative: var(--negative);
+  --color-warning: var(--warning);
 }
 
 * {

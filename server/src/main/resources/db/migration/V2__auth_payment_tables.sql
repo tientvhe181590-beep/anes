@@ -76,6 +76,24 @@ CREATE TABLE ai_usage_logs (
     INDEX idx_ai_usage_user (user_id)
 );
 
+-- MEMBERSHIP TIERS
+CREATE TABLE membership_tiers (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL UNIQUE,
+    price DECIMAL(10,2),
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- SYSTEM MESSAGES
+CREATE TABLE system_messages (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    body TEXT NOT NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
 -- =============================================================
 -- SEED DATA: Health Conditions
 -- =============================================================
@@ -105,3 +123,15 @@ INSERT INTO health_conditions (name, type, description) VALUES
 ('Eggs', 'ALLERGY', 'Allergy to eggs or egg-based products'),
 ('Shellfish', 'ALLERGY', 'Allergy to shellfish and crustaceans'),
 ('Fish', 'ALLERGY', 'Allergy to fish');
+
+-- =============================================================
+-- SEED DATA: Exercises
+-- =============================================================
+
+INSERT INTO exercises (name, type, primary_muscle_group, equipment, difficulty, video_url, is_downloadable, video_source, calories_per_min, deleted)
+VALUES
+('Push-Up', 'REP_BASED', 'Chest', 'Bodyweight', 'BEGINNER', NULL, FALSE, 'YOUTUBE', 6.50, FALSE),
+('Bodyweight Squat', 'REP_BASED', 'Legs', 'Bodyweight', 'BEGINNER', NULL, FALSE, 'YOUTUBE', 7.00, FALSE),
+('Plank', 'TIME_BASED', 'Core', 'Bodyweight', 'BEGINNER', NULL, FALSE, 'YOUTUBE', 4.00, FALSE),
+('Dumbbell Row', 'REP_BASED', 'Back', 'Dumbbells', 'INTERMEDIATE', NULL, FALSE, 'YOUTUBE', 5.50, FALSE),
+('Shoulder Press', 'REP_BASED', 'Shoulders', 'Dumbbells', 'INTERMEDIATE', NULL, FALSE, 'YOUTUBE', 6.00, FALSE);

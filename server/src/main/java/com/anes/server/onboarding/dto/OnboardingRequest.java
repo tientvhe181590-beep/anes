@@ -23,7 +23,7 @@ public record OnboardingRequest(
         List<String> allergies,
         List<String> dietPreferences,
         @NotNull @Min(2) @Max(6) Integer trainingDaysPerWeek,
-        @NotBlank String location,
+        @NotBlank String trainingLocation,
         List<String> equipment
 ) {
 }

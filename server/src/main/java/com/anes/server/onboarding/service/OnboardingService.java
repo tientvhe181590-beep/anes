@@ -86,7 +86,7 @@ public class OnboardingService {
         preferences.setGoalType(parseGoalType(request.goal()));
         preferences.setTargetWeight(request.targetWeightKg());
         preferences.setSessionsPerWeek(request.trainingDaysPerWeek());
-        preferences.setTrainingLocation(parseTrainingLocation(request.location()));
+        preferences.setTrainingLocation(parseTrainingLocation(request.trainingLocation()));
         preferences.setAvailableTools(joinList(request.equipment()));
         preferences.setTargetMuscleGroups(joinList(request.targetMuscleGroups()));
         preferences.setExperienceLevel(parseExperienceLevel(request.experienceLevel()));
