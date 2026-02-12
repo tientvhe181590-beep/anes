@@ -1,4 +1,4 @@
-import type { OnboardingData, GoalType } from "../types/onboarding.types";
+import type { OnboardingData, GoalType } from '../types/onboarding.types';
 
 interface StepGoalProps {
   data: OnboardingData;
@@ -7,19 +7,17 @@ interface StepGoalProps {
 }
 
 const goals: { value: GoalType; label: string; emoji: string; desc: string }[] = [
-  { value: "WeightLoss", label: "Lose Weight", emoji: "🔥", desc: "Burn fat and get lean" },
-  { value: "WeightGain", label: "Gain Weight", emoji: "📈", desc: "Build mass and size" },
-  { value: "MuscleGain", label: "Gain Muscle", emoji: "💪", desc: "Build strength and tone" },
-  { value: "StayFit", label: "Stay Fit", emoji: "✨", desc: "Maintain your current shape" },
+  { value: 'WeightLoss', label: 'Lose Weight', emoji: '🔥', desc: 'Burn fat and get lean' },
+  { value: 'WeightGain', label: 'Gain Weight', emoji: '📈', desc: 'Build mass and size' },
+  { value: 'MuscleGain', label: 'Gain Muscle', emoji: '💪', desc: 'Build strength and tone' },
+  { value: 'StayFit', label: 'Stay Fit', emoji: '✨', desc: 'Maintain your current shape' },
 ];
 
 export function StepGoal({ data, updateData, getError }: StepGoalProps) {
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h2 className="text-xl font-bold text-[var(--text-primary)]">
-          What's your goal?
-        </h2>
+        <h2 className="text-xl font-bold text-[var(--text-primary)]">What's your goal?</h2>
         <p className="mt-1 text-sm text-[var(--text-secondary)]">
           We'll customize everything around this
         </p>
@@ -35,15 +33,15 @@ export function StepGoal({ data, updateData, getError }: StepGoalProps) {
               onClick={() => updateData({ goal: g.value })}
               className={`flex items-center gap-4 rounded-xl border p-4 text-left transition-colors ${
                 active
-                  ? "border-[var(--accent)] bg-[var(--accent-soft)]"
-                  : "border-[var(--border)] bg-[var(--surface)]"
+                  ? 'border-[var(--accent)] bg-[var(--accent-soft)]'
+                  : 'border-[var(--border)] bg-[var(--surface)]'
               }`}
             >
               <span className="text-3xl">{g.emoji}</span>
               <div>
                 <p
                   className={`font-semibold ${
-                    active ? "text-[var(--accent)]" : "text-[var(--text-primary)]"
+                    active ? 'text-[var(--accent)]' : 'text-[var(--text-primary)]'
                   }`}
                 >
                   {g.label}
@@ -55,9 +53,9 @@ export function StepGoal({ data, updateData, getError }: StepGoalProps) {
         })}
       </div>
 
-      {getError("goal") && (
+      {getError('goal') && (
         <p className="text-xs text-[var(--negative)]" role="alert">
-          {getError("goal")}
+          {getError('goal')}
         </p>
       )}
     </div>

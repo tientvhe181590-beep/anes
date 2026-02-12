@@ -1,5 +1,5 @@
-import type { OnboardingData } from "../types/onboarding.types";
-import { ChipSelect } from "@/shared/components/ChipSelect";
+import type { OnboardingData } from '../types/onboarding.types';
+import { ChipSelect } from '@/shared/components/ChipSelect';
 
 interface StepAllergiesProps {
   data: OnboardingData;
@@ -8,23 +8,19 @@ interface StepAllergiesProps {
 }
 
 const allergyOptions = [
-  "Nuts",
-  "Dairy",
-  "Eggs",
-  "Seafood",
-  "Gluten",
-  "Keto",
-  "Vegan",
-  "Vegetarian",
-  "Low Carb",
-  "No Preference",
+  'Nuts',
+  'Dairy',
+  'Eggs',
+  'Seafood',
+  'Gluten',
+  'Keto',
+  'Vegan',
+  'Vegetarian',
+  'Low Carb',
+  'No Preference',
 ];
 
-export function StepAllergies({
-  data,
-  updateData,
-  getError,
-}: StepAllergiesProps) {
+export function StepAllergies({ data, updateData, getError }: StepAllergiesProps) {
   return (
     <div className="flex flex-col gap-6">
       <div>
@@ -45,9 +41,9 @@ export function StepAllergies({
         otherLabel="Other preference…"
       />
 
-      {getError("dietaryPreferences") && (
+      {getError('dietaryPreferences') && (
         <p className="text-xs text-[var(--negative)]" role="alert">
-          {getError("dietaryPreferences")}
+          {getError('dietaryPreferences')}
         </p>
       )}
     </div>

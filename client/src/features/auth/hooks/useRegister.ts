@@ -1,31 +1,25 @@
-import { useState } from "react";
-import { useNavigate } from "react-router";
-import { useMutation } from "@tanstack/react-query";
-import { z } from "zod/v4";
-import { AxiosError } from "axios";
-import { useAuthStore } from "@/app/store";
-import { registerApi } from "../api/auth.api";
+import { useState } from 'react';
+import { useNavigate } from 'react-router';
+import { useMutation } from '@tanstack/react-query';
+import { z } from 'zod/v4';
+import { AxiosError } from 'axios';
+import { useAuthStore } from '@/app/store';
+import { registerApi } from '../api/auth.api';
 
 const registerSchema = z
   .object({
-    email: z.email("Please enter a valid email address."),
+    email: z.email('Please enter a valid email address.'),
     password: z
       .string()
-      .min(8, "Password must be at least 8 characters with 1 uppercase and 1 number.")
-      .regex(
-        /[A-Z]/,
-        "Password must be at least 8 characters with 1 uppercase and 1 number.",
-      )
-      .regex(
-        /[0-9]/,
-        "Password must be at least 8 characters with 1 uppercase and 1 number.",
-      ),
-    confirmPassword: z.string().min(1, "Please confirm your password."),
-    fullName: z.string().min(1, "Full name is required.").max(255),
+      .min(8, 'Password must be at least 8 characters with 1 uppercase and 1 number.')
+      .regex(/[A-Z]/, 'Password must be at least 8 characters with 1 uppercase and 1 number.')
+      .regex(/[0-9]/, 'Password must be at least 8 characters with 1 uppercase and 1 number.'),
+    confirmPassword: z.string().min(1, 'Please confirm your password.'),
+    fullName: z.string().min(1, 'Full name is required.').max(255),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords do not match.",
-    path: ["confirmPassword"],
+    message: 'Passwords do not match.',
+    path: ['confirmPassword'],
   });
 
 export type RegisterFields = z.infer<typeof registerSchema>;
@@ -52,9 +46,7 @@ export function checkPasswordStrength(password: string): PasswordStrength {
 export function useRegister() {
   const navigate = useNavigate();
   const { setTokens, setUser } = useAuthStore();
-  const [fieldErrors, setFieldErrors] = useState<
-    Partial<Record<keyof RegisterFields, string>>
-  >({});
+  const [fieldErrors, setFieldErrors] = useState<Partial<Record<keyof RegisterFields, string>>>({});
   const [serverError, setServerError] = useState<string | null>(null);
 
   const mutation = useMutation({
@@ -62,16 +54,14 @@ export function useRegister() {
     onSuccess: (data) => {
       setTokens(data.accessToken, data.refreshToken);
       setUser(data.user);
-      navigate("/onboarding", { replace: true });
+      navigate('/onboarding', { replace: true });
     },
     onError: (error: unknown) => {
       if (error instanceof AxiosError) {
-        const msg =
-          error.response?.data?.message ??
-          "Registration failed. Please try again.";
+        const msg = error.response?.data?.message ?? 'Registration failed. Please try again.';
         setServerError(msg);
       } else {
-        setServerError("An unexpected error occurred.");
+        setServerError('An unexpected error occurred.');
       }
     },
   });

@@ -58,8 +58,7 @@ class AuthServiceTest {
                 passwordEncoder,
                 jwtService,
                 jwtProperties,
-                googleTokenVerifier
-        );
+                googleTokenVerifier);
     }
 
     @Test
@@ -133,8 +132,8 @@ class AuthServiceTest {
 
     @Test
     void googleAuthCreatesNewUserWhenMissing() {
-        GoogleTokenVerifier.GoogleTokenInfo tokenInfo =
-                new GoogleTokenVerifier.GoogleTokenInfo("sub", "google@example.com", "Google User");
+        GoogleTokenVerifier.GoogleTokenInfo tokenInfo = new GoogleTokenVerifier.GoogleTokenInfo("sub",
+                "google@example.com", "Google User");
 
         when(googleTokenVerifier.verify("id-token")).thenReturn(tokenInfo);
         when(userRepository.findByEmailAndDeletedFalse("google@example.com"))

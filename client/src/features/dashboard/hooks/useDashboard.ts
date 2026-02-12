@@ -1,9 +1,9 @@
-import { useQuery } from "@tanstack/react-query";
-import { fetchDashboardSummary } from "../api/dashboard.api";
+import { useQuery } from '@tanstack/react-query';
+import { fetchDashboardSummary } from '../api/dashboard.api';
 
 export function useDashboard() {
   const query = useQuery({
-    queryKey: ["dashboard", "summary"],
+    queryKey: ['dashboard', 'summary'],
     queryFn: fetchDashboardSummary,
   });
 

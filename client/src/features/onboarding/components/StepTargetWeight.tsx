@@ -1,5 +1,5 @@
-import { RulerSlider } from "@/shared/components/RulerSlider";
-import type { OnboardingData } from "../types/onboarding.types";
+import { RulerSlider } from '@/shared/components/RulerSlider';
+import type { OnboardingData } from '../types/onboarding.types';
 
 interface StepTargetWeightProps {
   data: OnboardingData;
@@ -7,22 +7,14 @@ interface StepTargetWeightProps {
   getError: (field: string) => string | null;
 }
 
-export function StepTargetWeight({
-  data,
-  updateData,
-  getError,
-}: StepTargetWeightProps) {
+export function StepTargetWeight({ data, updateData, getError }: StepTargetWeightProps) {
   const label =
-    data.goal === "WeightLoss"
-      ? "What's your target weight?"
-      : "What weight do you want to reach?";
+    data.goal === 'WeightLoss' ? "What's your target weight?" : 'What weight do you want to reach?';
 
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h2 className="text-xl font-bold text-[var(--text-primary)]">
-          {label}
-        </h2>
+        <h2 className="text-xl font-bold text-[var(--text-primary)]">{label}</h2>
         <p className="mt-1 text-sm text-[var(--text-secondary)]">
           Current weight: {data.weightKg} kg
         </p>
@@ -38,9 +30,9 @@ export function StepTargetWeight({
         onChange={(v) => updateData({ targetWeightKg: v })}
       />
 
-      {getError("targetWeightKg") && (
+      {getError('targetWeightKg') && (
         <p className="text-center text-xs text-[var(--negative)]" role="alert">
-          {getError("targetWeightKg")}
+          {getError('targetWeightKg')}
         </p>
       )}
     </div>

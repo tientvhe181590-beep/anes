@@ -1,5 +1,5 @@
-import { FormInput } from "@/shared/components/FormInput";
-import type { OnboardingData, Gender } from "../types/onboarding.types";
+import { FormInput } from '@/shared/components/FormInput';
+import type { OnboardingData, Gender } from '../types/onboarding.types';
 
 interface StepBasicsProps {
   data: OnboardingData;
@@ -8,20 +8,16 @@ interface StepBasicsProps {
 }
 
 const genders: { value: Gender; label: string }[] = [
-  { value: "Male", label: "Male" },
-  { value: "Female", label: "Female" },
+  { value: 'Male', label: 'Male' },
+  { value: 'Female', label: 'Female' },
 ];
 
 export function StepBasics({ data, updateData, getError }: StepBasicsProps) {
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h2 className="text-xl font-bold text-[var(--text-primary)]">
-          What's your name?
-        </h2>
-        <p className="mt-1 text-sm text-[var(--text-secondary)]">
-          Let's get to know you
-        </p>
+        <h2 className="text-xl font-bold text-[var(--text-primary)]">What's your name?</h2>
+        <p className="mt-1 text-sm text-[var(--text-secondary)]">Let's get to know you</p>
       </div>
 
       <FormInput
@@ -30,15 +26,13 @@ export function StepBasics({ data, updateData, getError }: StepBasicsProps) {
         placeholder="Enter your name"
         value={data.name}
         onChange={(e) => updateData({ name: e.target.value })}
-        error={getError("name") ?? undefined}
+        error={getError('name') ?? undefined}
         maxLength={255}
         autoComplete="name"
       />
 
       <div className="flex flex-col gap-2">
-        <span className="text-sm font-medium text-[var(--text-secondary)]">
-          Gender
-        </span>
+        <span className="text-sm font-medium text-[var(--text-secondary)]">Gender</span>
         <div className="flex gap-3">
           {genders.map((g) => (
             <button
@@ -47,17 +41,17 @@ export function StepBasics({ data, updateData, getError }: StepBasicsProps) {
               onClick={() => updateData({ gender: g.value })}
               className={`flex-1 rounded-xl border py-3 text-sm font-medium transition-colors ${
                 data.gender === g.value
-                  ? "border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--accent)]"
-                  : "border-[var(--border)] bg-[var(--surface)] text-[var(--text-secondary)]"
+                  ? 'border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--accent)]'
+                  : 'border-[var(--border)] bg-[var(--surface)] text-[var(--text-secondary)]'
               }`}
             >
               {g.label}
             </button>
           ))}
         </div>
-        {getError("gender") && (
+        {getError('gender') && (
           <p className="text-xs text-[var(--negative)]" role="alert">
-            {getError("gender")}
+            {getError('gender')}
           </p>
         )}
       </div>

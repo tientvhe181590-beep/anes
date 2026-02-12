@@ -1,18 +1,12 @@
-export type Gender = "Male" | "Female";
+export type Gender = 'Male' | 'Female';
 
-export type GoalType = "WeightLoss" | "WeightGain" | "MuscleGain" | "StayFit";
+export type GoalType = 'WeightLoss' | 'WeightGain' | 'MuscleGain' | 'StayFit';
 
-export type ExperienceLevel = "Basic" | "Intermediate" | "Advanced";
+export type ExperienceLevel = 'Basic' | 'Intermediate' | 'Advanced';
 
-export type TrainingLocation = "Home" | "Gym";
+export type TrainingLocation = 'Home' | 'Gym';
 
-export type MuscleGroup =
-  | "Chest"
-  | "Back"
-  | "Legs"
-  | "Arms"
-  | "Shoulders"
-  | "Core";
+export type MuscleGroup = 'Chest' | 'Back' | 'Legs' | 'Arms' | 'Shoulders' | 'Core';
 
 export interface OnboardingData {
   // Step 1: Basics
@@ -45,7 +39,7 @@ export interface OnboardingData {
 }
 
 export const INITIAL_ONBOARDING_DATA: OnboardingData = {
-  name: "",
+  name: '',
   gender: null,
   age: null,
   heightCm: 170,

@@ -3,9 +3,9 @@
  * Mirrors the server-side Mifflin-St Jeor implementation.
  */
 
-export type Gender = "Male" | "Female";
-export type ActivityLevel = "Low" | "Medium" | "High";
-export type GoalType = "WeightLoss" | "WeightGain" | "MuscleGain" | "StayFit";
+export type Gender = 'Male' | 'Female';
+export type ActivityLevel = 'Low' | 'Medium' | 'High';
+export type GoalType = 'WeightLoss' | 'WeightGain' | 'MuscleGain' | 'StayFit';
 
 const ACTIVITY_MULTIPLIER: Record<ActivityLevel, number> = {
   Low: 1.2,
@@ -33,7 +33,7 @@ export function calculateBMR(
   age: number,
 ): number {
   const base = 10 * weightKg + 6.25 * heightCm - 5 * age;
-  return gender === "Male" ? base + 5 : base - 161;
+  return gender === 'Male' ? base + 5 : base - 161;
 }
 
 /** TDEE = BMR × activity multiplier. */
@@ -42,10 +42,7 @@ export function calculateTDEE(bmr: number, activity: ActivityLevel): number {
 }
 
 /** Calorie target = TDEE ± goal adjustment. */
-export function calculateCalorieTarget(
-  tdee: number,
-  goal: GoalType,
-): number {
+export function calculateCalorieTarget(tdee: number, goal: GoalType): number {
   return tdee + GOAL_ADJUSTMENT[goal];
 }
 
@@ -60,12 +57,7 @@ export function calculateAll(params: {
   activity: ActivityLevel;
   goal: GoalType;
 }): { bmr: number; tdee: number; calorieTarget: number } {
-  const bmr = calculateBMR(
-    params.gender,
-    params.weightKg,
-    params.heightCm,
-    params.age,
-  );
+  const bmr = calculateBMR(params.gender, params.weightKg, params.heightCm, params.age);
   const tdee = calculateTDEE(bmr, params.activity);
   const calorieTarget = calculateCalorieTarget(tdee, params.goal);
   return { bmr, tdee, calorieTarget };

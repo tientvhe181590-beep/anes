@@ -1,13 +1,13 @@
-import { defineConfig } from "vitest/config";
-import react from "@vitejs/plugin-react";
-import tailwindcss from "@tailwindcss/vite";
-import tsconfigPaths from "vite-tsconfig-paths";
+import { defineConfig } from 'vitest/config';
+import react from '@vitejs/plugin-react';
+import tailwindcss from '@tailwindcss/vite';
+import tsconfigPaths from 'vite-tsconfig-paths';
 
 export default defineConfig({
   plugins: [react(), tailwindcss(), tsconfigPaths()],
   test: {
-    environment: "jsdom",
-    setupFiles: ["./test/setup.ts"],
+    environment: 'jsdom',
+    setupFiles: ['./test/setup.ts'],
     globals: true,
     clearMocks: true,
   },

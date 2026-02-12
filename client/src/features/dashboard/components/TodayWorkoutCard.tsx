@@ -1,5 +1,5 @@
-import { useNavigate } from "react-router";
-import type { DashboardTodayWorkout } from "../types/dashboard.types";
+import { useNavigate } from 'react-router';
+import type { DashboardTodayWorkout } from '../types/dashboard.types';
 
 interface TodayWorkoutCardProps {
   workout: DashboardTodayWorkout | null;
@@ -11,9 +11,7 @@ export function TodayWorkoutCard({ workout }: TodayWorkoutCardProps) {
   if (!workout) {
     return (
       <div className="rounded-2xl bg-[var(--surface-elevated)] p-4">
-        <p className="text-sm font-semibold text-[var(--text-primary)]">
-          Rest Day
-        </p>
+        <p className="text-sm font-semibold text-[var(--text-primary)]">Rest Day</p>
         <p className="mt-1 text-xs text-[var(--text-secondary)]">
           Recover and come back stronger 💤
         </p>
@@ -24,13 +22,11 @@ export function TodayWorkoutCard({ workout }: TodayWorkoutCardProps) {
   return (
     <button
       type="button"
-      onClick={() => navigate("/workouts")}
+      onClick={() => navigate('/workouts')}
       className="flex w-full items-center justify-between rounded-2xl bg-[var(--surface-elevated)] p-4 text-left transition-colors active:bg-[var(--border)]"
     >
       <div className="flex-1">
-        <p className="text-sm font-semibold text-[var(--text-primary)]">
-          {workout.title}
-        </p>
+        <p className="text-sm font-semibold text-[var(--text-primary)]">{workout.title}</p>
         <p className="mt-1 text-xs text-[var(--text-secondary)]">
           {workout.estimatedDurationMins} min · {workout.exerciseCount} exercises
         </p>

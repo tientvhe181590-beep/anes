@@ -1,4 +1,4 @@
-import { useRef, useCallback, type RefObject } from "react";
+import { useRef, useCallback, type RefObject } from 'react';
 
 interface SwipeOptions {
   threshold?: number;
@@ -81,10 +81,7 @@ export function useSwipe({
     [handleStart],
   );
 
-  const onMouseMove = useCallback(
-    (e: React.MouseEvent) => handleMove(e.clientX),
-    [handleMove],
-  );
+  const onMouseMove = useCallback((e: React.MouseEvent) => handleMove(e.clientX), [handleMove]);
 
   const onMouseUp = useCallback(() => handleEnd(), [handleEnd]);
   const onMouseLeave = useCallback(() => handleEnd(), [handleEnd]);

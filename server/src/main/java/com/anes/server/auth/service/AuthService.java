@@ -14,6 +14,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 @Service
@@ -32,8 +33,7 @@ public class AuthService {
             PasswordEncoder passwordEncoder,
             JwtService jwtService,
             com.anes.server.config.JwtProperties jwtProperties,
-            GoogleTokenVerifier googleTokenVerifier
-    ) {
+            GoogleTokenVerifier googleTokenVerifier) {
         this.userRepository = userRepository;
         this.refreshTokenRepository = refreshTokenRepository;
         this.passwordEncoder = passwordEncoder;
@@ -117,23 +117,21 @@ public class AuthService {
         refreshTokenEntity.setUser(user);
         refreshTokenEntity.setToken(refreshToken);
         refreshTokenEntity.setExpiresAt(LocalDateTime.now()
-            .plusMillis(jwtProperties.refreshTokenExpiration()));
+                .plus(Duration.ofMillis(jwtProperties.refreshTokenExpiration())));
         refreshTokenRepository.save(refreshTokenEntity);
 
         AuthUserDto userDto = includeUser
-            ? new AuthUserDto(
-                user.getId(),
-                user.getEmail(),
-                user.getFullName(),
-                user.isOnboardingComplete()
-            )
-            : null;
+                ? new AuthUserDto(
+                        user.getId(),
+                        user.getEmail(),
+                        user.getFullName(),
+                        user.isOnboardingComplete())
+                : null;
 
         return new AuthResponse(
                 accessToken,
                 refreshToken,
                 jwtProperties.accessTokenExpiration() / 1000,
-                userDto
-        );
+                userDto);
     }
 }

@@ -36,17 +36,16 @@ class AuthControllerTest {
                 "access",
                 "refresh",
                 3600,
-                new AuthUserDto(1L, "user@example.com", "User", false)
-        );
+                new AuthUserDto(1L, "user@example.com", "User", false));
         when(authService.register(any())).thenReturn(response);
 
         mockMvc.perform(post("/api/v1/auth/register")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{" +
-                                "\"email\":\"user@example.com\"," +
-                                "\"password\":\"Password123\"," +
-                                "\"fullName\":\"User\"" +
-                                "}"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{" +
+                        "\"email\":\"user@example.com\"," +
+                        "\"password\":\"Password123\"," +
+                        "\"fullName\":\"User\"" +
+                        "}"))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.data.accessToken").value("access"))
                 .andExpect(jsonPath("$.message").value("Account created successfully."));
@@ -55,8 +54,8 @@ class AuthControllerTest {
     @Test
     void registerValidationError() throws Exception {
         mockMvc.perform(post("/api/v1/auth/register")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{}"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{}"))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.error").value("VALIDATION_ERROR"));
     }
@@ -67,16 +66,15 @@ class AuthControllerTest {
                 "access",
                 "refresh",
                 3600,
-                new AuthUserDto(1L, "user@example.com", "User", false)
-        );
+                new AuthUserDto(1L, "user@example.com", "User", false));
         when(authService.login(any())).thenReturn(response);
 
         mockMvc.perform(post("/api/v1/auth/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{" +
-                                "\"email\":\"user@example.com\"," +
-                                "\"password\":\"Password123\"" +
-                                "}"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{" +
+                        "\"email\":\"user@example.com\"," +
+                        "\"password\":\"Password123\"" +
+                        "}"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.accessToken").value("access"))
                 .andExpect(jsonPath("$.message").value("Login successful."));
@@ -85,8 +83,8 @@ class AuthControllerTest {
     @Test
     void loginValidationError() throws Exception {
         mockMvc.perform(post("/api/v1/auth/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{}"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{}"))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.error").value("VALIDATION_ERROR"));
     }
@@ -97,15 +95,14 @@ class AuthControllerTest {
                 "access",
                 "refresh",
                 3600,
-                new AuthUserDto(1L, "user@example.com", "User", false)
-        );
+                new AuthUserDto(1L, "user@example.com", "User", false));
         when(authService.googleAuth(any())).thenReturn(response);
 
         mockMvc.perform(post("/api/v1/auth/google")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{" +
-                                "\"idToken\":\"token\"" +
-                                "}"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{" +
+                        "\"idToken\":\"token\"" +
+                        "}"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.accessToken").value("access"))
                 .andExpect(jsonPath("$.message").value("Google authentication successful."));
@@ -114,8 +111,8 @@ class AuthControllerTest {
     @Test
     void googleValidationError() throws Exception {
         mockMvc.perform(post("/api/v1/auth/google")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{}"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{}"))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.error").value("VALIDATION_ERROR"));
     }
@@ -126,15 +123,14 @@ class AuthControllerTest {
                 "access",
                 "refresh",
                 3600,
-                null
-        );
+                null);
         when(authService.refreshTokens(any())).thenReturn(response);
 
         mockMvc.perform(post("/api/v1/auth/refresh")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{" +
-                                "\"refreshToken\":\"refresh\"" +
-                                "}"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{" +
+                        "\"refreshToken\":\"refresh\"" +
+                        "}"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.accessToken").value("access"))
                 .andExpect(jsonPath("$.message").value("Token refreshed."));
@@ -143,8 +139,8 @@ class AuthControllerTest {
     @Test
     void refreshValidationError() throws Exception {
         mockMvc.perform(post("/api/v1/auth/refresh")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{}"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{}"))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.error").value("VALIDATION_ERROR"));
     }

@@ -1,6 +1,6 @@
-import { useState, useCallback } from "react";
-import { Link } from "react-router";
-import { useSwipe } from "@/shared/hooks/useSwipe";
+import { useState, useCallback } from 'react';
+import { Link } from 'react-router';
+import { useSwipe } from '@/shared/hooks/useSwipe';
 
 interface Slide {
   title: string;
@@ -10,39 +10,30 @@ interface Slide {
 
 const slides: Slide[] = [
   {
-    emoji: "🏋️",
-    title: "AI-Powered Workouts",
-    body: "Get personalized fitness plans crafted by AI, tailored to your goals, experience, and schedule.",
+    emoji: '🏋️',
+    title: 'AI-Powered Workouts',
+    body: 'Get personalized fitness plans crafted by AI, tailored to your goals, experience, and schedule.',
   },
   {
-    emoji: "🥗",
-    title: "Smart Nutrition",
-    body: "Track meals effortlessly and get AI-generated recipes that match your dietary needs.",
+    emoji: '🥗',
+    title: 'Smart Nutrition',
+    body: 'Track meals effortlessly and get AI-generated recipes that match your dietary needs.',
   },
   {
-    emoji: "📊",
-    title: "Easy Tracking",
-    body: "Monitor your progress with intuitive dashboards — calories, macros, streaks, all in one place.",
+    emoji: '📊',
+    title: 'Easy Tracking',
+    body: 'Monitor your progress with intuitive dashboards — calories, macros, streaks, all in one place.',
   },
 ];
 
 export function LandingPage() {
   const [current, setCurrent] = useState(0);
 
-  const goNext = useCallback(
-    () => setCurrent((prev) => Math.min(prev + 1, slides.length - 1)),
-    [],
-  );
+  const goNext = useCallback(() => setCurrent((prev) => Math.min(prev + 1, slides.length - 1)), []);
 
-  const goPrev = useCallback(
-    () => setCurrent((prev) => Math.max(prev - 1, 0)),
-    [],
-  );
+  const goPrev = useCallback(() => setCurrent((prev) => Math.max(prev - 1, 0)), []);
 
-  const goToSlide = useCallback(
-    (index: number) => setCurrent(index),
-    [],
-  );
+  const goToSlide = useCallback((index: number) => setCurrent(index), []);
 
   const {
     onTouchStart,
@@ -63,8 +54,8 @@ export function LandingPage() {
 
   return (
     <main
-      className="relative h-dvh w-full overflow-hidden select-none"
-      style={{ maxWidth: 480, margin: "0 auto" }}
+      className="relative h-dvh w-full select-none overflow-hidden"
+      style={{ maxWidth: 480, margin: '0 auto' }}
       onTouchStart={onTouchStart}
       onTouchMove={onTouchMove}
       onTouchEnd={onTouchEnd}
@@ -126,10 +117,7 @@ export function LandingPage() {
               className="h-2 rounded-full transition-all duration-300"
               style={{
                 width: index === current ? 24 : 8,
-                backgroundColor:
-                  index === current
-                    ? "var(--accent)"
-                    : "var(--text-muted)",
+                backgroundColor: index === current ? 'var(--accent)' : 'var(--text-muted)',
               }}
             />
           ))}

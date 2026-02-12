@@ -79,8 +79,7 @@ public class AiService {
             ExerciseRepository exerciseRepository,
             UserWorkoutScheduleRepository userWorkoutScheduleRepository,
             ObjectMapper objectMapper,
-            RestClient.Builder restClientBuilder
-    ) {
+            RestClient.Builder restClientBuilder) {
         this.aiProperties = aiProperties;
         this.aiContextBuilder = aiContextBuilder;
         this.aiRateLimiter = aiRateLimiter;
@@ -167,13 +166,10 @@ public class AiService {
         GeminiRequest request = new GeminiRequest(
                 List.of(new GeminiRequest.Content(
                         "user",
-                        List.of(new GeminiRequest.Part(prompt))
-                )),
+                        List.of(new GeminiRequest.Part(prompt)))),
                 new GeminiRequest.GenerationConfig(
                         aiProperties.temperature(),
-                        aiProperties.maxOutputTokens()
-                )
-        );
+                        aiProperties.maxOutputTokens()));
 
         try {
             return restClient.post()
@@ -196,7 +192,8 @@ public class AiService {
             throw new AiServiceUnavailableException("AI service is temporarily unavailable.");
         }
         GeminiResponse.Candidate candidate = response.candidates().getFirst();
-        if (candidate.content() == null || candidate.content().parts() == null || candidate.content().parts().isEmpty()) {
+        if (candidate.content() == null || candidate.content().parts() == null
+                || candidate.content().parts().isEmpty()) {
             throw new AiServiceUnavailableException("AI service is temporarily unavailable.");
         }
         return candidate.content().parts().getFirst().text();
@@ -216,7 +213,7 @@ public class AiService {
         program.setName(planDraft.programName());
         program.setDescription("AI-generated program");
         program.setDurationWeeks(planDraft.durationWeeks());
-        program.setIsAiGenerated(true);
+        program.setAiGenerated(true);
         WorkoutProgram savedProgram = workoutProgramRepository.save(program);
 
         List<PlanTemplateDto> templates = planDraft.templates();
@@ -254,8 +251,7 @@ public class AiService {
                 savedProgram.getId(),
                 savedProgram.getName(),
                 savedProgram.getDurationWeeks(),
-                templates
-        );
+                templates);
     }
 
     private Exercise resolveExercise(PlanExerciseDto exerciseDto, Long userId) {

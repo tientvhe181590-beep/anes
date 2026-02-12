@@ -1,1 +1,1 @@
-export { SignUpPage } from "@/features/auth/components/SignUpPage";
+export { SignUpPage } from '@/features/auth/components/SignUpPage';

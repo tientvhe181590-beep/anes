@@ -1,13 +1,13 @@
-import { useOnboarding } from "../hooks/useOnboarding";
-import { StepBasics } from "./StepBasics";
-import { StepStats } from "./StepStats";
-import { StepGoal } from "./StepGoal";
-import { StepTargetWeight } from "./StepTargetWeight";
-import { StepFocusArea } from "./StepFocusArea";
-import { StepExperience } from "./StepExperience";
-import { StepInjuries } from "./StepInjuries";
-import { StepAllergies } from "./StepAllergies";
-import { StepAvailability } from "./StepAvailability";
+import { useOnboarding } from '../hooks/useOnboarding';
+import { StepBasics } from './StepBasics';
+import { StepStats } from './StepStats';
+import { StepGoal } from './StepGoal';
+import { StepTargetWeight } from './StepTargetWeight';
+import { StepFocusArea } from './StepFocusArea';
+import { StepExperience } from './StepExperience';
+import { StepInjuries } from './StepInjuries';
+import { StepAllergies } from './StepAllergies';
+import { StepAvailability } from './StepAvailability';
 
 export function OnboardingFlow() {
   const {
@@ -29,23 +29,23 @@ export function OnboardingFlow() {
     const props = { data, updateData, getError };
 
     switch (currentStep) {
-      case "basics":
+      case 'basics':
         return <StepBasics {...props} />;
-      case "stats":
+      case 'stats':
         return <StepStats {...props} />;
-      case "goal":
+      case 'goal':
         return <StepGoal {...props} />;
-      case "targetWeight":
+      case 'targetWeight':
         return <StepTargetWeight {...props} />;
-      case "focusArea":
+      case 'focusArea':
         return <StepFocusArea {...props} />;
-      case "experience":
+      case 'experience':
         return <StepExperience {...props} />;
-      case "injuries":
+      case 'injuries':
         return <StepInjuries {...props} />;
-      case "allergies":
+      case 'allergies':
         return <StepAllergies {...props} />;
-      case "availability":
+      case 'availability':
         return <StepAvailability {...props} />;
       default:
         return null;
@@ -104,13 +104,9 @@ export function OnboardingFlow() {
             type="button"
             onClick={goNext}
             disabled={isSubmitting}
-            className="flex-1 rounded-xl bg-[var(--accent)] px-4 py-3 text-sm font-semibold text-white transition-opacity disabled:opacity-50 active:opacity-90"
+            className="flex-1 rounded-xl bg-[var(--accent)] px-4 py-3 text-sm font-semibold text-white transition-opacity active:opacity-90 disabled:opacity-50"
           >
-            {isSubmitting
-              ? "Saving…"
-              : isLastStep
-                ? "Complete"
-                : "Next"}
+            {isSubmitting ? 'Saving…' : isLastStep ? 'Complete' : 'Next'}
           </button>
         </div>
       </footer>

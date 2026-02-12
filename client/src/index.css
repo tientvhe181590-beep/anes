@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 :root {
   --bg: #0c0c0c;
@@ -39,7 +39,7 @@ body {
   min-height: 100vh;
   background: var(--bg);
   color: var(--text-primary);
-  font-family: "Space Grotesk", "IBM Plex Sans", "Segoe UI", sans-serif;
+  font-family: 'Space Grotesk', 'IBM Plex Sans', 'Segoe UI', sans-serif;
 }
 
 #root {

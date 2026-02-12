@@ -1,7 +1,7 @@
-import axios, { AxiosError } from "axios";
-import { useAuthStore } from "@/app/store";
+import axios, { AxiosError } from 'axios';
+import { useAuthStore } from '@/app/store';
 
-const baseURL = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8080";
+const baseURL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8080';
 
 export const apiClient = axios.create({
   baseURL,
@@ -40,9 +40,9 @@ const refreshAccessToken = async (): Promise<string | null> => {
 apiClient.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {
-    const originalRequest = error.config as (typeof error.config & {
+    const originalRequest = error.config as typeof error.config & {
       _retry?: boolean;
-    });
+    };
 
     if (error.response?.status === 401 && originalRequest && !originalRequest._retry) {
       originalRequest._retry = true;
@@ -58,5 +58,5 @@ apiClient.interceptors.response.use(
     }
 
     return Promise.reject(error);
-  }
+  },
 );

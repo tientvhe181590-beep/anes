@@ -1,27 +1,19 @@
-import { useState, type FormEvent } from "react";
-import { Link } from "react-router";
-import { FormInput } from "@/shared/components/FormInput";
-import {
-  useRegister,
-  checkPasswordStrength,
-  type RegisterFields,
-} from "../hooks/useRegister";
-import { useGoogleAuth } from "../hooks/useGoogleAuth";
+import { useState, type FormEvent } from 'react';
+import { Link } from 'react-router';
+import { FormInput } from '@/shared/components/FormInput';
+import { useRegister, checkPasswordStrength, type RegisterFields } from '../hooks/useRegister';
+import { useGoogleAuth } from '../hooks/useGoogleAuth';
 
 export function SignUpPage() {
   const [values, setValues] = useState<RegisterFields>({
-    email: "",
-    password: "",
-    confirmPassword: "",
-    fullName: "",
+    email: '',
+    password: '',
+    confirmPassword: '',
+    fullName: '',
   });
 
   const { submit, fieldErrors, serverError, isLoading } = useRegister();
-  const {
-    initiateGoogleSignIn,
-    error: googleError,
-    isLoading: googleLoading,
-  } = useGoogleAuth();
+  const { initiateGoogleSignIn, error: googleError, isLoading: googleLoading } = useGoogleAuth();
 
   const strength = checkPasswordStrength(values.password);
 
@@ -47,7 +39,10 @@ export function SignUpPage() {
 
         {/* Server / Google error */}
         {(serverError ?? googleError) && (
-          <div className="mt-6 rounded-xl bg-[var(--accent-soft)] px-4 py-3 text-sm text-[var(--negative)]" role="alert">
+          <div
+            className="mt-6 rounded-xl bg-[var(--accent-soft)] px-4 py-3 text-sm text-[var(--negative)]"
+            role="alert"
+          >
             {serverError ?? googleError}
           </div>
         )}
@@ -60,7 +55,7 @@ export function SignUpPage() {
             placeholder="John Doe"
             autoComplete="name"
             value={values.fullName}
-            onChange={(e) => handleChange("fullName", e.target.value)}
+            onChange={(e) => handleChange('fullName', e.target.value)}
             error={fieldErrors.fullName}
           />
 
@@ -70,7 +65,7 @@ export function SignUpPage() {
             placeholder="you@example.com"
             autoComplete="email"
             value={values.email}
-            onChange={(e) => handleChange("email", e.target.value)}
+            onChange={(e) => handleChange('email', e.target.value)}
             error={fieldErrors.email}
           />
 
@@ -81,7 +76,7 @@ export function SignUpPage() {
               placeholder="••••••••"
               autoComplete="new-password"
               value={values.password}
-              onChange={(e) => handleChange("password", e.target.value)}
+              onChange={(e) => handleChange('password', e.target.value)}
               error={fieldErrors.password}
             />
             {/* Strength indicators */}
@@ -100,7 +95,7 @@ export function SignUpPage() {
             placeholder="••••••••"
             autoComplete="new-password"
             value={values.confirmPassword}
-            onChange={(e) => handleChange("confirmPassword", e.target.value)}
+            onChange={(e) => handleChange('confirmPassword', e.target.value)}
             error={fieldErrors.confirmPassword}
           />
 
@@ -112,7 +107,7 @@ export function SignUpPage() {
             {isLoading ? (
               <span className="inline-block h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
             ) : (
-              "Create Account"
+              'Create Account'
             )}
           </button>
         </form>
@@ -154,11 +149,8 @@ export function SignUpPage() {
 
         {/* Login link */}
         <p className="mt-8 text-center text-sm text-[var(--text-secondary)]">
-          Already have an account?{" "}
-          <Link
-            to="/login"
-            className="font-medium text-[var(--accent)] hover:underline"
-          >
+          Already have an account?{' '}
+          <Link to="/login" className="font-medium text-[var(--accent)] hover:underline">
             Login
           </Link>
         </p>
@@ -171,9 +163,9 @@ function StrengthItem({ met, text }: { met: boolean; text: string }) {
   return (
     <span
       className="flex items-center gap-1.5"
-      style={{ color: met ? "var(--positive)" : "var(--text-muted)" }}
+      style={{ color: met ? 'var(--positive)' : 'var(--text-muted)' }}
     >
-      <span>{met ? "✓" : "○"}</span>
+      <span>{met ? '✓' : '○'}</span>
       {text}
     </span>
   );

@@ -35,7 +35,7 @@ export function CalorieProgress({ consumed, target }: CalorieProgressProps) {
           cy={RADIUS + STROKE}
           r={RADIUS}
           fill="none"
-          stroke={overTarget ? "var(--negative)" : "var(--accent)"}
+          stroke={overTarget ? 'var(--negative)' : 'var(--accent)'}
           strokeWidth={STROKE}
           strokeLinecap="round"
           strokeDasharray={CIRCUMFERENCE}
@@ -46,12 +46,8 @@ export function CalorieProgress({ consumed, target }: CalorieProgressProps) {
 
       {/* Center text overlay */}
       <div className="-mt-[124px] mb-[44px] flex flex-col items-center">
-        <span className="text-3xl font-bold text-[var(--text-primary)]">
-          {consumed}
-        </span>
-        <span className="text-xs text-[var(--text-secondary)]">
-          of {target} kcal
-        </span>
+        <span className="text-3xl font-bold text-[var(--text-primary)]">{consumed}</span>
+        <span className="text-xs text-[var(--text-secondary)]">of {target} kcal</span>
       </div>
     </div>
   );

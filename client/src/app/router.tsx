@@ -1,38 +1,38 @@
-import { createBrowserRouter, Navigate } from "react-router";
-import { ProtectedRoute } from "@/app/ProtectedRoute";
-import { MainLayout } from "@/app/MainLayout";
-import { LandingPage } from "@/app/pages/LandingPage";
-import { LoginPage } from "@/app/pages/LoginPage";
-import { SignUpPage } from "@/app/pages/SignUpPage";
-import { OnboardingFlow } from "@/app/pages/OnboardingFlow";
-import { DashboardScreen } from "@/app/pages/DashboardScreen";
-import { PlaceholderPage } from "@/app/pages/PlaceholderPage";
-import { NotFoundPage } from "@/app/pages/NotFoundPage";
-import { GoogleOAuthCallback } from "@/app/pages/GoogleOAuthCallback";
+import { createBrowserRouter, Navigate } from 'react-router';
+import { ProtectedRoute } from '@/app/ProtectedRoute';
+import { MainLayout } from '@/app/MainLayout';
+import { LandingPage } from '@/app/pages/LandingPage';
+import { LoginPage } from '@/app/pages/LoginPage';
+import { SignUpPage } from '@/app/pages/SignUpPage';
+import { OnboardingFlow } from '@/app/pages/OnboardingFlow';
+import { DashboardScreen } from '@/app/pages/DashboardScreen';
+import { PlaceholderPage } from '@/app/pages/PlaceholderPage';
+import { NotFoundPage } from '@/app/pages/NotFoundPage';
+import { GoogleOAuthCallback } from '@/app/pages/GoogleOAuthCallback';
 
 export const router = createBrowserRouter([
   {
-    path: "/",
+    path: '/',
     element: <Navigate to="/landing" replace />,
   },
   {
-    path: "/landing",
+    path: '/landing',
     element: <LandingPage />,
   },
   {
-    path: "/login",
+    path: '/login',
     element: <LoginPage />,
   },
   {
-    path: "/register",
+    path: '/register',
     element: <SignUpPage />,
   },
   {
-    path: "/auth/google/callback",
+    path: '/auth/google/callback',
     element: <GoogleOAuthCallback />,
   },
   {
-    path: "/onboarding",
+    path: '/onboarding',
     element: (
       <ProtectedRoute requireOnboardingComplete={false}>
         <OnboardingFlow />
@@ -47,29 +47,29 @@ export const router = createBrowserRouter([
     ),
     children: [
       {
-        path: "/dashboard",
+        path: '/dashboard',
         element: <DashboardScreen />,
       },
       {
-        path: "/workouts",
+        path: '/workouts',
         element: <PlaceholderPage title="Workouts" />,
       },
       {
-        path: "/nutrition",
+        path: '/nutrition',
         element: <PlaceholderPage title="Nutrition" />,
       },
       {
-        path: "/chat",
+        path: '/chat',
         element: <PlaceholderPage title="Chat" />,
       },
       {
-        path: "/profile",
+        path: '/profile',
         element: <PlaceholderPage title="Profile" />,
       },
     ],
   },
   {
-    path: "*",
+    path: '*',
     element: <NotFoundPage />,
   },
 ]);

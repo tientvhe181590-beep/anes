@@ -1,7 +1,7 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useEffect } from "react";
-import type { ReactNode } from "react";
-import { useAuthStore } from "@/app/store";
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { useEffect } from 'react';
+import type { ReactNode } from 'react';
+import { useAuthStore } from '@/app/store';
 
 const queryClient = new QueryClient({
   defaultOptions: {

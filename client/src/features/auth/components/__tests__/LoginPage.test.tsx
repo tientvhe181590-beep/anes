@@ -1,8 +1,8 @@
-import { render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
-import { describe, expect, it, vi, beforeEach } from "vitest";
-import { MemoryRouter } from "react-router";
-import { LoginPage } from "../LoginPage";
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { describe, expect, it, vi, beforeEach } from 'vitest';
+import { MemoryRouter } from 'react-router';
+import { LoginPage } from '../LoginPage';
 
 const submitMock = vi.fn();
 const googleMock = vi.fn();
@@ -20,15 +20,15 @@ let googleState = {
   isLoading: false,
 };
 
-vi.mock("../../hooks/useLogin", () => ({
+vi.mock('../../hooks/useLogin', () => ({
   useLogin: () => loginState,
 }));
 
-vi.mock("../../hooks/useGoogleAuth", () => ({
+vi.mock('../../hooks/useGoogleAuth', () => ({
   useGoogleAuth: () => googleState,
 }));
 
-describe("LoginPage", () => {
+describe('LoginPage', () => {
   beforeEach(() => {
     submitMock.mockReset();
     googleMock.mockReset();
@@ -36,21 +36,21 @@ describe("LoginPage", () => {
     googleState = { initiateGoogleSignIn: googleMock, error: null, isLoading: false };
   });
 
-  it("renders the login form", () => {
+  it('renders the login form', () => {
     render(
       <MemoryRouter>
         <LoginPage />
       </MemoryRouter>,
     );
 
-    expect(screen.getByText("Welcome Back")).toBeInTheDocument();
-    expect(screen.getByLabelText("Email")).toBeInTheDocument();
-    expect(screen.getByLabelText("Password")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Login" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /sign in with google/i })).toBeInTheDocument();
+    expect(screen.getByText('Welcome Back')).toBeInTheDocument();
+    expect(screen.getByLabelText('Email')).toBeInTheDocument();
+    expect(screen.getByLabelText('Password')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Login' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /sign in with google/i })).toBeInTheDocument();
   });
 
-  it("submits credentials", async () => {
+  it('submits credentials', async () => {
     const user = userEvent.setup();
     render(
       <MemoryRouter>
@@ -58,21 +58,21 @@ describe("LoginPage", () => {
       </MemoryRouter>,
     );
 
-    await user.type(screen.getByLabelText("Email"), "user@example.com");
-    await user.type(screen.getByLabelText("Password"), "password123");
-    await user.click(screen.getByRole("button", { name: "Login" }));
+    await user.type(screen.getByLabelText('Email'), 'user@example.com');
+    await user.type(screen.getByLabelText('Password'), 'password123');
+    await user.click(screen.getByRole('button', { name: 'Login' }));
 
     expect(submitMock).toHaveBeenCalledWith({
-      email: "user@example.com",
-      password: "password123",
+      email: 'user@example.com',
+      password: 'password123',
     });
   });
 
-  it("shows server error", () => {
+  it('shows server error', () => {
     loginState = {
       submit: submitMock,
       fieldErrors: {},
-      serverError: "Invalid credentials",
+      serverError: 'Invalid credentials',
       isLoading: false,
     };
 
@@ -82,6 +82,6 @@ describe("LoginPage", () => {
       </MemoryRouter>,
     );
 
-    expect(screen.getByRole("alert")).toHaveTextContent("Invalid credentials");
+    expect(screen.getByRole('alert')).toHaveTextContent('Invalid credentials');
   });
 });

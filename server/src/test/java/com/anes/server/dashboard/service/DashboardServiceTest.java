@@ -67,8 +67,7 @@ class DashboardServiceTest {
                 userDailyNutritionRepository,
                 userWorkoutScheduleRepository,
                 workoutTemplateExerciseRepository,
-                new ObjectMapper()
-        );
+                new ObjectMapper());
     }
 
     @Test
