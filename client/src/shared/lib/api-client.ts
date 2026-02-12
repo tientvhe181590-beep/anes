@@ -1,4 +1,5 @@
 import axios, { AxiosError } from 'axios';
+import { getAuth } from 'firebase/auth';
 import { useAuthStore } from '@/app/store';
 
 const baseURL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8080';
@@ -8,9 +9,9 @@ export const apiClient = axios.create({
 });
 
 apiClient.interceptors.request.use((config) => {
-  const { accessToken } = useAuthStore.getState();
-  if (accessToken) {
-    config.headers.Authorization = `Bearer ${accessToken}`;
+  const token = useAuthStore.getState().getActiveToken();
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
 });
@@ -18,7 +19,27 @@ apiClient.interceptors.request.use((config) => {
 let refreshPromise: Promise<string | null> | null = null;
 
 const refreshAccessToken = async (): Promise<string | null> => {
-  const { refreshToken, setTokens, logout } = useAuthStore.getState();
+  const { firebaseEnabled, setFirebaseToken, refreshToken, setTokens, logout } =
+    useAuthStore.getState();
+
+  if (firebaseEnabled) {
+    // Firebase mode: force-refresh the ID token
+    try {
+      const currentUser = getAuth().currentUser;
+      if (!currentUser) {
+        logout();
+        return null;
+      }
+      const token = await currentUser.getIdToken(true);
+      setFirebaseToken(token);
+      return token;
+    } catch {
+      logout();
+      return null;
+    }
+  }
+
+  // Legacy JWT mode: call /auth/refresh
   if (!refreshToken) {
     logout();
     return null;

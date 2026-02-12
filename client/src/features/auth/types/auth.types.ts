@@ -10,6 +10,15 @@ export interface AuthResponse {
   };
 }
 
+export interface FirebaseAuthResponse {
+  user: {
+    id: number;
+    email: string;
+    fullName: string;
+    onboardingComplete: boolean;
+  };
+}
+
 export interface LoginRequest {
   email: string;
   password: string;
@@ -22,5 +31,9 @@ export interface RegisterRequest {
 }
 
 export interface GoogleAuthRequest {
+  idToken: string;
+}
+
+export interface FirebaseAuthRequest {
   idToken: string;
 }

@@ -46,8 +46,8 @@ class LegacyAuthDeprecationTest {
     @DisplayName("POST /auth/login returns 410 GONE when Firebase enabled")
     void login_returns410_whenFirebaseEnabled() throws Exception {
         mockMvc.perform(post("/api/v1/auth/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"email\":\"user@example.com\",\"password\":\"Password123\"}"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"email\":\"user@example.com\",\"password\":\"Password123\"}"))
                 .andExpect(status().isGone())
                 .andExpect(jsonPath("$.error").value("GONE"))
                 .andExpect(jsonPath("$.message").value("Legacy auth is deprecated. Use Firebase authentication."));
@@ -59,8 +59,8 @@ class LegacyAuthDeprecationTest {
     @DisplayName("POST /auth/register returns 410 GONE when Firebase enabled")
     void register_returns410_whenFirebaseEnabled() throws Exception {
         mockMvc.perform(post("/api/v1/auth/register")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"email\":\"user@example.com\",\"password\":\"Password123\",\"fullName\":\"User\"}"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"email\":\"user@example.com\",\"password\":\"Password123\",\"fullName\":\"User\"}"))
                 .andExpect(status().isGone())
                 .andExpect(jsonPath("$.error").value("GONE"))
                 .andExpect(jsonPath("$.message").value("Legacy auth is deprecated. Use Firebase authentication."));
@@ -72,8 +72,8 @@ class LegacyAuthDeprecationTest {
     @DisplayName("POST /auth/refresh returns 410 GONE when Firebase enabled")
     void refresh_returns410_whenFirebaseEnabled() throws Exception {
         mockMvc.perform(post("/api/v1/auth/refresh")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"refreshToken\":\"some-refresh-token\"}"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"refreshToken\":\"some-refresh-token\"}"))
                 .andExpect(status().isGone())
                 .andExpect(jsonPath("$.error").value("GONE"))
                 .andExpect(jsonPath("$.message").value("Legacy auth is deprecated. Use Firebase authentication."));
@@ -87,8 +87,8 @@ class LegacyAuthDeprecationTest {
         // Google endpoint has no deprecation guard — it should still produce
         // a validation error (empty body) instead of 410
         mockMvc.perform(post("/api/v1/auth/google")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{}"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{}"))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.error").value("VALIDATION_ERROR"));
     }

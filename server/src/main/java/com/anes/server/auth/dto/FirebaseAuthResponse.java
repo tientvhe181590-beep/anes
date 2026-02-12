@@ -6,5 +6,5 @@ package com.anes.server.auth.dto;
  * because Firebase manages tokens client-side.
  */
 public record FirebaseAuthResponse(
-        AuthUserDto user
-) {}
+        AuthUserDto user) {
+}

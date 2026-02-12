@@ -45,14 +45,14 @@ class FirebaseAuthControllerTest {
     void firebaseAuth_newUser_returnsCreated() throws Exception {
         FirebaseAuthResponse response = new FirebaseAuthResponse(
                 new AuthUserDto(1L, "new@example.com", "New User", false));
-        FirebaseTokenExchangeService.ExchangeResult result =
-                new FirebaseTokenExchangeService.ExchangeResult(response, true);
+        FirebaseTokenExchangeService.ExchangeResult result = new FirebaseTokenExchangeService.ExchangeResult(response,
+                true);
 
         when(firebaseTokenExchangeService.exchangeToken(anyString())).thenReturn(result);
 
         mockMvc.perform(post("/api/v1/auth/firebase")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"idToken\":\"valid-firebase-token\"}"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"idToken\":\"valid-firebase-token\"}"))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.data.user.id").value(1))
                 .andExpect(jsonPath("$.data.user.email").value("new@example.com"))
@@ -66,14 +66,14 @@ class FirebaseAuthControllerTest {
     void firebaseAuth_existingUser_returnsOk() throws Exception {
         FirebaseAuthResponse response = new FirebaseAuthResponse(
                 new AuthUserDto(5L, "existing@example.com", "Existing User", true));
-        FirebaseTokenExchangeService.ExchangeResult result =
-                new FirebaseTokenExchangeService.ExchangeResult(response, false);
+        FirebaseTokenExchangeService.ExchangeResult result = new FirebaseTokenExchangeService.ExchangeResult(response,
+                false);
 
         when(firebaseTokenExchangeService.exchangeToken(anyString())).thenReturn(result);
 
         mockMvc.perform(post("/api/v1/auth/firebase")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"idToken\":\"valid-firebase-token\"}"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"idToken\":\"valid-firebase-token\"}"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.user.id").value(5))
                 .andExpect(jsonPath("$.data.user.email").value("existing@example.com"))
@@ -87,8 +87,8 @@ class FirebaseAuthControllerTest {
                 .thenThrow(new BadCredentialsException("Invalid authentication token"));
 
         mockMvc.perform(post("/api/v1/auth/firebase")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"idToken\":\"invalid-token\"}"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"idToken\":\"invalid-token\"}"))
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.error").value("UNAUTHORIZED"));
     }
@@ -97,8 +97,8 @@ class FirebaseAuthControllerTest {
     @DisplayName("POST /api/v1/auth/firebase: missing idToken returns 422")
     void firebaseAuth_missingIdToken_returnsValidationError() throws Exception {
         mockMvc.perform(post("/api/v1/auth/firebase")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{}"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{}"))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.error").value("VALIDATION_ERROR"));
     }

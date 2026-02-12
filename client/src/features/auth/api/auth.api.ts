@@ -1,6 +1,8 @@
 import { apiClient } from '@/shared/lib/api-client';
 import type {
   AuthResponse,
+  FirebaseAuthRequest,
+  FirebaseAuthResponse,
   LoginRequest,
   RegisterRequest,
   GoogleAuthRequest,
@@ -23,5 +25,13 @@ export async function registerApi(body: RegisterRequest): Promise<AuthResponse> 
 
 export async function googleAuthApi(body: GoogleAuthRequest): Promise<AuthResponse> {
   const response = await apiClient.post<ApiEnvelope<AuthResponse>>('/api/v1/auth/google', body);
+  return response.data.data;
+}
+
+export async function firebaseAuthApi(body: FirebaseAuthRequest): Promise<FirebaseAuthResponse> {
+  const response = await apiClient.post<ApiEnvelope<FirebaseAuthResponse>>(
+    '/api/v1/auth/firebase',
+    body,
+  );
   return response.data.data;
 }

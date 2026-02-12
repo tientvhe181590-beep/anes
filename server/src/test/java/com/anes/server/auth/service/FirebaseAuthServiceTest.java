@@ -121,8 +121,7 @@ class FirebaseAuthServiceTest {
     void extractProvider_returnsSignInProvider() {
         FirebaseToken mockToken = mock(FirebaseToken.class);
         when(mockToken.getClaims()).thenReturn(java.util.Map.of(
-                "firebase", java.util.Map.of("sign_in_provider", "google.com")
-        ));
+                "firebase", java.util.Map.of("sign_in_provider", "google.com")));
 
         String provider = firebaseAuthService.extractProvider(mockToken);
         assertThat(provider).isEqualTo("google.com");

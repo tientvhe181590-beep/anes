@@ -7,6 +7,8 @@ export { useRegister } from './hooks/useRegister';
 export { useGoogleAuth } from './hooks/useGoogleAuth';
 export type {
   AuthResponse,
+  FirebaseAuthResponse,
+  FirebaseAuthRequest,
   LoginRequest,
   RegisterRequest,
   GoogleAuthRequest,

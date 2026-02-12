@@ -14,13 +14,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(
-        name = "auth_identities",
-        uniqueConstraints = @UniqueConstraint(
-                name = "uk_provider_provider_uid",
-                columnNames = {"provider", "provider_uid"}
-        )
-)
+@Table(name = "auth_identities", uniqueConstraints = @UniqueConstraint(name = "uk_provider_provider_uid", columnNames = {
+        "provider", "provider_uid" }))
 @Getter
 @Setter
 @NoArgsConstructor

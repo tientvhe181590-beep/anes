@@ -38,15 +38,14 @@ public class AuthController {
 
     @PostMapping("/firebase")
     public ResponseEntity<ApiResponse<FirebaseAuthResponse>> firebaseAuth(
-            @Valid @RequestBody FirebaseAuthRequest request
-    ) {
+            @Valid @RequestBody FirebaseAuthRequest request) {
         if (firebaseTokenExchangeService == null) {
             return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
                     .body(ApiResponse.error("SERVICE_UNAVAILABLE", "Firebase authentication is not enabled."));
         }
 
-        FirebaseTokenExchangeService.ExchangeResult result =
-                firebaseTokenExchangeService.exchangeToken(request.idToken());
+        FirebaseTokenExchangeService.ExchangeResult result = firebaseTokenExchangeService
+                .exchangeToken(request.idToken());
 
         HttpStatus status = result.newUser() ? HttpStatus.CREATED : HttpStatus.OK;
         String message = result.newUser() ? "Account created successfully." : "Authentication successful.";
@@ -57,8 +56,7 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<ApiResponse<AuthResponse>> register(
-            @Valid @RequestBody RegisterRequest request
-    ) {
+            @Valid @RequestBody RegisterRequest request) {
         if (isFirebaseEnabled()) {
             return legacyDeprecatedResponse();
         }
@@ -69,8 +67,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<AuthResponse>> login(
-            @Valid @RequestBody LoginRequest request
-    ) {
+            @Valid @RequestBody LoginRequest request) {
         if (isFirebaseEnabled()) {
             return legacyDeprecatedResponse();
         }
@@ -80,16 +77,14 @@ public class AuthController {
 
     @PostMapping("/google")
     public ResponseEntity<ApiResponse<AuthResponse>> google(
-            @Valid @RequestBody GoogleAuthRequest request
-    ) {
+            @Valid @RequestBody GoogleAuthRequest request) {
         AuthResponse response = authService.googleAuth(request.idToken());
         return ResponseEntity.ok(ApiResponse.success(response, "Google authentication successful."));
     }
 
     @PostMapping("/refresh")
     public ResponseEntity<ApiResponse<AuthResponse>> refresh(
-            @Valid @RequestBody RefreshRequest request
-    ) {
+            @Valid @RequestBody RefreshRequest request) {
         if (isFirebaseEnabled()) {
             return legacyDeprecatedResponse();
         }
@@ -106,7 +101,6 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.GONE)
                 .body((ApiResponse<T>) ApiResponse.error(
                         "GONE",
-                        "Legacy auth is deprecated. Use Firebase authentication."
-                ));
+                        "Legacy auth is deprecated. Use Firebase authentication."));
     }
 }

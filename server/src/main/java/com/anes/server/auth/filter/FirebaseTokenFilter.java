@@ -35,8 +35,7 @@ public class FirebaseTokenFilter extends OncePerRequestFilter {
 
     private static final List<String> WHITELIST = List.of(
             "/api/v1/auth/**",
-            "/actuator/health"
-    );
+            "/actuator/health");
 
     private final FirebaseAuthService firebaseAuthService;
     private final AuthIdentityRepository authIdentityRepository;
@@ -46,8 +45,7 @@ public class FirebaseTokenFilter extends OncePerRequestFilter {
     public FirebaseTokenFilter(
             FirebaseAuthService firebaseAuthService,
             AuthIdentityRepository authIdentityRepository,
-            ObjectMapper objectMapper
-    ) {
+            ObjectMapper objectMapper) {
         this.firebaseAuthService = firebaseAuthService;
         this.authIdentityRepository = authIdentityRepository;
         this.objectMapper = objectMapper;
@@ -63,8 +61,7 @@ public class FirebaseTokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal(
             HttpServletRequest request,
             HttpServletResponse response,
-            FilterChain filterChain
-    ) throws ServletException, IOException {
+            FilterChain filterChain) throws ServletException, IOException {
         String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
@@ -105,11 +102,10 @@ public class FirebaseTokenFilter extends OncePerRequestFilter {
 
             // Set Spring Security context with user ID and role authorities
             List<SimpleGrantedAuthority> authorities = List.of(
-                    new SimpleGrantedAuthority("ROLE_" + user.getRole().name())
-            );
+                    new SimpleGrantedAuthority("ROLE_" + user.getRole().name()));
 
-            UsernamePasswordAuthenticationToken authentication =
-                    new UsernamePasswordAuthenticationToken(user.getId(), null, authorities);
+            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user.getId(),
+                    null, authorities);
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
             filterChain.doFilter(request, response);

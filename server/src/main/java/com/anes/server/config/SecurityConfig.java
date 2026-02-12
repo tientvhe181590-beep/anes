@@ -17,7 +17,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 @Configuration
 @EnableWebSecurity
-@EnableConfigurationProperties({JwtProperties.class, FirebaseProperties.class})
+@EnableConfigurationProperties({ JwtProperties.class, FirebaseProperties.class })
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
@@ -29,8 +29,7 @@ public class SecurityConfig {
 
     public SecurityConfig(
             JwtAuthenticationFilter jwtAuthenticationFilter,
-            FirebaseProperties firebaseProperties
-    ) {
+            FirebaseProperties firebaseProperties) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
         this.firebaseProperties = firebaseProperties;
     }
@@ -47,8 +46,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/v1/auth/**", "/actuator/health").permitAll()
-                        .anyRequest().authenticated()
-                )
+                        .anyRequest().authenticated())
                 .addFilterBefore(activeFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

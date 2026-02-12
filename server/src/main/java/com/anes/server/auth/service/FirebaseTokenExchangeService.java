@@ -27,17 +27,18 @@ public class FirebaseTokenExchangeService {
     public FirebaseTokenExchangeService(
             FirebaseAuthService firebaseAuthService,
             AuthIdentityRepository authIdentityRepository,
-            UserRepository userRepository
-    ) {
+            UserRepository userRepository) {
         this.firebaseAuthService = firebaseAuthService;
         this.authIdentityRepository = authIdentityRepository;
         this.userRepository = userRepository;
     }
 
     /**
-     * Exchange result carrying the auth response and whether the user was newly created.
+     * Exchange result carrying the auth response and whether the user was newly
+     * created.
      */
-    public record ExchangeResult(FirebaseAuthResponse response, boolean newUser) {}
+    public record ExchangeResult(FirebaseAuthResponse response, boolean newUser) {
+    }
 
     /**
      * Verifies a Firebase ID token and finds-or-creates the internal user.
@@ -95,8 +96,7 @@ public class FirebaseTokenExchangeService {
                 user.getId(),
                 user.getEmail(),
                 user.getFullName(),
-                user.isOnboardingComplete()
-        );
+                user.isOnboardingComplete());
         return new FirebaseAuthResponse(userDto);
     }
 }

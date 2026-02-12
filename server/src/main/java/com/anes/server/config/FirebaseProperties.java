@@ -8,8 +8,7 @@ import org.springframework.validation.annotation.Validated;
 @ConfigurationProperties(prefix = "anes.firebase")
 public record FirebaseProperties(
         @NotNull Boolean enabled,
-        String serviceAccountPath
-) {
+        String serviceAccountPath) {
     public FirebaseProperties {
         if (enabled == null) {
             enabled = false;
