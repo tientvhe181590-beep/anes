@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import type { ReactNode } from 'react';
 import { useAuthStore } from '@/app/store';
 import { initFirebase, isFirebaseConfigured } from '@/shared/lib/firebase';
+import { initPostHog } from '@/shared/lib/posthog';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -21,6 +22,11 @@ interface ProvidersProps {
 export function Providers({ children }: ProvidersProps) {
   const init = useAuthStore((state) => state.init);
   const initFirebaseAuth = useAuthStore((state) => state.initFirebaseAuth);
+
+  // Initialise PostHog lazily on mount
+  useEffect(() => {
+    initPostHog();
+  }, []);
 
   useEffect(() => {
     if (isFirebaseConfigured()) {

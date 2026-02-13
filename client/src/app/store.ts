@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import type { Auth, Unsubscribe, User as FirebaseUser } from 'firebase/auth';
 import { onAuthStateChanged } from 'firebase/auth';
+import { identifyUser, resetIdentity } from '@/shared/lib/analytics';
 
 export interface UserProfile {
   id: number;
@@ -164,6 +165,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   setUser: (user) => {
     if (user) {
       localStorage.setItem(USER_KEY, JSON.stringify(user));
+      identifyUser(user);
     } else {
       localStorage.removeItem(USER_KEY);
     }
@@ -173,6 +175,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     localStorage.removeItem(ACCESS_TOKEN_KEY);
     localStorage.removeItem(REFRESH_TOKEN_KEY);
     localStorage.removeItem(USER_KEY);
+    resetIdentity();
     set({
       accessToken: null,
       refreshToken: null,
@@ -216,11 +219,17 @@ export const useAuthStore = create<AuthState>((set, get) => ({
           refreshToken: null,
         });
 
+        // Identify user in PostHog
+        if (cachedProfile) {
+          identifyUser(cachedProfile);
+        }
+
         // Set up proactive token refresh (5 min before expiry)
         scheduleTokenRefresh(firebaseUser, set);
       } else {
         // User is signed out
         localStorage.removeItem(USER_KEY);
+        resetIdentity();
         set({
           firebaseToken: null,
           user: null,
@@ -243,6 +252,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   setFirebaseUser: (user, token) => {
     if (user) {
       localStorage.setItem(USER_KEY, JSON.stringify(user));
+      identifyUser(user);
     } else {
       localStorage.removeItem(USER_KEY);
     }
@@ -257,6 +267,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   firebaseLogout: async (auth: Auth) => {
     await auth.signOut();
     localStorage.removeItem(USER_KEY);
+    resetIdentity();
     set({
       firebaseToken: null,
       accessToken: null,

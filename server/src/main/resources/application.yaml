@@ -57,6 +57,10 @@ anes:
   cors:
     allowed-origin: ${ANES_CORS_ORIGIN:http://localhost:5173}
 
+  posthog:
+    api-key: ${POSTHOG_API_KEY:}
+    host: ${POSTHOG_HOST:https://us.i.posthog.com}
+
   redis:
     enabled: ${ANES_REDIS_ENABLED:true}
 

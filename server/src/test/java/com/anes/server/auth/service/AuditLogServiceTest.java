@@ -1,5 +1,6 @@
 package com.anes.server.auth.service;
 
+import com.anes.server.analytics.PostHogService;
 import com.anes.server.auth.entity.SecurityAuditLog;
 import com.anes.server.auth.repository.SecurityAuditLogRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,6 +16,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyMap;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
@@ -22,6 +27,9 @@ class AuditLogServiceTest {
 
     @Mock
     private SecurityAuditLogRepository repository;
+
+    @Mock
+    private PostHogService postHogService;
 
     @Captor
     private ArgumentCaptor<SecurityAuditLog> logCaptor;
@@ -31,7 +39,7 @@ class AuditLogServiceTest {
 
     @BeforeEach
     void setUp() {
-        auditLogService = new AuditLogService(repository, objectMapper);
+        auditLogService = new AuditLogService(repository, objectMapper, postHogService);
     }
 
     @Test
@@ -104,5 +112,46 @@ class AuditLogServiceTest {
         SecurityAuditLog log = logCaptor.getValue();
 
         assertThat(log.getDetails()).isNull();
+    }
+
+    @Test
+    @DisplayName("AUTH_FAILURE forwards to PostHog as server_auth_failure")
+    void forwardsAuthFailureToPostHog() {
+        Map<String, Object> details = Map.of("reason", "Token expired");
+        auditLogService.logEvent(AuditLogService.AUTH_FAILURE, null, "10.0.0.1", "curl", details);
+
+        verify(postHogService).capture(
+                eq(PostHogService.SERVER_AUTH_FAILURE),
+                eq("server"),
+                anyMap());
+    }
+
+    @Test
+    @DisplayName("RATE_LIMIT_HIT forwards to PostHog as server_rate_limit_hit")
+    void forwardsRateLimitToPostHog() {
+        Map<String, Object> details = Map.of("endpoint", "/api/v1/auth/firebase", "count", 21);
+        auditLogService.logEvent(AuditLogService.RATE_LIMIT_HIT, null, "203.0.113.5", "bot", details);
+
+        verify(postHogService).capture(
+                eq(PostHogService.SERVER_RATE_LIMIT_HIT),
+                eq("server"),
+                anyMap());
+    }
+
+    @Test
+    @DisplayName("AUTH_SUCCESS is NOT forwarded to PostHog")
+    void doesNotForwardAuthSuccessToPostHog() {
+        auditLogService.logEvent(AuditLogService.AUTH_SUCCESS, 42L, "10.0.0.1", "Chrome");
+
+        verify(postHogService, never()).capture(anyString(), anyString(), anyMap());
+    }
+
+    @Test
+    @DisplayName("ACCOUNT_CREATED is NOT forwarded to PostHog")
+    void doesNotForwardAccountCreatedToPostHog() {
+        auditLogService.logEvent(AuditLogService.ACCOUNT_CREATED, 1L, "10.0.0.1", "Chrome",
+                Map.of("provider", "google.com"));
+
+        verify(postHogService, never()).capture(anyString(), anyString(), anyMap());
     }
 }
