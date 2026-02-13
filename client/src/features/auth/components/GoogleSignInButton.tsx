@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router';
 import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { AxiosError } from 'axios';
 import { useAuthStore } from '@/app/store';
+import { getE2eAuthOverrides } from '@/shared/lib/e2e-auth';
 import { getFirebaseAuth, isFirebaseConfigured } from '@/shared/lib/firebase';
 import { firebaseAuthApi } from '../api/auth.api';
 
@@ -23,6 +24,29 @@ export function GoogleSignInButton({
   const handleGoogleSignIn = useCallback(async () => {
     setError(null);
 
+    const e2e = getE2eAuthOverrides();
+
+    if (e2e?.signInWithGooglePopup) {
+      setIsLoading(true);
+      try {
+        const result = await e2e.signInWithGooglePopup();
+        const idToken = await result.user.getIdToken();
+        const response = await firebaseAuthApi({ idToken });
+        setFirebaseUser(response.user, idToken);
+
+        if (response.user.onboardingComplete) {
+          navigate('/dashboard', { replace: true });
+        } else {
+          navigate('/onboarding', { replace: true });
+        }
+      } catch {
+        setError('Google sign-in failed. Please try again.');
+      } finally {
+        setIsLoading(false);
+      }
+      return;
+    }
+
     if (!isFirebaseConfigured()) {
       setError('Google Sign-In is not configured.');
       return;
@@ -35,8 +59,8 @@ export function GoogleSignInButton({
       const provider = new GoogleAuthProvider();
       provider.addScope('profile');
       provider.addScope('email');
-
       const result = await signInWithPopup(auth, provider);
+
       const idToken = await result.user.getIdToken();
 
       // Exchange the Firebase token with our backend to get/create user profile

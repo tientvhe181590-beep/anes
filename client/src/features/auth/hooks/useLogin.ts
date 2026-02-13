@@ -3,8 +3,11 @@ import { useNavigate } from 'react-router';
 import { useMutation } from '@tanstack/react-query';
 import { z } from 'zod/v4';
 import { AxiosError } from 'axios';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useAuthStore } from '@/app/store';
-import { loginApi } from '../api/auth.api';
+import { firebaseAuthApi } from '../api/auth.api';
+import { getE2eAuthOverrides } from '@/shared/lib/e2e-auth';
+import { getFirebaseAuth, isFirebaseConfigured } from '@/shared/lib/firebase';
 
 const loginSchema = z.object({
   email: z.email('Please enter a valid email address.'),
@@ -15,15 +18,33 @@ export type LoginFields = z.infer<typeof loginSchema>;
 
 export function useLogin() {
   const navigate = useNavigate();
-  const { setTokens, setUser } = useAuthStore();
+  const { setFirebaseUser } = useAuthStore();
   const [fieldErrors, setFieldErrors] = useState<Partial<Record<keyof LoginFields, string>>>({});
   const [serverError, setServerError] = useState<string | null>(null);
 
   const mutation = useMutation({
-    mutationFn: loginApi,
+    mutationFn: async (body: LoginFields) => {
+      const e2e = getE2eAuthOverrides();
+
+      if (e2e?.signInWithEmailAndPassword) {
+        const credential = await e2e.signInWithEmailAndPassword(body.email, body.password);
+        const idToken = await credential.user.getIdToken();
+        const response = await firebaseAuthApi({ idToken });
+        return { user: response.user, idToken };
+      }
+
+      if (!isFirebaseConfigured()) {
+        throw new Error('Firebase authentication is not configured.');
+      }
+
+      const credential = await signInWithEmailAndPassword(getFirebaseAuth(), body.email, body.password);
+
+      const idToken = await credential.user.getIdToken();
+      const response = await firebaseAuthApi({ idToken });
+      return { user: response.user, idToken };
+    },
     onSuccess: (data) => {
-      setTokens(data.accessToken, data.refreshToken);
-      setUser(data.user);
+      setFirebaseUser(data.user, data.idToken);
       if (data.user.onboardingComplete) {
         navigate('/dashboard', { replace: true });
       } else {
@@ -34,6 +55,8 @@ export function useLogin() {
       if (error instanceof AxiosError) {
         const msg = error.response?.data?.message ?? 'Login failed. Please try again.';
         setServerError(msg);
+      } else if (error instanceof Error) {
+        setServerError(error.message);
       } else {
         setServerError('An unexpected error occurred.');
       }

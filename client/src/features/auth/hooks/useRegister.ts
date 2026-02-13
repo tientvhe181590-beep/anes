@@ -3,9 +3,12 @@ import { useNavigate } from 'react-router';
 import { useMutation } from '@tanstack/react-query';
 import { z } from 'zod/v4';
 import { AxiosError } from 'axios';
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { useAuthStore } from '@/app/store';
 import { isBlockedPassword } from '@/shared/utils/common-passwords';
-import { registerApi } from '../api/auth.api';
+import { firebaseAuthApi } from '../api/auth.api';
+import { getE2eAuthOverrides } from '@/shared/lib/e2e-auth';
+import { getFirebaseAuth, isFirebaseConfigured } from '@/shared/lib/firebase';
 
 const registerSchema = z
   .object({
@@ -29,21 +32,43 @@ export type RegisterFields = z.infer<typeof registerSchema>;
 
 export function useRegister() {
   const navigate = useNavigate();
-  const { setTokens, setUser } = useAuthStore();
+  const { setFirebaseUser } = useAuthStore();
   const [fieldErrors, setFieldErrors] = useState<Partial<Record<keyof RegisterFields, string>>>({});
   const [serverError, setServerError] = useState<string | null>(null);
 
   const mutation = useMutation({
-    mutationFn: registerApi,
+    mutationFn: async (body: Omit<RegisterFields, 'confirmPassword'>) => {
+      const e2e = getE2eAuthOverrides();
+
+      if (e2e?.createUserWithEmailAndPassword) {
+        const credential = await e2e.createUserWithEmailAndPassword(body.email, body.password);
+        const idToken = await credential.user.getIdToken(true);
+        const response = await firebaseAuthApi({ idToken });
+        return { user: response.user, idToken };
+      }
+
+      if (!isFirebaseConfigured()) {
+        throw new Error('Firebase authentication is not configured.');
+      }
+
+      const credential = await createUserWithEmailAndPassword(getFirebaseAuth(), body.email, body.password);
+
+      await updateProfile(credential.user, { displayName: body.fullName });
+
+      const idToken = await credential.user.getIdToken(true);
+      const response = await firebaseAuthApi({ idToken });
+      return { user: response.user, idToken };
+    },
     onSuccess: (data) => {
-      setTokens(data.accessToken, data.refreshToken);
-      setUser(data.user);
+      setFirebaseUser(data.user, data.idToken);
       navigate('/onboarding', { replace: true });
     },
     onError: (error: unknown) => {
       if (error instanceof AxiosError) {
         const msg = error.response?.data?.message ?? 'Registration failed. Please try again.';
         setServerError(msg);
+      } else if (error instanceof Error) {
+        setServerError(error.message);
       } else {
         setServerError('An unexpected error occurred.');
       }

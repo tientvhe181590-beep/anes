@@ -8,8 +8,14 @@ export default defineConfig({
   },
   retries: 1,
   use: {
-    baseURL: 'http://localhost:5173',
+    baseURL: process.env.PLAYWRIGHT_BASE_URL ?? 'http://localhost:5173',
     trace: 'on-first-retry',
+  },
+  webServer: {
+    command: 'pnpm dev',
+    url: process.env.PLAYWRIGHT_BASE_URL ?? 'http://localhost:5173',
+    reuseExistingServer: true,
+    timeout: 120_000,
   },
   projects: [
     {

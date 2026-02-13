@@ -1,7 +1,6 @@
 package com.anes.server.config;
 
 import com.anes.server.auth.filter.FirebaseTokenFilter;
-import com.anes.server.auth.filter.JwtAuthenticationFilter;
 import com.anes.server.auth.filter.PayloadSizeFilter;
 import com.anes.server.auth.filter.RateLimitFilter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,27 +20,21 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 @Configuration
 @EnableWebSecurity
-@EnableConfigurationProperties({ JwtProperties.class, FirebaseProperties.class, RateLimitProperties.class })
+@EnableConfigurationProperties({ FirebaseProperties.class, RateLimitProperties.class })
 public class SecurityConfig {
 
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
-    private final FirebaseProperties firebaseProperties;
     private final RateLimitFilter rateLimitFilter;
     private final PayloadSizeFilter payloadSizeFilter;
     private final CorsConfigurationSource corsConfigurationSource;
 
-    // Optional — only present when anes.firebase.enabled=true
-    @Autowired(required = false)
-    private FirebaseTokenFilter firebaseTokenFilter;
+        private final FirebaseTokenFilter firebaseTokenFilter;
 
     public SecurityConfig(
-            JwtAuthenticationFilter jwtAuthenticationFilter,
-            FirebaseProperties firebaseProperties,
+                        FirebaseTokenFilter firebaseTokenFilter,
             RateLimitFilter rateLimitFilter,
             PayloadSizeFilter payloadSizeFilter,
             CorsConfigurationSource corsConfigurationSource) {
-        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
-        this.firebaseProperties = firebaseProperties;
+                this.firebaseTokenFilter = firebaseTokenFilter;
         this.rateLimitFilter = rateLimitFilter;
         this.payloadSizeFilter = payloadSizeFilter;
         this.corsConfigurationSource = corsConfigurationSource;
@@ -49,10 +42,7 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        // Choose the active auth filter based on the feature flag
-        OncePerRequestFilter activeFilter = (firebaseProperties.enabled() && firebaseTokenFilter != null)
-                ? firebaseTokenFilter
-                : jwtAuthenticationFilter;
+                OncePerRequestFilter activeFilter = firebaseTokenFilter;
 
         http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource))

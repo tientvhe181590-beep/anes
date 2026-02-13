@@ -15,7 +15,6 @@ vi.mock('posthog-js', () => ({
 let initPostHog: typeof import('@/shared/lib/posthog').initPostHog;
 let isPostHogConfigured: typeof import('@/shared/lib/posthog').isPostHogConfigured;
 let hasAnalyticsConsent: typeof import('@/shared/lib/posthog').hasAnalyticsConsent;
-let _resetPostHog: typeof import('@/shared/lib/posthog')._resetPostHog;
 
 describe('PostHog init', () => {
   beforeEach(async () => {
@@ -36,7 +35,6 @@ describe('PostHog init', () => {
     initPostHog = mod.initPostHog;
     isPostHogConfigured = mod.isPostHogConfigured;
     hasAnalyticsConsent = mod.hasAnalyticsConsent;
-    _resetPostHog = mod._resetPostHog;
 
     mockInit.mockClear();
   });

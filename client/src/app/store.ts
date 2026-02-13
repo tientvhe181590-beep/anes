@@ -259,6 +259,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     set({
       user,
       firebaseToken: token,
+      firebaseEnabled: true,
       isAuthenticated: Boolean(user && token),
       onboardingComplete: user?.onboardingComplete ?? false,
     });
@@ -290,3 +291,13 @@ export const useOnboardingStore = create<OnboardingState>((set) => ({
   update: (values) => set((state) => ({ data: { ...state.data, ...values } })),
   reset: () => set({ data: {} }),
 }));
+
+declare global {
+  interface Window {
+    __ANES_AUTH_STORE__?: typeof useAuthStore;
+  }
+}
+
+if (typeof window !== 'undefined' && import.meta.env.DEV) {
+  window.__ANES_AUTH_STORE__ = useAuthStore;
+}

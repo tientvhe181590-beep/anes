@@ -17,7 +17,7 @@ vi.mock('firebase/auth', () => ({
 }));
 
 // Must import AFTER mocks are set up
-import { initFirebase, getFirebaseAuth, isFirebaseConfigured } from '@/shared/lib/firebase';
+import { initFirebase, isFirebaseConfigured } from '@/shared/lib/firebase';
 
 describe('firebase.ts', () => {
   const originalEnv = { ...import.meta.env };

@@ -3,12 +3,11 @@ package com.anes.server.auth.controller;
 import com.anes.server.auth.dto.AuthUserDto;
 import com.anes.server.auth.dto.FirebaseAuthResponse;
 import com.anes.server.auth.service.AuditLogService;
-import com.anes.server.auth.service.AuthService;
 import com.anes.server.auth.service.FirebaseTokenExchangeService;
 import com.anes.server.auth.filter.PayloadSizeFilter;
 import com.anes.server.auth.filter.RateLimitFilter;
 import com.anes.server.common.exception.GlobalExceptionHandler;
-import com.anes.server.config.FirebaseProperties;
+import com.anes.server.auth.filter.FirebaseTokenFilter;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -36,21 +35,13 @@ class FirebaseAuthControllerTest {
     private MockMvc mockMvc;
 
     @MockitoBean
-    private AuthService authService;
-
-    @MockitoBean
-    private FirebaseProperties firebaseProperties;
+        private FirebaseTokenFilter firebaseTokenFilter;
 
     @MockitoBean
     private FirebaseTokenExchangeService firebaseTokenExchangeService;
 
     @MockitoBean
     private AuditLogService auditLogService;
-
-    // SecurityConfig dependencies (not used with addFilters=false but needed for
-    // context)
-    @MockitoBean
-    private com.anes.server.auth.filter.JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @MockitoBean
     private RateLimitFilter rateLimitFilter;
