@@ -129,8 +129,12 @@ anes/
 | Software Requirements (SRS) | `docs/R3-SRS.md` |
 | System Design (SDS) | `docs/R4-SDS.md` |
 | Database Schema | `docs/database.sql` |
-| Screen Roadmap | `docs/screen-roadmap.md` |
-| CI/CD Setup | `docs/ci.md` |
+| Documentation Hub | `docs/index.md` |
+| Deployment Runbook | `docs/deployment/runbook.md` |
+| Environment Variables | `docs/deployment/environments.md` |
+| Security Docs | `docs/security/index.md` |
+| Analytics Docs | `docs/analytics/index.md` |
+| API Docs | `docs/api/index.md` |
 
 ## License
 
