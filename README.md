@@ -126,10 +126,11 @@ anes/
 
 | Document | Location |
 |----------|----------|
-| Software Requirements (SRS) | `docs/R3-SRS.md` |
-| System Design (SDS) | `docs/R4-SDS.md` |
-| Database Schema | `docs/database.sql` |
+| Software Requirements (SRS) | `docs/project-docs/reports/R3-SRS.md` |
+| System Design (SDS) | `docs/project-docs/reports/R4-SDS.md` |
+| Database Schema | `docs/project-docs/data/database.sql` |
 | Documentation Hub | `docs/index.md` |
+| Project Documents (Grouped) | `docs/project-docs/index.md` |
 | Deployment Runbook | `docs/deployment/runbook.md` |
 | Environment Variables | `docs/deployment/environments.md` |
 | Security Docs | `docs/security/index.md` |
